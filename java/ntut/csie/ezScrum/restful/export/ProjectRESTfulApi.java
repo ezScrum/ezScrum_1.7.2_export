@@ -33,17 +33,16 @@ public class ProjectRESTfulApi {
 	@Path("/{projectName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("projectName") String projectName) throws JSONException {
-		// Get project By name
-		IProject project = new ProjectMapper().getProjectByID(projectName);
-		
-		String entity = null;
-		
-		if(project != null){
-			// Create ProjectFluent
-			ProjectFluent projectFluent = new ProjectFluent();
-			// Get Projects List
-			entity = projectFluent.Get(project).toJSON().toString();
+		// Get projects
+		List<IProject> projects = new ProjectMapper().getAllProjectList();
+		// Create ProjectFluent
+		ProjectFluent projectFluent = new ProjectFluent();
+
+		for (IProject project : projects) {
+			if (project.getName().equals(projectName)) {
+				projectFluent.Get(project);
+			}
 		}
-		return Response.status(Response.Status.OK).entity(entity).build();
+		return Response.status(Response.Status.OK).entity(projectFluent.toJSON().toString()).build();
 	}
 }
