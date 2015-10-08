@@ -35,10 +35,15 @@ public class ProjectRESTfulApi {
 	public Response get(@PathParam("projectName") String projectName) throws JSONException {
 		// Get project By name
 		IProject project = new ProjectMapper().getProjectByID(projectName);
-		// Create ProjectFluent
-		ProjectFluent projectFluent = new ProjectFluent();
-		// Get Projects List
-		String entity = projectFluent.Get(project).toJSON().toString();
+		
+		String entity = null;
+		
+		if(project != null){
+			// Create ProjectFluent
+			ProjectFluent projectFluent = new ProjectFluent();
+			// Get Projects List
+			entity = projectFluent.Get(project).toJSON().toString();
+		}
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
