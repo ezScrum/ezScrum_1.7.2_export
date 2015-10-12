@@ -25,7 +25,7 @@ public class ProjectRESTfulApi {
 		// Create ProjectFluent
 		ProjectFluent projectFluent = new ProjectFluent();
 		// Get Projects List JSON
-		String entity = projectFluent.Get(projects).toJSON().toString();
+		String entity = projectFluent.Get(projects).toJSONArray().toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
@@ -41,8 +41,9 @@ public class ProjectRESTfulApi {
 		for (IProject project : projects) {
 			if (project.getName().equals(projectName)) {
 				projectFluent.Get(project);
+				break;
 			}
 		}
-		return Response.status(Response.Status.OK).entity(projectFluent.toJSON().toString()).build();
+		return Response.status(Response.Status.OK).entity(projectFluent.toJSONObject(0).toString()).build();
 	}
 }

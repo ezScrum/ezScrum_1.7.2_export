@@ -29,14 +29,23 @@ public class ProjectFluent {
 		return this;
 	}
 
-	// Translate multiple project to JSON
-	public JSONObject toJSON() throws JSONException {
+	// Translate single project to JSONObject
+	public JSONObject toJSONObject(int index) throws JSONException {
 		JSONObject projectsJson = new JSONObject();
 
 		if (mProjects.isEmpty()) {
 			return projectsJson;
-		} else if (mProjects.size() == 1) {
-			projectsJson = toJSON(mProjects.get(0));
+		} else {
+			projectsJson = toJSON(mProjects.get(index));
+		}
+		return projectsJson;
+	}
+	
+	public JSONObject toJSONArray() throws JSONException {
+		JSONObject projectsJson = new JSONObject();
+
+		if (mProjects.isEmpty()) {
+			return projectsJson;
 		} else {
 			JSONArray projectsJsonArray = new JSONArray();
 			for (IProject project : mProjects) {
