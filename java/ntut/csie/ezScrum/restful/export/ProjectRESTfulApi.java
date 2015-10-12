@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.support.export.ProjectFluent;
+import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects")
@@ -22,10 +22,8 @@ public class ProjectRESTfulApi {
 	public Response getList() throws JSONException {
 		// Get projects
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
-		// Create ProjectFluent
-		ProjectFluent projectFluent = new ProjectFluent();
 		// Get Projects List JSON
-		String entity = projectFluent.Get(projects).toJSONArray().toString();
+		String entity = JSONEncoder.toJSONArray(projects).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
@@ -35,15 +33,12 @@ public class ProjectRESTfulApi {
 	public Response get(@PathParam("projectName") String projectName) throws JSONException {
 		// Get projects
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
-		// Create ProjectFluent
-		ProjectFluent projectFluent = new ProjectFluent();
-
 		for (IProject project : projects) {
 			if (project.getName().equals(projectName)) {
-				projectFluent.Get(project);
-				break;
+				String entity = JSONEncoder.toJSON(project).toString();
+				return Response.status(Response.Status.OK).entity(entity).build();
 			}
 		}
-		return Response.status(Response.Status.OK).entity(projectFluent.toJSONObject(0).toString()).build();
+		return Response.status(Response.Status.NOT_FOUND).build();
 	}
 }
