@@ -14,7 +14,7 @@ import org.codehaus.jettison.json.JSONException;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.ezScrum.web.support.export.SprintFluent;
+import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects/{projectName}/sprints")
@@ -28,7 +28,7 @@ public class SprintRESTfulApi {
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
 		// Get Sprints JSONString
-		String entity = SprintFluent.toJSON(sprints).toString();
+		String entity = JSONEncoder.toJSONArray(sprints).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
@@ -42,7 +42,7 @@ public class SprintRESTfulApi {
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc sprint = sprintPlanHelper.loadPlan(String.valueOf(sprintId));
 		// Get Sprint JSONString
-		String entity = SprintFluent.toJSON(sprint).toString();
+		String entity = JSONEncoder.toJSON(sprint).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
