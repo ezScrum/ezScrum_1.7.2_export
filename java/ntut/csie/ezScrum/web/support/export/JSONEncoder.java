@@ -25,10 +25,10 @@ public class JSONEncoder {
 			JSONObject sprintJson = new JSONObject();
 			try {
 				sprintJson.put(SprintEnum.GOAL, sprint.getGoal())
-			      .put(SprintEnum.INTERVAL, sprint.getInterval())
-				  .put(SprintEnum.TEAM_SIZE, sprint.getMemberNumber())
-				  .put(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableDays())
-				  .put(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor())
+			      .put(SprintEnum.INTERVAL, Integer.parseInt(sprint.getInterval()))
+				  .put(SprintEnum.TEAM_SIZE, Integer.parseInt(sprint.getMemberNumber()))
+				  .put(SprintEnum.AVAILABLE_HOURS, Integer.parseInt(sprint.getAvailableDays()))
+				  .put(SprintEnum.FOCUS_FACTOR, Integer.parseInt(sprint.getFocusFactor()))
 				  .put(SprintEnum.START_DATE, sprint.getStartDate())
 				  .put(SprintEnum.DUE_DATE, sprint.getEndDate())
 				  .put(SprintEnum.DEMO_DATE, sprint.getDemoDate())

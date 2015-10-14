@@ -70,10 +70,10 @@ public class JSONEncoderTest {
 		ISprintPlanDesc sprint1 = sprints.get(0);
 		JSONObject sprint1JSON = sprintJSONArray.getJSONObject(0);
 		assertEquals(sprint1.getGoal(), sprint1JSON.getString(SprintEnum.GOAL));
-		assertEquals(sprint1.getInterval(), sprint1JSON.getString(SprintEnum.INTERVAL));
-		assertEquals(sprint1.getMemberNumber(), sprint1JSON.getString(SprintEnum.TEAM_SIZE));
-		assertEquals(sprint1.getAvailableDays(), sprint1JSON.getString(SprintEnum.AVAILABLE_HOURS));
-		assertEquals(sprint1.getFocusFactor(), sprint1JSON.getString(SprintEnum.FOCUS_FACTOR));
+		assertEquals(Integer.parseInt(sprint1.getInterval()), sprint1JSON.getInt(SprintEnum.INTERVAL));
+		assertEquals(Integer.parseInt(sprint1.getMemberNumber()), sprint1JSON.getInt(SprintEnum.TEAM_SIZE));
+		assertEquals(Integer.parseInt(sprint1.getAvailableDays()), sprint1JSON.getInt(SprintEnum.AVAILABLE_HOURS));
+		assertEquals(Integer.parseInt(sprint1.getFocusFactor()), sprint1JSON.getInt(SprintEnum.FOCUS_FACTOR));
 		assertEquals(sprint1.getStartDate(), sprint1JSON.getString(SprintEnum.START_DATE));
 		assertEquals(sprint1.getEndDate(), sprint1JSON.getString(SprintEnum.DUE_DATE));
 		assertEquals(sprint1.getDemoDate(), sprint1JSON.getString(SprintEnum.DEMO_DATE));
@@ -84,10 +84,10 @@ public class JSONEncoderTest {
 		ISprintPlanDesc sprint2 = sprints.get(1);
 		JSONObject sprint2JSON = sprintJSONArray.getJSONObject(1);
 		assertEquals(sprint2.getGoal(), sprint2JSON.getString(SprintEnum.GOAL));
-		assertEquals(sprint2.getInterval(), sprint2JSON.getString(SprintEnum.INTERVAL));
-		assertEquals(sprint2.getMemberNumber(), sprint2JSON.getString(SprintEnum.TEAM_SIZE));
-		assertEquals(sprint2.getAvailableDays(), sprint2JSON.getString(SprintEnum.AVAILABLE_HOURS));
-		assertEquals(sprint2.getFocusFactor(), sprint2JSON.getString(SprintEnum.FOCUS_FACTOR));
+		assertEquals(Integer.parseInt(sprint2.getInterval()), sprint2JSON.getInt(SprintEnum.INTERVAL));
+		assertEquals(Integer.parseInt(sprint2.getMemberNumber()), sprint2JSON.getInt(SprintEnum.TEAM_SIZE));
+		assertEquals(Integer.parseInt(sprint2.getAvailableDays()), sprint2JSON.getInt(SprintEnum.AVAILABLE_HOURS));
+		assertEquals(Integer.parseInt(sprint2.getFocusFactor()), sprint2JSON.getInt(SprintEnum.FOCUS_FACTOR));
 		assertEquals(sprint2.getStartDate(), sprint2JSON.getString(SprintEnum.START_DATE));
 		assertEquals(sprint2.getEndDate(), sprint2JSON.getString(SprintEnum.DUE_DATE));
 		assertEquals(sprint2.getDemoDate(), sprint2JSON.getString(SprintEnum.DEMO_DATE));
@@ -105,10 +105,10 @@ public class JSONEncoderTest {
 		
 		// Assert
 		assertEquals(sprint.getGoal(), sprintJSON.getString(SprintEnum.GOAL));
-		assertEquals(sprint.getInterval(), sprintJSON.getString(SprintEnum.INTERVAL));
-		assertEquals(sprint.getMemberNumber(), sprintJSON.getString(SprintEnum.TEAM_SIZE));
-		assertEquals(sprint.getAvailableDays(), sprintJSON.getString(SprintEnum.AVAILABLE_HOURS));
-		assertEquals(sprint.getFocusFactor(), sprintJSON.getString(SprintEnum.FOCUS_FACTOR));
+		assertEquals(Integer.parseInt(sprint.getInterval()), sprintJSON.getInt(SprintEnum.INTERVAL));
+		assertEquals(Integer.parseInt(sprint.getMemberNumber()), sprintJSON.getInt(SprintEnum.TEAM_SIZE));
+		assertEquals(Integer.parseInt(sprint.getAvailableDays()), sprintJSON.getInt(SprintEnum.AVAILABLE_HOURS));
+		assertEquals(Integer.parseInt(sprint.getFocusFactor()), sprintJSON.getInt(SprintEnum.FOCUS_FACTOR));
 		assertEquals(sprint.getStartDate(), sprintJSON.getString(SprintEnum.START_DATE));
 		assertEquals(sprint.getEndDate(), sprintJSON.getString(SprintEnum.DUE_DATE));
 		assertEquals(sprint.getDemoDate(), sprintJSON.getString(SprintEnum.DEMO_DATE));
