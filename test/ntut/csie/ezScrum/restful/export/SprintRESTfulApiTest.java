@@ -3,14 +3,12 @@ package ntut.csie.ezScrum.restful.export;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
@@ -22,14 +20,12 @@ import org.junit.Test;
 
 import com.sun.net.httpserver.HttpServer;
 
-import antlr.collections.List;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
@@ -41,8 +37,8 @@ public class SprintRESTfulApiTest extends JerseyTest {
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
-	private String mBaseUrl = "http://localhost:8080/ezScrum/resource/";
-	private URI mBaseUri = URI.create(mBaseUrl);
+	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+	private URI mBaseUri = URI.create(BASE_URL);
 
 	@Override
 	protected Application configure() {
@@ -101,7 +97,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		ISprintPlanDesc firstSprint = sprintPlanHelper.loadPlan(firstSprintId);
 		String projectName = project.getName();
 		// Call '/projects/{projectName}/sprints' API
-		Response response = mClient.target(mBaseUrl)
+		Response response = mClient.target(BASE_URL)
 				                 .path("projects/" + projectName + "/sprints/" + firstSprintId)
 				                 .request()
 				                 .get();
