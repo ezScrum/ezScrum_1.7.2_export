@@ -235,9 +235,6 @@ public class JSONEncoderTest {
 	
 	@Test
 	public void testToTaskJSON() {
-		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic();
-		List<IIssue> tasks = mCT.getTaskList();
-		IIssue task = tasks.get(0);
-		long taskId = task.getIssueID();
+		
 	}
 }
