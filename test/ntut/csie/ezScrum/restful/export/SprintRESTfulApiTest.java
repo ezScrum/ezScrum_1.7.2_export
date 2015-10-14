@@ -22,17 +22,20 @@ import org.junit.Test;
 
 import com.sun.net.httpserver.HttpServer;
 
+import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class ProjectRESTfulApiTest extends JerseyTest {
+public class SprintRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
+	private CreateSprint mCS;
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -41,7 +44,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(SprintRESTfulApi.class);
 		return mResourceConfig;
 	}
 	
@@ -54,10 +57,14 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		// Create Project
 		mCP = new CreateProject(2);
 		mCP.exeCreate();
-
-		// Start Server
-		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 		
+		//	 新增兩個Sprint
+    	this.mCS = new CreateSprint(2, mCP);
+    	this.mCS.exe();
+    	
+    	// Start Server
+    	mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
+    	
 		// Create Client
 		mClient = ClientBuilder.newClient();
 	}
@@ -79,16 +86,19 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		ini = null;
 		copyProject = null;
 		mCP = null;
+		mCS = null;
 		mHttpServer = null;
 		mClient = null;
 	}
 	
 	@Test
 	public void testGet_NotFound() throws JSONException {
-		String notExistedProjectName = "NOT_EXISTED_PROJECT_NAME";
+		String notExistedSprintId = "9999";
+		IProject project = mCP.getProjectList().get(0);
+		String projectName = project.getName();
 		// Call '/projects/{projectName}/sprints' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + notExistedProjectName)
+				                 .path("projects/" + projectName + "/sprints/" + notExistedSprintId)
 				                 .request()
 				                 .get();
 		
@@ -99,51 +109,52 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 
 	@Test
 	public void testGet_First() throws JSONException {
-		IProject firstProject = mCP.getProjectList().get(0);
-		
-		// Test data
-		String projectNmae = firstProject.getName();
-		
-		// Call '/projects/{projectName}' API
+		String firstSprintId = mCS.getSprintIDList().get(0);
+		IProject project = mCP.getProjectList().get(0);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		ISprintPlanDesc firstSprint = sprintPlanHelper.loadPlan(firstSprintId);
+		String projectName = project.getName();
+		// Call '/projects/{projectName}/sprints' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + projectNmae)
+				                 .path("projects/" + projectName + "/sprints/" + firstSprintId)
 				                 .request()
 				                 .get();
 		
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		// Assert
-		assertEquals(JSONEncoder.toProjectJSON(firstProject).toString(), jsonResponse.toString());
+		assertEquals(JSONEncoder.toSprintJSON(firstSprint).toString(), jsonResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 	
 	@Test
 	public void testGet_Second() throws JSONException {
-		IProject secondProject = mCP.getProjectList().get(1);
-		
-		// Test data
-		String projectNmae = secondProject.getName();
-		
-		// Call '/projects/{projectName}' API
+		String secondSprintId = mCS.getSprintIDList().get(1);
+		IProject project = mCP.getProjectList().get(0);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		ISprintPlanDesc secondSprint = sprintPlanHelper.loadPlan(secondSprintId);
+		String projectName = project.getName();
+		// Call '/projects/{projectName}/sprints' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + projectNmae)
+				                 .path("projects/" + projectName + "/sprints/" + secondSprintId)
 				                 .request()
 				                 .get();
 		
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		
 		// Assert
-		assertEquals(JSONEncoder.toProjectJSON(secondProject).toString(), jsonResponse.toString());
+		assertEquals(JSONEncoder.toSprintJSON(secondSprint).toString(), jsonResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 	
 	@Test
-	public void testGetList_MultipleProjects() throws JSONException {
-		// Get projects
-		List<IProject> projects = new ProjectMapper().getAllProjectList();
+	public void testGetList_MultipleSprints() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
+		String projectName = project.getName();
 		
 		// Call '/projects' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects")
+				                 .path("projects/" + projectName + "/sprints")
 		                         .request()
 		                         .get();
 		
@@ -151,7 +162,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(2, jsonArrayResponse.length());
-		assertEquals(JSONEncoder.toProjectJSONArray(projects).toString(), jsonArrayResponse.toString());
+		assertEquals(JSONEncoder.toSprintJSONArray(sprints).toString(), jsonArrayResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 }

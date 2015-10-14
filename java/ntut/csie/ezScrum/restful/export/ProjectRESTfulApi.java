@@ -23,7 +23,7 @@ public class ProjectRESTfulApi {
 		// Get projects
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
 		// Get Projects List JSON
-		String entity = JSONEncoder.toJSONArray(projects).toString();
+		String entity = JSONEncoder.toProjectJSONArray(projects).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
@@ -35,7 +35,7 @@ public class ProjectRESTfulApi {
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
 		for (IProject project : projects) {
 			if (project.getName().equals(projectName)) {
-				String entity = JSONEncoder.toJSON(project).toString();
+				String entity = JSONEncoder.toProjectJSON(project).toString();
 				return Response.status(Response.Status.OK).entity(entity).build();
 			}
 		}
