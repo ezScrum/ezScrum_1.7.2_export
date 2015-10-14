@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.export;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -25,20 +26,23 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ProjectRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
-
+	private ResourceConfig mResourceConfig;
 	private Client mClient;
 	private HttpServer mHttpServer;
-	private String mBaseUrl = "http://localhost:8080/ezScrum/resource/";
+	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
+	private URI mBaseUri = URI.create(BASE_URL);
 
 	@Override
 	protected Application configure() {
-		return new ResourceConfig(ProjectRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class);
+		return mResourceConfig;
 	}
 	
 	@Before
@@ -52,9 +56,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		mCP.exeCreate();
 
 		// Start Server
-		URI baseUri = URI.create(mBaseUrl);
-		ResourceConfig resourceConfig = new ResourceConfig(ProjectRESTfulApi.class);
-		mHttpServer = JdkHttpServerFactory.createHttpServer(baseUri, resourceConfig, true);
+		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 		
 		// Create Client
 		mClient = ClientBuilder.newClient();
@@ -87,26 +89,16 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		
 		// Test data
 		String projectNmae = firstProject.getName();
-		String projectDisplayName = firstProject.getProjectDesc().getDisplayName();
-		String projectComment = firstProject.getProjectDesc().getComment();
-		String projectManager = firstProject.getProjectDesc().getProjectManager();
-		String projectAttachFileSize = firstProject.getProjectDesc().getAttachFileSize();
-		long projectCreateTime = firstProject.getProjectDesc().getCreateDate().getTime();
 		
 		// Call '/projects/{projectName}' API
-		Response response = mClient.target(mBaseUrl)
+		Response response = mClient.target(BASE_URL)
 				                 .path("projects/" + projectNmae)
 				                 .request()
 				                 .get();
 		
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		// Assert
-		assertEquals(projectNmae, jsonResponse.get(ProjectEnum.NAME));
-		assertEquals(projectDisplayName, jsonResponse.get(ProjectEnum.DISPLAY_NAME));
-		assertEquals(projectComment, jsonResponse.get(ProjectEnum.COMMENT));
-		assertEquals(projectManager, jsonResponse.get(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(projectAttachFileSize, jsonResponse.get(ProjectEnum.ATTATCH_MAX_SIZE));
-		assertEquals(projectCreateTime, jsonResponse.get(ProjectEnum.CREATE_TIME));
+		assertEquals(JSONEncoder.toProjectJSON(firstProject).toString(), jsonResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 	
@@ -116,14 +108,9 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		
 		// Test data
 		String projectNmae = secondProject.getName();
-		String projectDisplayName = secondProject.getProjectDesc().getDisplayName();
-		String projectComment = secondProject.getProjectDesc().getComment();
-		String projectManager = secondProject.getProjectDesc().getProjectManager();
-		String projectAttachFileSize = secondProject.getProjectDesc().getAttachFileSize();
-		long projectCreateTime = secondProject.getProjectDesc().getCreateDate().getTime();
 		
 		// Call '/projects/{projectName}' API
-		Response response = mClient.target(mBaseUrl)
+		Response response = mClient.target(BASE_URL)
 				                 .path("projects/" + projectNmae)
 				                 .request()
 				                 .get();
@@ -131,37 +118,17 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		
 		// Assert
-		assertEquals(projectNmae, jsonResponse.get(ProjectEnum.NAME));
-		assertEquals(projectDisplayName, jsonResponse.get(ProjectEnum.DISPLAY_NAME));
-		assertEquals(projectComment, jsonResponse.get(ProjectEnum.COMMENT));
-		assertEquals(projectManager, jsonResponse.get(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(projectAttachFileSize, jsonResponse.get(ProjectEnum.ATTATCH_MAX_SIZE));
-		assertEquals(projectCreateTime, jsonResponse.get(ProjectEnum.CREATE_TIME));
+		assertEquals(JSONEncoder.toProjectJSON(secondProject).toString(), jsonResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 	
 	@Test
 	public void testGetList_MultipleProjects() throws JSONException {
-		IProject firstProject = mCP.getProjectList().get(0);
-		IProject secondProject = mCP.getProjectList().get(1);
-		
-		// Test data
-		String projectNmae = firstProject.getName();
-		String projectDisplayName = firstProject.getProjectDesc().getDisplayName();
-		String projectComment = firstProject.getProjectDesc().getComment();
-		String projectManager = firstProject.getProjectDesc().getProjectManager();
-		String projectAttachFileSize = firstProject.getProjectDesc().getAttachFileSize();
-		long projectCreateTime = firstProject.getProjectDesc().getCreateDate().getTime();
-		
-		String projectNmae2 = secondProject.getName();
-		String projectDisplayName2 = secondProject.getProjectDesc().getDisplayName();
-		String projectComment2 = secondProject.getProjectDesc().getComment();
-		String projectManager2 = secondProject.getProjectDesc().getProjectManager();
-		String projectAttachFileSize2 = secondProject.getProjectDesc().getAttachFileSize();
-		long projectCreateTime2 = secondProject.getProjectDesc().getCreateDate().getTime();
+		// Get projects
+		List<IProject> projects = new ProjectMapper().getAllProjectList();
 		
 		// Call '/projects' API
-		Response response = mClient.target(mBaseUrl)
+		Response response = mClient.target(BASE_URL)
 				                 .path("projects")
 		                         .request()
 		                         .get();
@@ -170,18 +137,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(2, jsonArrayResponse.length());
-		assertEquals(projectNmae, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.NAME));
-		assertEquals(projectDisplayName, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.DISPLAY_NAME));
-		assertEquals(projectComment, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.COMMENT));
-		assertEquals(projectManager, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(projectAttachFileSize, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.ATTATCH_MAX_SIZE));
-		assertEquals(projectCreateTime, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.CREATE_TIME));
-		
-		assertEquals(projectNmae2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.NAME));
-		assertEquals(projectDisplayName2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.DISPLAY_NAME));
-		assertEquals(projectComment2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.COMMENT));
-		assertEquals(projectManager2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(projectAttachFileSize2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.ATTATCH_MAX_SIZE));
-		assertEquals(projectCreateTime2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.CREATE_TIME));
+		assertEquals(JSONEncoder.toProjectJSONArray(projects).toString(), jsonArrayResponse.toString());
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 }
