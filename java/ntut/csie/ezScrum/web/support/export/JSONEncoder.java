@@ -7,28 +7,22 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
 	// Translate multiple sprint to JSON
-		public static JSONObject toJSONArray(List<ISprintPlanDesc> sprints) throws JSONException {
-			JSONObject wholeJson = new JSONObject();
-			if (sprints.isEmpty()) {
-				return wholeJson;
-			} else {
-				JSONArray sprintJsonArray = new JSONArray();
-				for (ISprintPlanDesc sprint : sprints) {
-					sprintJsonArray.put(toJSON(sprint));
-				}
-				wholeJson.put("sprints", sprintJsonArray);
+		public static JSONArray toSprintJSONArray(List<ISprintPlanDesc> sprints) throws JSONException {
+			JSONArray sprintJsonArray = new JSONArray();
+			for (ISprintPlanDesc sprint : sprints) {
+				sprintJsonArray.put(toSprintJSON(sprint));
 			}
-			return wholeJson;
+			return sprintJsonArray;
 		}
 
 		// Translate sprint to JSON
-		public static JSONObject toJSON(ISprintPlanDesc sprint) throws JSONException {
+		public static JSONObject toSprintJSON(ISprintPlanDesc sprint) throws JSONException {
 			JSONObject sprintJson = new JSONObject();
 			sprintJson.put(SprintEnum.GOAL, sprint.getGoal())
 				      .put(SprintEnum.INTERVAL, sprint.getInterval())
@@ -39,22 +33,20 @@ public class JSONEncoder {
 					  .put(SprintEnum.DUE_DATE, sprint.getEndDate())
 					  .put(SprintEnum.DEMO_DATE, sprint.getDemoDate())
 					  .put(SprintEnum.DEMO_PLACE, sprint.getDemoPlace())
-					  .put(SprintEnum.DAILY_INFO, sprint.getNotes())
-					  .put(SprintEnum.CREATE_TIME, System.currentTimeMillis())
-					  .put(SprintEnum.UPDATE_TIME, System.currentTimeMillis());
+					  .put(SprintEnum.DAILY_INFO, sprint.getNotes());
 			return sprintJson;
 		}
 
-	public static JSONArray toJSONArray(List<IProject> projects) throws JSONException {
+	public static JSONArray toProjectJSONArray(List<IProject> projects) throws JSONException {
 		JSONArray projectJsonArray = new JSONArray();
 		for (IProject project : projects) {
-			projectJsonArray.put(toJSON(project));
+			projectJsonArray.put(toProjectJSON(project));
 		}
 		return projectJsonArray;
 	}
 
 	// Translate project to JSON
-	public static JSONObject toJSON(IProject project) throws JSONException {
+	public static JSONObject toProjectJSON(IProject project) throws JSONException {
 		JSONObject projectJson = new JSONObject();
 		projectJson.put(ProjectEnum.NAME, project.getProjectDesc().getName())
 		        .put(ProjectEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())

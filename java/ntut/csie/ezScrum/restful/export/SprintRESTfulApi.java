@@ -28,7 +28,7 @@ public class SprintRESTfulApi {
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
 		// Get Sprints JSONString
-		String entity = JSONEncoder.toJSONArray(sprints).toString();
+		String entity = JSONEncoder.toSprintJSONArray(sprints).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
@@ -40,9 +40,13 @@ public class SprintRESTfulApi {
 		IProject project = new ProjectMapper().getProjectByID(projectName);
 		// Get sprint
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		ISprintPlanDesc sprint = sprintPlanHelper.loadPlan(String.valueOf(sprintId));
-		// Get Sprint JSONString
-		String entity = JSONEncoder.toJSON(sprint).toString();
-		return Response.status(Response.Status.OK).entity(entity).build();
+		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
+		for (ISprintPlanDesc sprint : sprints) {
+			if (sprint.getID().equals(String.valueOf(sprintId))) {
+				String entity = JSONEncoder.toSprintJSON(sprint).toString();
+				return Response.status(Response.Status.OK).entity(entity).build();
+			}
+		}
+		return Response.status(Response.Status.NOT_FOUND).build();
 	}
 }
