@@ -18,12 +18,14 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoderTest {
@@ -31,6 +33,7 @@ public class JSONEncoderTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
+	private CreateTask mCT;
 
 	@Before
 	public void setUp() throws Exception {
@@ -42,12 +45,15 @@ public class JSONEncoderTest {
 		mCP = new CreateProject(2);
 		mCP.exeCreate();
 
-		//	 新增兩個Sprint
+		// Create Sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
 		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mASTS.exe();
+		
+		// Create Task
+		mCT = new CreateTask(2, mCP);
 	}
 
 	@After
@@ -162,7 +168,7 @@ public class JSONEncoderTest {
 	}
 
 	@Test
-	public void tstToStoryJSONArray() throws JSONException {
+	public void testToStoryJSONArray() throws JSONException {
 		// Get Stories
 		List<IIssue> stories = mASTS.getIssueList();
 		// Convert to JSONArray
@@ -207,8 +213,7 @@ public class JSONEncoderTest {
 	}
 
 	@Test
-	public void toStoryJSON() throws JSONException {
-		// Get Stories
+	public void testToStoryJSON() throws JSONException {
 		IIssue story = mASTS.getIssueList().get(0);
 		// Convert to JSONObject
 		JSONObject storyJson = JSONEncoder.toStoryJSON(story);
@@ -221,5 +226,18 @@ public class JSONEncoderTest {
 		assertEquals(Integer.parseInt(story.getValue()), storyJson.get(StoryEnum.VALUE));
 		assertEquals(story.getNotes(), storyJson.get(StoryEnum.NOTES));
 		assertEquals(story.getHowToDemo(), storyJson.get(StoryEnum.HOW_TO_DEMO));
+	}
+	
+	@Test
+	public void testToTaskJSONArray() {
+		
+	}
+	
+	@Test
+	public void testToTaskJSON() {
+		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic();
+		List<IIssue> tasks = mCT.getTaskList();
+		IIssue task = tasks.get(0);
+		long taskId = task.getIssueID();
 	}
 }

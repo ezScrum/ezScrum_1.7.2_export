@@ -18,7 +18,6 @@ import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
-import ntut.csie.ezScrum.web.support.export.TaskJSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 
@@ -38,7 +37,7 @@ public class TaskRESTfulApi {
 		List<IIssue> tasks = new ArrayList<IIssue>();
 		tasks.addAll(Arrays.asList(tasksArray));
 
-		return Response.status(Response.Status.OK).entity(TaskJSONEncoder.toJSONArray(tasks)).build();
+		return Response.status(Response.Status.OK).entity(JSONEncoder.toTaskJSONArray(tasks)).build();
 	}
 
 	@GET
@@ -54,7 +53,7 @@ public class TaskRESTfulApi {
 
 		for (IIssue task : tasksArray) {
 			if (task.getIssueID() == taskId) {
-				return Response.status(Response.Status.OK).entity(TaskJSONEncoder.toJSON(task).toString()).build();
+				return Response.status(Response.Status.OK).entity(JSONEncoder.toTaskJSON(task).toString()).build();
 			}
 		}
 		return Response.status(Response.Status.NOT_FOUND).build();
