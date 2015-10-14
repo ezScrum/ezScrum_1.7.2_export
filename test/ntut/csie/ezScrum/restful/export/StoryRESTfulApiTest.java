@@ -51,17 +51,17 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		mResourceConfig = new ResourceConfig(StoryRESTfulApi.class);
 		return mResourceConfig;
 	}
-	
+
 	@Before
 	public void setUp() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
+
 		// Create Project
 		mCP = new CreateProject(2);
 		mCP.exeCreate();
-		
+
 		// Create Sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
@@ -72,7 +72,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
-		
+
 		// Create Client
 		mClient = ClientBuilder.newClient();
 	}
@@ -89,7 +89,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// Stop Server
 		mHttpServer.stop(0);
-		
+
 		// ============= release ==============
 		ini = null;
 		copyProject = null;
@@ -104,18 +104,18 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	public void testGet_InProject() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
-		
+
 		// Assert story is in the project
 		assertEquals(project.getName(), story.getProjectName());
-		
+
 		// Call '/projects/{projectName}/stories/{storyId}' API
 		Response response = mClient.target(mBaseUri)
-				                   .path("projects/" + project.getName() + "/stories/" + story.getIssueID())
-				                   .request()
-				                   .get();
-		
+		        .path("projects/" + project.getName() + "/stories/" + story.getIssueID())
+		        .request()
+		        .get();
+
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		
+
 		// Assert
 		assertEquals(story.getSummary(), jsonResponse.get(StoryEnum.NAME));
 		assertEquals(story.getStatus(), jsonResponse.get(StoryEnum.STATUS));
@@ -125,7 +125,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(story.getNotes(), jsonResponse.get(StoryEnum.NOTES));
 		assertEquals(story.getHowToDemo(), jsonResponse.get(StoryEnum.HOW_TO_DEMO));
 	}
-	
+
 	@Test
 	public void testGet_NotInProject() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
@@ -136,9 +136,9 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectName}/stories/{storyId}' API
 		Response response = mClient.target(mBaseUri)
-		        				   .path("projects/" + project.getName() + "/stories/" + story.getIssueID())
-		        				   .request()
-		        				   .get();
+		        .path("projects/" + project.getName() + "/stories/" + story.getIssueID())
+		        .request()
+		        .get();
 
 		// Assert
 		assertEquals("", response.readEntity(String.class));
@@ -150,15 +150,15 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
 		IIssue story2 = mASTS.getIssueList().get(1);
-		
+
 		// Call '/projects/{projectName}/stories/{storyId}' API
 		Response response = mClient.target(mBaseUri)
-				  		    	   .path("projects/" + project.getName() + "/stories")
-				  		    	   .request()
-				  		    	   .get();
-		
-        JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-		
+		        .path("projects/" + project.getName() + "/stories")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
 		// Assert
 		assertEquals(story1.getSummary(), jsonResponse.getJSONObject(0).get(StoryEnum.NAME));
 		assertEquals(story1.getStatus(), jsonResponse.getJSONObject(0).get(StoryEnum.STATUS));
@@ -167,7 +167,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(story1.getValue()), jsonResponse.getJSONObject(0).get(StoryEnum.VALUE));
 		assertEquals(story1.getNotes(), jsonResponse.getJSONObject(0).get(StoryEnum.NOTES));
 		assertEquals(story1.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryEnum.HOW_TO_DEMO));
-		
+
 		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(1).get(StoryEnum.NAME));
 		assertEquals(story2.getStatus(), jsonResponse.getJSONObject(1).get(StoryEnum.STATUS));
 		assertEquals(Integer.parseInt(story2.getEstimated()), jsonResponse.getJSONObject(1).get(StoryEnum.ESTIMATE));
@@ -175,24 +175,24 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(1).get(StoryEnum.VALUE));
 		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(1).get(StoryEnum.NOTES));
 		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(1).get(StoryEnum.HOW_TO_DEMO));
-		
+
 		// No other JSONObject in JSONArray
-		try{
+		try {
 			jsonResponse.getJSONObject(2);
 			assertTrue(false);
-		}catch(JSONException e){
+		} catch (JSONException e) {
 			assertTrue(true);
 		}
 	}
-	
+
 	@Test
 	public void testGetList_NoSuchProject() throws JSONException {
 		// Call '/projects/{projectName}/stories' API
 		Response response = mClient.target(mBaseUri)
-				  		    	   .path("projects/xxxx/stories")
-				  		    	   .request()
-				  		    	   .get();
-		
+		        .path("projects/xxxx/stories")
+		        .request()
+		        .get();
+
 		// Assert
 		assertEquals("[]", response.readEntity(String.class));
 	}

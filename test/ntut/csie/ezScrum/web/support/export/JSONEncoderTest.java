@@ -31,23 +31,23 @@ public class JSONEncoderTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
+
 		// Create Project
 		mCP = new CreateProject(2);
 		mCP.exeCreate();
-		
+
 		//	 新增兩個Sprint
-    	mCS = new CreateSprint(2, mCP);
-    	mCS.exe();
-    	
-    	mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
-		mASTS.exe(); 
+		mCS = new CreateSprint(2, mCP);
+		mCS.exe();
+
+		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe();
 	}
 
 	@After
@@ -66,14 +66,14 @@ public class JSONEncoderTest {
 		mCP = null;
 		mCS = null;
 	}
-	
+
 	@Test
 	public void testToSprintJSONArray() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
 		JSONArray sprintJSONArray = JSONEncoder.toSprintJSONArray(sprints);
-		
+
 		// Assert Sprint1
 		ISprintPlanDesc sprint1 = sprints.get(0);
 		JSONObject sprint1JSON = sprintJSONArray.getJSONObject(0);
@@ -87,7 +87,7 @@ public class JSONEncoderTest {
 		assertEquals(sprint1.getDemoDate(), sprint1JSON.getString(SprintEnum.DEMO_DATE));
 		assertEquals(sprint1.getDemoPlace(), sprint1JSON.getString(SprintEnum.DEMO_PLACE));
 		assertEquals(sprint1.getNotes(), sprint1JSON.getString(SprintEnum.DAILY_INFO));
-		
+
 		// Assert Sprint2
 		ISprintPlanDesc sprint2 = sprints.get(1);
 		JSONObject sprint2JSON = sprintJSONArray.getJSONObject(1);
@@ -102,7 +102,7 @@ public class JSONEncoderTest {
 		assertEquals(sprint2.getDemoPlace(), sprint2JSON.getString(SprintEnum.DEMO_PLACE));
 		assertEquals(sprint2.getNotes(), sprint2JSON.getString(SprintEnum.DAILY_INFO));
 	}
-	
+
 	@Test
 	public void testToSprintJSON() throws JSONException {
 		String sprintId = mCS.getSprintIDList().get(0);
@@ -110,7 +110,7 @@ public class JSONEncoderTest {
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		ISprintPlanDesc sprint = sprintPlanHelper.loadPlan(sprintId);
 		JSONObject sprintJSON = JSONEncoder.toSprintJSON(sprint);
-		
+
 		// Assert
 		assertEquals(sprint.getGoal(), sprintJSON.getString(SprintEnum.GOAL));
 		assertEquals(Integer.parseInt(sprint.getInterval()), sprintJSON.getInt(SprintEnum.INTERVAL));
@@ -123,12 +123,12 @@ public class JSONEncoderTest {
 		assertEquals(sprint.getDemoPlace(), sprintJSON.getString(SprintEnum.DEMO_PLACE));
 		assertEquals(sprint.getNotes(), sprintJSON.getString(SprintEnum.DAILY_INFO));
 	}
-	
+
 	@Test
 	public void testToProjectJSONArray() throws JSONException {
 		List<IProject> projects = mCP.getProjectList();
 		JSONArray projectJSONArray = JSONEncoder.toProjectJSONArray(projects);
-		
+
 		// Assert Project1
 		IProject project1 = projects.get(0);
 		JSONObject project1JSON = projectJSONArray.getJSONObject(0);
@@ -137,7 +137,7 @@ public class JSONEncoderTest {
 		assertEquals(project1.getProjectDesc().getComment(), project1JSON.getString(ProjectEnum.COMMENT));
 		assertEquals(project1.getProjectDesc().getProjectManager(), project1JSON.getString(ProjectEnum.PRODUCT_OWNER));
 		assertEquals(Long.parseLong(project1.getProjectDesc().getAttachFileSize()), project1JSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
-		
+
 		// Assert Project2
 		IProject project2 = projects.get(1);
 		JSONObject project2JSON = JSONEncoder.toProjectJSON(project2);
@@ -147,12 +147,12 @@ public class JSONEncoderTest {
 		assertEquals(project2.getProjectDesc().getProjectManager(), project2JSON.getString(ProjectEnum.PRODUCT_OWNER));
 		assertEquals(Long.parseLong(project2.getProjectDesc().getAttachFileSize()), project2JSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
 	}
-	
+
 	@Test
 	public void testToProjectJSON() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		JSONObject projectJSON = JSONEncoder.toProjectJSON(project);
-		
+
 		// Assert
 		assertEquals(project.getName(), projectJSON.getString(ProjectEnum.NAME));
 		assertEquals(project.getProjectDesc().getDisplayName(), projectJSON.getString(ProjectEnum.DISPLAY_NAME));
@@ -161,7 +161,7 @@ public class JSONEncoderTest {
 		assertEquals(Long.parseLong(project.getProjectDesc().getAttachFileSize()), projectJSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
 	}
 
-@Test
+	@Test
 	public void tstToStoryJSONArray() throws JSONException {
 		// Get Stories
 		List<IIssue> stories = mASTS.getIssueList();

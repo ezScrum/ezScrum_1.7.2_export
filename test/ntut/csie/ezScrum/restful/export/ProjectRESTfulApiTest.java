@@ -44,20 +44,20 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class);
 		return mResourceConfig;
 	}
-	
+
 	@Before
 	public void setUp() {
 		// 初始化 SQL
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
-		
+
 		// Create Project
 		mCP = new CreateProject(2);
 		mCP.exeCreate();
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
-		
+
 		// Create Client
 		mClient = ClientBuilder.newClient();
 	}
@@ -82,16 +82,16 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		mHttpServer = null;
 		mClient = null;
 	}
-	
+
 	@Test
 	public void testGet_NotFound() throws JSONException {
 		String notExistedProjectName = "NOT_EXISTED_PROJECT_NAME";
 		// Call '/projects/{projectName}/sprints' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + notExistedProjectName)
-				                 .request()
-				                 .get();
-		
+		        .path("projects/" + notExistedProjectName)
+		        .request()
+		        .get();
+
 		// Assert
 		assertEquals("", response.readEntity(String.class));
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
@@ -100,55 +100,55 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testGet_First() throws JSONException {
 		IProject firstProject = mCP.getProjectList().get(0);
-		
+
 		// Test data
 		String projectNmae = firstProject.getName();
-		
+
 		// Call '/projects/{projectName}' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + projectNmae)
-				                 .request()
-				                 .get();
-		
+		        .path("projects/" + projectNmae)
+		        .request()
+		        .get();
+
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
 		// Assert
 		assertEquals(JSONEncoder.toProjectJSON(firstProject).toString(), jsonResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
-	
+
 	@Test
 	public void testGet_Second() throws JSONException {
 		IProject secondProject = mCP.getProjectList().get(1);
-		
+
 		// Test data
 		String projectNmae = secondProject.getName();
-		
+
 		// Call '/projects/{projectName}' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + projectNmae)
-				                 .request()
-				                 .get();
-		
+		        .path("projects/" + projectNmae)
+		        .request()
+		        .get();
+
 		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		
+
 		// Assert
 		assertEquals(JSONEncoder.toProjectJSON(secondProject).toString(), jsonResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
-	
+
 	@Test
 	public void testGetList_MultipleProjects() throws JSONException {
 		// Get projects
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
-		
+
 		// Call '/projects' API
 		Response response = mClient.target(BASE_URL)
-				                 .path("projects")
-		                         .request()
-		                         .get();
-		
+		        .path("projects")
+		        .request()
+		        .get();
+
 		JSONArray jsonArrayResponse = new JSONArray(response.readEntity(String.class));
-		
+
 		// Assert
 		assertEquals(2, jsonArrayResponse.length());
 		assertEquals(JSONEncoder.toProjectJSONArray(projects).toString(), jsonArrayResponse.toString());
