@@ -82,6 +82,20 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		mHttpServer = null;
 		mClient = null;
 	}
+	
+	@Test
+	public void testGet_NotFound() throws JSONException {
+		String notExistedProjectName = "NOT_EXISTED_PROJECT_NAME";
+		// Call '/projects/{projectName}/sprints' API
+		Response response = mClient.target(BASE_URL)
+				                 .path("projects/" + notExistedProjectName)
+				                 .request()
+				                 .get();
+		
+		// Assert
+		assertEquals("", response.readEntity(String.class));
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+	}
 
 	@Test
 	public void testGet_First() throws JSONException {

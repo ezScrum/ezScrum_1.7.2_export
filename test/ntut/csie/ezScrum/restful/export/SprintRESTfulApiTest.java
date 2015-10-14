@@ -3,12 +3,14 @@ package ntut.csie.ezScrum.restful.export;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
@@ -88,6 +90,22 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		mHttpServer = null;
 		mClient = null;
 	}
+	
+	@Test
+	public void testGet_NotFound() throws JSONException {
+		String notExistedSprintId = "9999";
+		IProject project = mCP.getProjectList().get(0);
+		String projectName = project.getName();
+		// Call '/projects/{projectName}/sprints' API
+		Response response = mClient.target(BASE_URL)
+				                 .path("projects/" + projectName + "/sprints/" + notExistedSprintId)
+				                 .request()
+				                 .get();
+		
+		// Assert
+		assertEquals("", response.readEntity(String.class));
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+	}
 
 	@Test
 	public void testGet_First() throws JSONException {
@@ -110,76 +128,41 @@ public class SprintRESTfulApiTest extends JerseyTest {
 	
 	@Test
 	public void testGet_Second() throws JSONException {
-//		IProject secondProject = mCP.getProjectList().get(1);
-//		
-//		// Test data
-//		String projectNmae = secondProject.getName();
-//		String projectDisplayName = secondProject.getProjectDesc().getDisplayName();
-//		String projectComment = secondProject.getProjectDesc().getComment();
-//		String projectManager = secondProject.getProjectDesc().getProjectManager();
-//		String projectAttachFileSize = secondProject.getProjectDesc().getAttachFileSize();
-//		long projectCreateTime = secondProject.getProjectDesc().getCreateDate().getTime();
-//		
-//		// Call '/projects/{projectName}' API
-//		Response response = mClient.target(mBaseUrl)
-//				                 .path("projects/" + projectNmae)
-//				                 .request()
-//				                 .get();
-//		
-//		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-//		
-//		// Assert
-//		assertEquals(projectNmae, jsonResponse.get(ProjectEnum.NAME));
-//		assertEquals(projectDisplayName, jsonResponse.get(ProjectEnum.DISPLAY_NAME));
-//		assertEquals(projectComment, jsonResponse.get(ProjectEnum.COMMENT));
-//		assertEquals(projectManager, jsonResponse.get(ProjectEnum.PRODUCT_OWNER));
-//		assertEquals(projectAttachFileSize, jsonResponse.get(ProjectEnum.ATTATCH_MAX_SIZE));
-//		assertEquals(projectCreateTime, jsonResponse.get(ProjectEnum.CREATE_TIME));
-//		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		String secondSprintId = mCS.getSprintIDList().get(1);
+		IProject project = mCP.getProjectList().get(0);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		ISprintPlanDesc secondSprint = sprintPlanHelper.loadPlan(secondSprintId);
+		String projectName = project.getName();
+		// Call '/projects/{projectName}/sprints' API
+		Response response = mClient.target(BASE_URL)
+				                 .path("projects/" + projectName + "/sprints/" + secondSprintId)
+				                 .request()
+				                 .get();
+		
+		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
+		// Assert
+		assertEquals(JSONEncoder.toSprintJSON(secondSprint).toString(), jsonResponse.toString());
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 	
 	@Test
-	public void testGetList_MultipleProjects() throws JSONException {
-//		IProject firstProject = mCP.getProjectList().get(0);
-//		IProject secondProject = mCP.getProjectList().get(1);
-//		
-//		// Test data
-//		String projectNmae = firstProject.getName();
-//		String projectDisplayName = firstProject.getProjectDesc().getDisplayName();
-//		String projectComment = firstProject.getProjectDesc().getComment();
-//		String projectManager = firstProject.getProjectDesc().getProjectManager();
-//		String projectAttachFileSize = firstProject.getProjectDesc().getAttachFileSize();
-//		long projectCreateTime = firstProject.getProjectDesc().getCreateDate().getTime();
-//		
-//		String projectNmae2 = secondProject.getName();
-//		String projectDisplayName2 = secondProject.getProjectDesc().getDisplayName();
-//		String projectComment2 = secondProject.getProjectDesc().getComment();
-//		String projectManager2 = secondProject.getProjectDesc().getProjectManager();
-//		String projectAttachFileSize2 = secondProject.getProjectDesc().getAttachFileSize();
-//		long projectCreateTime2 = secondProject.getProjectDesc().getCreateDate().getTime();
-//		
-//		// Call '/projects' API
-//		Response response = mClient.target(mBaseUrl)
-//				                 .path("projects")
-//		                         .request()
-//		                         .get();
-//		
-//		JSONArray jsonArrayResponse = new JSONArray(response.readEntity(String.class));
-//		
-//		// Assert
-//		assertEquals(2, jsonArrayResponse.length());
-//		assertEquals(projectNmae, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.NAME));
-//		assertEquals(projectDisplayName, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.DISPLAY_NAME));
-//		assertEquals(projectComment, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.COMMENT));
-//		assertEquals(projectManager, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.PRODUCT_OWNER));
-//		assertEquals(projectAttachFileSize, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.ATTATCH_MAX_SIZE));
-//		assertEquals(projectCreateTime, jsonArrayResponse.getJSONObject(0).get(ProjectEnum.CREATE_TIME));
-//		
-//		assertEquals(projectNmae2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.NAME));
-//		assertEquals(projectDisplayName2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.DISPLAY_NAME));
-//		assertEquals(projectComment2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.COMMENT));
-//		assertEquals(projectManager2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.PRODUCT_OWNER));
-//		assertEquals(projectAttachFileSize2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.ATTATCH_MAX_SIZE));
-//		assertEquals(projectCreateTime2, jsonArrayResponse.getJSONObject(1).get(ProjectEnum.CREATE_TIME));
+	public void testGetList_MultipleSprints() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
+		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
+		String projectName = project.getName();
+		
+		// Call '/projects' API
+		Response response = mClient.target(BASE_URL)
+				                 .path("projects/" + projectName + "/sprints")
+		                         .request()
+		                         .get();
+		
+		JSONArray jsonArrayResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert
+		assertEquals(2, jsonArrayResponse.length());
+		assertEquals(JSONEncoder.toSprintJSONArray(sprints).toString(), jsonArrayResponse.toString());
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 }
