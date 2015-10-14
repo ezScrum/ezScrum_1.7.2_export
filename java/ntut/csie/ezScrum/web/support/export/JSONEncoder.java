@@ -6,7 +6,9 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
@@ -29,5 +31,30 @@ public class JSONEncoder {
 		        .put(ProjectEnum.CREATE_TIME, project.getProjectDesc().getCreateDate().getTime())
 		        .put(ProjectEnum.UPDATE_TIME, System.currentTimeMillis());
 		return projectJson;
+	}
+	
+	public static JSONArray toStoryJSONArray(List<IIssue> stories) {
+		JSONArray storyJsonArray = new JSONArray();
+		for (IIssue story : stories) {
+			storyJsonArray.put(toStoryJSON(story));
+		}
+		return storyJsonArray;
+	}
+
+	// Translate Story to JSON
+	public static JSONObject toStoryJSON(IIssue story) {
+		JSONObject storyJson = new JSONObject();
+		try {
+			storyJson.put(StoryEnum.NAME, story.getSummary())
+			        .put(StoryEnum.STATUS, story.getStatus())
+			        .put(StoryEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
+			        .put(StoryEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
+			        .put(StoryEnum.VALUE, Integer.parseInt(story.getValue()))
+			        .put(StoryEnum.NOTES, story.getNotes())
+			        .put(StoryEnum.HOW_TO_DEMO, story.getHowToDemo());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return storyJson;
 	}
 }
