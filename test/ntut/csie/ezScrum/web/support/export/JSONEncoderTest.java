@@ -128,7 +128,8 @@ public class JSONEncoderTest {
 		assertEquals(project1.getProjectDesc().getDisplayName(), project1JSON.getString(ProjectEnum.DISPLAY_NAME));
 		assertEquals(project1.getProjectDesc().getComment(), project1JSON.getString(ProjectEnum.COMMENT));
 		assertEquals(project1.getProjectDesc().getProjectManager(), project1JSON.getString(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(project1.getProjectDesc().getAttachFileSize(), project1JSON.getString(ProjectEnum.ATTATCH_MAX_SIZE));
+		assertEquals(Long.parseLong(project1.getProjectDesc().getAttachFileSize()), project1JSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
+		
 		// Assert Project2
 		IProject project2 = projects.get(1);
 		JSONObject project2JSON = JSONEncoder.toProjectJSON(project2);
@@ -136,7 +137,7 @@ public class JSONEncoderTest {
 		assertEquals(project2.getProjectDesc().getDisplayName(), project2JSON.getString(ProjectEnum.DISPLAY_NAME));
 		assertEquals(project2.getProjectDesc().getComment(), project2JSON.getString(ProjectEnum.COMMENT));
 		assertEquals(project2.getProjectDesc().getProjectManager(), project2JSON.getString(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(project2.getProjectDesc().getAttachFileSize(), project2JSON.getString(ProjectEnum.ATTATCH_MAX_SIZE));
+		assertEquals(Long.parseLong(project2.getProjectDesc().getAttachFileSize()), project2JSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
 	}
 	
 	@Test
@@ -149,6 +150,6 @@ public class JSONEncoderTest {
 		assertEquals(project.getProjectDesc().getDisplayName(), projectJSON.getString(ProjectEnum.DISPLAY_NAME));
 		assertEquals(project.getProjectDesc().getComment(), projectJSON.getString(ProjectEnum.COMMENT));
 		assertEquals(project.getProjectDesc().getProjectManager(), projectJSON.getString(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(project.getProjectDesc().getAttachFileSize(), projectJSON.getString(ProjectEnum.ATTATCH_MAX_SIZE));
+		assertEquals(Long.parseLong(project.getProjectDesc().getAttachFileSize()), projectJSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
 	}
 }

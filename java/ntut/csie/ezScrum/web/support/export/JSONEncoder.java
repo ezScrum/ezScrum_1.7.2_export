@@ -56,7 +56,7 @@ public class JSONEncoder {
 	        .put(ProjectEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
 	        .put(ProjectEnum.COMMENT, project.getProjectDesc().getComment())
 	        .put(ProjectEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
-	        .put(ProjectEnum.ATTATCH_MAX_SIZE, project.getProjectDesc().getAttachFileSize());
+	        .put(ProjectEnum.ATTATCH_MAX_SIZE, Long.parseLong(project.getProjectDesc().getAttachFileSize()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
