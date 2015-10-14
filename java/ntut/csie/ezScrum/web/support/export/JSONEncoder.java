@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.web.support.export;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -13,7 +12,7 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
 	// Translate multiple sprint to JSON
-		public static JSONArray toSprintJSONArray(List<ISprintPlanDesc> sprints) throws JSONException {
+		public static JSONArray toSprintJSONArray(List<ISprintPlanDesc> sprints) {
 			JSONArray sprintJsonArray = new JSONArray();
 			for (ISprintPlanDesc sprint : sprints) {
 				sprintJsonArray.put(toSprintJSON(sprint));
@@ -22,22 +21,26 @@ public class JSONEncoder {
 		}
 
 		// Translate sprint to JSON
-		public static JSONObject toSprintJSON(ISprintPlanDesc sprint) throws JSONException {
+		public static JSONObject toSprintJSON(ISprintPlanDesc sprint) {
 			JSONObject sprintJson = new JSONObject();
-			sprintJson.put(SprintEnum.GOAL, sprint.getGoal())
-				      .put(SprintEnum.INTERVAL, sprint.getInterval())
-					  .put(SprintEnum.TEAM_SIZE, sprint.getMemberNumber())
-					  .put(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableDays())
-					  .put(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor())
-					  .put(SprintEnum.START_DATE, sprint.getStartDate())
-					  .put(SprintEnum.DUE_DATE, sprint.getEndDate())
-					  .put(SprintEnum.DEMO_DATE, sprint.getDemoDate())
-					  .put(SprintEnum.DEMO_PLACE, sprint.getDemoPlace())
-					  .put(SprintEnum.DAILY_INFO, sprint.getNotes());
+			try {
+				sprintJson.put(SprintEnum.GOAL, sprint.getGoal())
+			      .put(SprintEnum.INTERVAL, sprint.getInterval())
+				  .put(SprintEnum.TEAM_SIZE, sprint.getMemberNumber())
+				  .put(SprintEnum.AVAILABLE_HOURS, sprint.getAvailableDays())
+				  .put(SprintEnum.FOCUS_FACTOR, sprint.getFocusFactor())
+				  .put(SprintEnum.START_DATE, sprint.getStartDate())
+				  .put(SprintEnum.DUE_DATE, sprint.getEndDate())
+				  .put(SprintEnum.DEMO_DATE, sprint.getDemoDate())
+				  .put(SprintEnum.DEMO_PLACE, sprint.getDemoPlace())
+				  .put(SprintEnum.DAILY_INFO, sprint.getNotes());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return sprintJson;
 		}
 
-	public static JSONArray toProjectJSONArray(List<IProject> projects) throws JSONException {
+	public static JSONArray toProjectJSONArray(List<IProject> projects) {
 		JSONArray projectJsonArray = new JSONArray();
 		for (IProject project : projects) {
 			projectJsonArray.put(toProjectJSON(project));
@@ -46,13 +49,17 @@ public class JSONEncoder {
 	}
 
 	// Translate project to JSON
-	public static JSONObject toProjectJSON(IProject project) throws JSONException {
+	public static JSONObject toProjectJSON(IProject project) {
 		JSONObject projectJson = new JSONObject();
-		projectJson.put(ProjectEnum.NAME, project.getName())
-		        .put(ProjectEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
-		        .put(ProjectEnum.COMMENT, project.getProjectDesc().getComment())
-		        .put(ProjectEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
-		        .put(ProjectEnum.ATTATCH_MAX_SIZE, project.getProjectDesc().getAttachFileSize());
+		try {
+			projectJson.put(ProjectEnum.NAME, project.getName())
+	        .put(ProjectEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
+	        .put(ProjectEnum.COMMENT, project.getProjectDesc().getComment())
+	        .put(ProjectEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
+	        .put(ProjectEnum.ATTATCH_MAX_SIZE, project.getProjectDesc().getAttachFileSize());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return projectJson;
 	}
 }
