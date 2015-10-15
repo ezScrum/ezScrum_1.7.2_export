@@ -32,6 +32,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class StoryRESTfulApiTest extends JerseyTest {
@@ -103,6 +104,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testGet_InProject() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 
 		// Assert story is in the project
@@ -110,7 +112,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectName}/stories/{storyId}' API
 		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/stories/" + story.getIssueID())
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/" + story.getIssueID())
 		        .request()
 		        .get();
 
@@ -146,14 +148,56 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testGetList() throws JSONException {
+	public void testGetList_NotWildStories() throws JSONException {
+//		IProject project = mCP.getProjectList().get(0);
+//		IIssue story1 = mASTS.getIssueList().get(0);
+//		IIssue story2 = mASTS.getIssueList().get(1);
+//
+//		// Call '/projects/{projectName}/stories/{storyId}' API
+//		Response response = mClient.target(mBaseUri)
+//		        .path("projects/" + project.getName() + "/stories")
+//		        .request()
+//		        .get();
+//
+//		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+//
+//		// Assert
+//		assertEquals(story1.getSummary(), jsonResponse.getJSONObject(0).get(StoryEnum.NAME));
+//		assertEquals(story1.getStatus(), jsonResponse.getJSONObject(0).get(StoryEnum.STATUS));
+//		assertEquals(Integer.parseInt(story1.getEstimated()), jsonResponse.getJSONObject(0).get(StoryEnum.ESTIMATE));
+//		assertEquals(Integer.parseInt(story1.getImportance()), jsonResponse.getJSONObject(0).get(StoryEnum.IMPORTANCE));
+//		assertEquals(Integer.parseInt(story1.getValue()), jsonResponse.getJSONObject(0).get(StoryEnum.VALUE));
+//		assertEquals(story1.getNotes(), jsonResponse.getJSONObject(0).get(StoryEnum.NOTES));
+//		assertEquals(story1.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryEnum.HOW_TO_DEMO));
+//
+//		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(1).get(StoryEnum.NAME));
+//		assertEquals(story2.getStatus(), jsonResponse.getJSONObject(1).get(StoryEnum.STATUS));
+//		assertEquals(Integer.parseInt(story2.getEstimated()), jsonResponse.getJSONObject(1).get(StoryEnum.ESTIMATE));
+//		assertEquals(Integer.parseInt(story2.getImportance()), jsonResponse.getJSONObject(1).get(StoryEnum.IMPORTANCE));
+//		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(1).get(StoryEnum.VALUE));
+//		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(1).get(StoryEnum.NOTES));
+//		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(1).get(StoryEnum.HOW_TO_DEMO));
+//
+//		// No other JSONObject in JSONArray
+//		try {
+//			jsonResponse.getJSONObject(2);
+//			assertTrue(false);
+//		} catch (JSONException e) {
+//			assertTrue(true);
+//		}
+	}
+	
+	@Test
+	public void testGetList_WildStories() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
 		IIssue story2 = mASTS.getIssueList().get(1);
 
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		productBacklogLogic.removeStoryFromSprint(story1.getIssueID());
 		// Call '/projects/{projectName}/stories/{storyId}' API
 		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/stories")
+		        .path("projects/" + project.getName() + "/stories?wild=true")
 		        .request()
 		        .get();
 
@@ -194,6 +238,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		        .get();
 
 		// Assert
-		assertEquals("[]", response.readEntity(String.class));
+		assertEquals("", response.readEntity(String.class));
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 	}
 }

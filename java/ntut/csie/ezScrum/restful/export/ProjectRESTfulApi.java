@@ -13,6 +13,7 @@ import org.codehaus.jettison.json.JSONException;
 
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
+import ntut.csie.ezScrum.web.support.export.ResourceFinder;
 import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects")
@@ -32,13 +33,11 @@ public class ProjectRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("projectName") String projectName) throws JSONException {
 		// Get projects
-		List<IProject> projects = new ProjectMapper().getAllProjectList();
-		for (IProject project : projects) {
-			if (project.getName().equals(projectName)) {
-				String entity = JSONEncoder.toProjectJSON(project).toString();
-				return Response.status(Response.Status.OK).entity(entity).build();
-			}
+		IProject project = ResourceFinder.findProject(projectName);
+		if (project == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		return Response.status(Response.Status.NOT_FOUND).build();
+		String entity = JSONEncoder.toProjectJSON(project).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
