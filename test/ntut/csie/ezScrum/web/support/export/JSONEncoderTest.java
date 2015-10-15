@@ -24,8 +24,8 @@ import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoderTest {
@@ -54,6 +54,7 @@ public class JSONEncoderTest {
 		
 		// Create Task
 		mCT = new CreateTask(2, mCP);
+		mCT.exe();
 	}
 
 	@After
@@ -229,12 +230,47 @@ public class JSONEncoderTest {
 	}
 	
 	@Test
-	public void testToTaskJSONArray() {
+	public void testToTaskJSONArray() throws JSONException {
+		List<IIssue> tasks = mCT.getTaskList();
 		
+		JSONArray taskJSONArray = JSONEncoder.toTaskJSONArray(tasks);
+		
+		// Assert Task1
+		IIssue task1 = tasks.get(0);
+		JSONObject task1JSON = taskJSONArray.getJSONObject(0);
+		assertEquals(task1.getSummary(), task1JSON.getString(TaskEnum.NAME));
+	 	assertEquals(task1.getAssignto(), task1JSON.getString(TaskEnum.HANDLER));
+	 	assertEquals(Integer.parseInt(task1.getEstimated()), task1JSON.getInt(TaskEnum.ESTIMATE));
+	 	assertEquals(Integer.parseInt(task1.getRemains()), task1JSON.getInt(TaskEnum.REMAIN));
+	 	assertEquals(Integer.parseInt(task1.getActualHour()), task1JSON.getInt(TaskEnum.ACTUAL));
+	 	assertEquals(task1.getNotes(), task1JSON.getString(TaskEnum.NOTES));
+	 	assertEquals(task1.getStatus(), task1JSON.getString(TaskEnum.STATUS));
+		// Assert Task2
+	 	IIssue task2 = tasks.get(1);
+		JSONObject task2JSON = taskJSONArray.getJSONObject(1);
+		assertEquals(task2.getSummary(), task2JSON.getString(TaskEnum.NAME));
+	 	assertEquals(task2.getAssignto(), task2JSON.getString(TaskEnum.HANDLER));
+	 	assertEquals(Integer.parseInt(task2.getEstimated()), task2JSON.getInt(TaskEnum.ESTIMATE));
+	 	assertEquals(Integer.parseInt(task2.getRemains()), task2JSON.getInt(TaskEnum.REMAIN));
+	 	assertEquals(Integer.parseInt(task2.getActualHour()), task2JSON.getInt(TaskEnum.ACTUAL));
+	 	assertEquals(task2.getNotes(), task2JSON.getString(TaskEnum.NOTES));
+	 	assertEquals(task2.getStatus(), task2JSON.getString(TaskEnum.STATUS));
 	}
 	
 	@Test
-	public void testToTaskJSON() {
-		
+	public void testToTaskJSON() throws JSONException {
+	 	List<IIssue> tasks = mCT.getTaskList();
+	 	IIssue task = tasks.get(0);
+	 	
+	 	JSONObject taskJSON = JSONEncoder.toTaskJSON(task);
+	 	
+	 	// Assert
+	 	assertEquals(task.getSummary(), taskJSON.getString(TaskEnum.NAME));
+	 	assertEquals(task.getAssignto(), taskJSON.getString(TaskEnum.HANDLER));
+	 	assertEquals(Integer.parseInt(task.getEstimated()), taskJSON.getInt(TaskEnum.ESTIMATE));
+	 	assertEquals(Integer.parseInt(task.getRemains()), taskJSON.getInt(TaskEnum.REMAIN));
+	 	assertEquals(Integer.parseInt(task.getActualHour()), taskJSON.getInt(TaskEnum.ACTUAL));
+	 	assertEquals(task.getNotes(), taskJSON.getString(TaskEnum.NOTES));
+	 	assertEquals(task.getStatus(), taskJSON.getString(TaskEnum.STATUS));
 	}
 }

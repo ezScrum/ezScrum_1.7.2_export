@@ -32,12 +32,12 @@ public class TaskRESTfulApi {
 		// Create ProductbacklogMapper
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
 		// Get Tasks
-		IIssue[] tasksArray = productBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
+		IIssue[] taskArray = productBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
 		// Add tasks to List
 		List<IIssue> tasks = new ArrayList<IIssue>();
-		tasks.addAll(Arrays.asList(tasksArray));
-
-		return Response.status(Response.Status.OK).entity(JSONEncoder.toTaskJSONArray(tasks)).build();
+		tasks.addAll(Arrays.asList(taskArray));
+		String entity = JSONEncoder.toTaskJSONArray(tasks).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
 	@GET
@@ -53,7 +53,8 @@ public class TaskRESTfulApi {
 
 		for (IIssue task : tasksArray) {
 			if (task.getIssueID() == taskId) {
-				return Response.status(Response.Status.OK).entity(JSONEncoder.toTaskJSON(task).toString()).build();
+				String entity = JSONEncoder.toTaskJSON(task).toString();
+				return Response.status(Response.Status.OK).entity(entity).build();
 			}
 		}
 		return Response.status(Response.Status.NOT_FOUND).build();

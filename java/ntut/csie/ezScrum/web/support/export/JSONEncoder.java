@@ -103,10 +103,10 @@ public class JSONEncoder {
 	public static JSONObject toTaskJSON(IIssue task) throws JSONException {
 		JSONObject taskJson = new JSONObject();
 		try {
-			taskJson.put(TaskEnum.ID, task.getIssueID()).put(TaskEnum.NAME, task.getSummary())
-					.put(TaskEnum.HANDLER, task.getAssignto()).put(TaskEnum.ESTIMATE, task.getEstimated())
-					.put(TaskEnum.REMAIN, task.getRemains()).put(TaskEnum.ACTUAL, task.getActualHour())
-					.put(TaskEnum.NOTES, task.getNotes()).put(TaskEnum.STATUS, task.getStatus());
+			taskJson.put(TaskEnum.NAME, task.getSummary()).put(TaskEnum.HANDLER, task.getAssignto())
+					.put(TaskEnum.ESTIMATE, Integer.parseInt(task.getEstimated())).put(TaskEnum.REMAIN, Integer.parseInt(task.getRemains()))
+					.put(TaskEnum.ACTUAL, Integer.parseInt(task.getActualHour())).put(TaskEnum.NOTES, task.getNotes())
+					.put(TaskEnum.STATUS, task.getStatus());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.restful.export;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -10,7 +11,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -31,7 +31,8 @@ public class StoryRESTfulApi {
 		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
 		List<IIssue> stories = new ArrayList<IIssue>();
 		stories.addAll(Arrays.asList(storyArray));
-		return Response.status(Response.Status.OK).entity(JSONEncoder.toStoryJSONArray(stories).toString()).build();
+		String entity = JSONEncoder.toStoryJSONArray(stories).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
 	@GET
@@ -49,7 +50,8 @@ public class StoryRESTfulApi {
 
 		for (IIssue story : stories) {
 			if (story.getIssueID() == storyId) {
-				return Response.status(Response.Status.OK).entity(JSONEncoder.toStoryJSON(story).toString()).build();
+				String entity = JSONEncoder.toStoryJSON(story).toString();
+				return Response.status(Response.Status.OK).entity(entity).build();
 			}
 		}
 		return Response.status(Response.Status.NOT_FOUND).build();
