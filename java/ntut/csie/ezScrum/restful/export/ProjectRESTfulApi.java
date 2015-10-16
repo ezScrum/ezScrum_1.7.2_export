@@ -32,8 +32,10 @@ public class ProjectRESTfulApi {
 	@Path("/{projectName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("projectName") String projectName) throws JSONException {
+		// Create ResourceFinder
+		ResourceFinder resourceFinder = new ResourceFinder();
 		// Get projects
-		IProject project = ResourceFinder.findProject(projectName);
+		IProject project = resourceFinder.findProject(projectName);
 		if (project == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}

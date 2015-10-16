@@ -22,8 +22,10 @@ public class SprintRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList(@PathParam("projectName") String projectName) throws JSONException {
+		// Create ResourceFinder
+		ResourceFinder resourceFinder = new ResourceFinder();
 		// Get project By name
-		IProject project = ResourceFinder.findProject(projectName);
+		IProject project = resourceFinder.findProject(projectName);
 		if (project == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
@@ -39,8 +41,13 @@ public class SprintRESTfulApi {
 	@Path("/{sprintId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("projectName") String projectName, @PathParam("sprintId") long sprintId) throws JSONException {
-		ISprintPlanDesc sprint = ResourceFinder.findSprint(projectName, sprintId);
-		if (sprint == null) {
+		// Create ResourceFinder
+		ResourceFinder resourceFinder = new ResourceFinder();
+		// Get Project
+		IProject project = resourceFinder.findProject(projectName);
+		// Get Sprint
+		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
+		if (project == null || sprint == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 		String entity = JSONEncoder.toSprintJSON(sprint).toString();

@@ -1,8 +1,6 @@
 package ntut.csie.ezScrum.restful.export;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,52 +9,56 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONException;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
+import ntut.csie.ezScrum.web.support.export.ResourceFinder;
 import ntut.csie.jcis.resource.core.IProject;
 
 
-@Path("projects/{projectName}/tasks")
+@Path("projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks")
 public class TaskRESTfulApi {
-
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getList(@PathParam("projectName") String projectName) throws JSONException {	
-		// Get project
-		IProject project = new ProjectMapper().getProjectByID(projectName);
+	public Response getList(@PathParam("projectName") String projectName, 
+			                @PathParam("sprintId") long sprintId,
+			                @PathParam("storyId") long storyId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
+		IIssue story = resourceFinder.findStory(storyId);
+		
+		if (project == null || sprint == null || story == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
 		// Create ProductbacklogMapper
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null,sprint.getID());
 		// Get Tasks
-		IIssue[] taskArray = productBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
-		// Add tasks to List
-		List<IIssue> tasks = new ArrayList<IIssue>();
-		tasks.addAll(Arrays.asList(taskArray));
-		String entity = JSONEncoder.toTaskJSONArray(tasks).toString();
+		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(storyId));
+		String entity = JSONEncoder.toTaskJSONArray(Arrays.asList(tasks)).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
 	@GET
 	@Path("/{taskId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response get(@PathParam("projectName") String projectName, @PathParam("taskId") long taskId) throws JSONException {
-		// Get project
-		IProject project = new ProjectMapper().getProjectByID(projectName);
-		// Create ProductbacklogMapper
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
-		// Get Tasks
-		IIssue[] tasksArray = productBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
-
-		for (IIssue task : tasksArray) {
-			if (task.getIssueID() == taskId) {
-				String entity = JSONEncoder.toTaskJSON(task).toString();
-				return Response.status(Response.Status.OK).entity(entity).build();
-			}
+	public Response get(@PathParam("projectName") String projectName,
+					    @PathParam("sprintId") long sprintId,
+					    @PathParam("storyId") long storyId,
+					    @PathParam("taskId") long taskId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
+		IIssue story = resourceFinder.findStory(storyId);
+		IIssue task = resourceFinder.findTask(taskId);
+		
+		if (project == null || sprint == null 
+		   || story == null || task == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		return Response.status(Response.Status.NOT_FOUND).build();
+		String entity = JSONEncoder.toTaskJSON(task).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

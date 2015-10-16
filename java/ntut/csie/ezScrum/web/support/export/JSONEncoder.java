@@ -38,7 +38,7 @@ public class JSONEncoder {
 			          .put(SprintEnum.DEMO_DATE, sprint.getDemoDate())
 			          .put(SprintEnum.DEMO_PLACE, sprint.getDemoPlace())
 			          .put(SprintEnum.DAILY_INFO, sprint.getNotes());
-		} catch (Exception e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return sprintJson;
@@ -61,7 +61,7 @@ public class JSONEncoder {
 			           .put(ProjectEnum.COMMENT, project.getProjectDesc().getComment())
 			           .put(ProjectEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
 			           .put(ProjectEnum.ATTATCH_MAX_SIZE, Long.parseLong(project.getProjectDesc().getAttachFileSize()));
-		} catch (Exception e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return projectJson;
@@ -92,7 +92,7 @@ public class JSONEncoder {
 		return storyJson;
 	}
 	
-	public static JSONArray toTaskJSONArray(List<IIssue> tasks) throws JSONException {
+	public static JSONArray toTaskJSONArray(List<IIssue> tasks) {
 		JSONArray taskJsonArray = new JSONArray();
 		for (IIssue task : tasks) {
 			taskJsonArray.put(toTaskJSON(task));
@@ -100,14 +100,14 @@ public class JSONEncoder {
 		return taskJsonArray;
 	}
 
-	public static JSONObject toTaskJSON(IIssue task) throws JSONException {
+	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
 			taskJson.put(TaskEnum.NAME, task.getSummary()).put(TaskEnum.HANDLER, task.getAssignto())
 					.put(TaskEnum.ESTIMATE, Integer.parseInt(task.getEstimated())).put(TaskEnum.REMAIN, Integer.parseInt(task.getRemains()))
 					.put(TaskEnum.ACTUAL, Integer.parseInt(task.getActualHour())).put(TaskEnum.NOTES, task.getNotes())
 					.put(TaskEnum.STATUS, task.getStatus());
-		} catch (Exception e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return taskJson;
