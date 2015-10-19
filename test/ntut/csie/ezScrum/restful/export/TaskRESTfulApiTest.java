@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.export;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.util.Arrays;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -27,6 +28,8 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class TaskRESTfulApiTest extends JerseyTest {
@@ -157,16 +160,49 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	
 	@Test
 	public void testGet_InProject() {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
 		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}' API
+		Response response = mClient.target(mBaseUri)
+								   .path("projects/" + project.getName() +
+										 "/sprints/" + sprintId + 
+										 "/stories/" + story.getIssueID() + 
+										 "/tasks/" + task.getIssueID())
+								   .request()
+								   .get();
+		// Assert
+		assertEquals(JSONEncoder.toTaskJSON(task).toString(), response.readEntity(String.class));
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 	
 	@Test
 	public void testGet_InStory() {
 		
+		
 	}
 	
 	@Test
 	public void testGetList() {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
 		
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null,sprintId);
+		// Get Tasks
+		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(story.getIssueID()));
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}' API
+		Response response = mClient.target(mBaseUri)
+								   .path("projects/" + project.getName() +
+										 "/sprints/" + sprintId + 
+										 "/stories/" + story.getIssueID() + 
+										 "/tasks/")
+								   .request()
+								   .get();
+		assertEquals(JSONEncoder.toTaskJSONArray(Arrays.asList(tasks)).toString(), response.readEntity(String.class));
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 }
