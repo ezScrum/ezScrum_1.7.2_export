@@ -75,6 +75,24 @@ public class ResourceFinder {
 		}
 		return null;
 	}
+	
+	public IIssue findStoryInProject(long storyId) {
+		if (mProject == null) {
+			return null;
+		}
+		// Create ProductbacklogMapper
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, null);
+		// Get Stories
+		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
+
+		for (IIssue story : storyArray) {
+			if (story.getIssueID() == storyId) {
+				mStory = story;
+				return story;
+			}
+		}
+		return null;
+	}
 
 	public IIssue findTask(long taskId) {
 		if (mProject == null || mSprint == null || mStory == null) {
@@ -83,6 +101,20 @@ public class ResourceFinder {
 
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, null, mSprint.getID());
 		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(mStory.getIssueID()));
+		for (IIssue task : tasks) {
+			if (task.getIssueID() == taskId) {
+				return task;
+			}
+		}
+		return null;
+	}
+	
+	public IIssue findTaskInProject(long taskId) {
+		if (mProject == null) {
+			return null;
+		}
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, null);
+		IIssue[] tasks = productBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
 		for (IIssue task : tasks) {
 			if (task.getIssueID() == taskId) {
 				return task;

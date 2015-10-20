@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restful.export;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.ws.rs.DefaultValue;
@@ -14,17 +13,18 @@ import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.ezScrum.web.support.export.ResourceFinder;
 import ntut.csie.jcis.resource.core.IProject;
 
-@Path("projects/{projectName}/stories")
-public class AddableStoryRESTfulApi {
+@Path("projects/{projectName}/tasks")
+public class AddableTaskRESTfulApi {
 	@QueryParam("isWild")
 	@DefaultValue("false")
 	private boolean mIsWild;
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList(@PathParam("projectName") String projectName) {
@@ -36,36 +36,30 @@ public class AddableStoryRESTfulApi {
 		}
 		// Get All Stories
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
-		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
-		// Story List for response
-		ArrayList<IIssue> stories = new ArrayList<IIssue>(Arrays.asList(storyArray));
-
+		
+		IIssue[] taskArray;
 		if (mIsWild) {
-			for (IIssue story : stories) {
-				long sprintId = Long.parseLong(story.getSprintID());
-				// 保留野生的Story
-				if (sprintId > 0) {
-					stories.remove(stories.indexOf(story));
-				}
-			}
+			taskArray = new ProductBacklogHelper(project, null).getAddableTasks();
+		} else {
+			taskArray = productBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
 		}
-		String entity = JSONEncoder.toStoryJSONArray(stories).toString();
+		String entity = JSONEncoder.toTaskJSONArray(Arrays.asList(taskArray)).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
 	@GET
-	@Path("/{storyId}")
+	@Path("/{taskId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("projectName") String projectName,
-	                    @PathParam("storyId") long storyId) {
+	                    @PathParam("taskId") long taskId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
-		IIssue story = resourceFinder.findStoryInProject(storyId);
+		IIssue task = resourceFinder.findTaskInProject(taskId);
 
-		if (project == null || story == null) {
+		if (project == null || task == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		String entity = JSONEncoder.toStoryJSON(story).toString();
+		String entity = JSONEncoder.toTaskJSON(task).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
