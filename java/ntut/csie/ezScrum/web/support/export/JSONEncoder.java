@@ -28,7 +28,8 @@ public class JSONEncoder {
 	public static JSONObject toSprintJSON(ISprintPlanDesc sprint) {
 		JSONObject sprintJson = new JSONObject();
 		try {
-			sprintJson.put(SprintEnum.GOAL, sprint.getGoal())
+			sprintJson.put(SprintEnum.ID, Long.parseLong(sprint.getID()))
+			          .put(SprintEnum.GOAL, sprint.getGoal())
 			          .put(SprintEnum.INTERVAL, Integer.parseInt(sprint.getInterval()))
 			          .put(SprintEnum.TEAM_SIZE, Integer.parseInt(sprint.getMemberNumber()))
 			          .put(SprintEnum.AVAILABLE_HOURS, Integer.parseInt(sprint.getAvailableDays()))
@@ -79,7 +80,8 @@ public class JSONEncoder {
 	public static JSONObject toStoryJSON(IIssue story) {
 		JSONObject storyJson = new JSONObject();
 		try {
-			storyJson.put(StoryEnum.NAME, story.getSummary())
+			storyJson.put(StoryEnum.ID, story.getIssueID())
+			         .put(StoryEnum.NAME, story.getSummary())
 			         .put(StoryEnum.STATUS, story.getStatus())
 			         .put(StoryEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
 			         .put(StoryEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
@@ -103,9 +105,12 @@ public class JSONEncoder {
 	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
-			taskJson.put(TaskEnum.NAME, task.getSummary()).put(TaskEnum.HANDLER, task.getAssignto())
-					.put(TaskEnum.ESTIMATE, Integer.parseInt(task.getEstimated())).put(TaskEnum.REMAIN, Integer.parseInt(task.getRemains()))
-					.put(TaskEnum.ACTUAL, Integer.parseInt(task.getActualHour())).put(TaskEnum.NOTES, task.getNotes())
+			taskJson.put(TaskEnum.NAME, task.getSummary())
+			        .put(TaskEnum.HANDLER, task.getAssignto())
+					.put(TaskEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
+					.put(TaskEnum.REMAIN, Integer.parseInt(task.getRemains()))
+					.put(TaskEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
+					.put(TaskEnum.NOTES, task.getNotes())
 					.put(TaskEnum.STATUS, task.getStatus());
 		} catch (JSONException e) {
 			e.printStackTrace();

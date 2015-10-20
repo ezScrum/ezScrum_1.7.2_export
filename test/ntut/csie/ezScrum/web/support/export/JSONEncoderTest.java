@@ -84,6 +84,7 @@ public class JSONEncoderTest {
 		// Assert Sprint1
 		ISprintPlanDesc sprint1 = sprints.get(0);
 		JSONObject sprint1JSON = sprintJSONArray.getJSONObject(0);
+		assertEquals(Long.parseLong(sprint1.getID()), sprint1JSON.getLong(SprintEnum.ID));
 		assertEquals(sprint1.getGoal(), sprint1JSON.getString(SprintEnum.GOAL));
 		assertEquals(Integer.parseInt(sprint1.getInterval()), sprint1JSON.getInt(SprintEnum.INTERVAL));
 		assertEquals(Integer.parseInt(sprint1.getMemberNumber()), sprint1JSON.getInt(SprintEnum.TEAM_SIZE));
@@ -98,6 +99,7 @@ public class JSONEncoderTest {
 		// Assert Sprint2
 		ISprintPlanDesc sprint2 = sprints.get(1);
 		JSONObject sprint2JSON = sprintJSONArray.getJSONObject(1);
+		assertEquals(Long.parseLong(sprint2.getID()), sprint2JSON.getLong(SprintEnum.ID));
 		assertEquals(sprint2.getGoal(), sprint2JSON.getString(SprintEnum.GOAL));
 		assertEquals(Integer.parseInt(sprint2.getInterval()), sprint2JSON.getInt(SprintEnum.INTERVAL));
 		assertEquals(Integer.parseInt(sprint2.getMemberNumber()), sprint2JSON.getInt(SprintEnum.TEAM_SIZE));
@@ -119,6 +121,7 @@ public class JSONEncoderTest {
 		JSONObject sprintJSON = JSONEncoder.toSprintJSON(sprint);
 
 		// Assert
+		assertEquals(Long.parseLong(sprint.getID()), sprintJSON.getLong(SprintEnum.ID));
 		assertEquals(sprint.getGoal(), sprintJSON.getString(SprintEnum.GOAL));
 		assertEquals(Integer.parseInt(sprint.getInterval()), sprintJSON.getInt(SprintEnum.INTERVAL));
 		assertEquals(Integer.parseInt(sprint.getMemberNumber()), sprintJSON.getInt(SprintEnum.TEAM_SIZE));
@@ -177,6 +180,7 @@ public class JSONEncoderTest {
 
 		// Assert
 		IIssue story1 = stories.get(0);
+		assertEquals(story1.getIssueID(), storyJSONArray.getJSONObject(0).get(StoryEnum.ID));
 		assertEquals(story1.getSummary(), storyJSONArray.getJSONObject(0).get(StoryEnum.NAME));
 		assertEquals(story1.getStatus(), storyJSONArray.getJSONObject(0).get(StoryEnum.STATUS));
 		assertEquals(Integer.parseInt(story1.getEstimated()), storyJSONArray.getJSONObject(0).get(StoryEnum.ESTIMATE));
@@ -186,6 +190,7 @@ public class JSONEncoderTest {
 		assertEquals(story1.getHowToDemo(), storyJSONArray.getJSONObject(0).get(StoryEnum.HOW_TO_DEMO));
 
 		IIssue story2 = stories.get(1);
+		assertEquals(story2.getIssueID(), storyJSONArray.getJSONObject(1).get(StoryEnum.ID));
 		assertEquals(story2.getSummary(), storyJSONArray.getJSONObject(1).get(StoryEnum.NAME));
 		assertEquals(story2.getStatus(), storyJSONArray.getJSONObject(1).get(StoryEnum.STATUS));
 		assertEquals(Integer.parseInt(story2.getEstimated()), storyJSONArray.getJSONObject(1).get(StoryEnum.ESTIMATE));
@@ -195,6 +200,7 @@ public class JSONEncoderTest {
 		assertEquals(story2.getHowToDemo(), storyJSONArray.getJSONObject(1).get(StoryEnum.HOW_TO_DEMO));
 
 		IIssue story3 = stories.get(2);
+		assertEquals(story3.getIssueID(), storyJSONArray.getJSONObject(2).get(StoryEnum.ID));
 		assertEquals(story3.getSummary(), storyJSONArray.getJSONObject(2).get(StoryEnum.NAME));
 		assertEquals(story3.getStatus(), storyJSONArray.getJSONObject(2).get(StoryEnum.STATUS));
 		assertEquals(Integer.parseInt(story3.getEstimated()), storyJSONArray.getJSONObject(2).get(StoryEnum.ESTIMATE));
@@ -204,6 +210,7 @@ public class JSONEncoderTest {
 		assertEquals(story3.getHowToDemo(), storyJSONArray.getJSONObject(2).get(StoryEnum.HOW_TO_DEMO));
 
 		IIssue story4 = stories.get(3);
+		assertEquals(story4.getIssueID(), storyJSONArray.getJSONObject(3).get(StoryEnum.ID));
 		assertEquals(story4.getSummary(), storyJSONArray.getJSONObject(3).get(StoryEnum.NAME));
 		assertEquals(story4.getStatus(), storyJSONArray.getJSONObject(3).get(StoryEnum.STATUS));
 		assertEquals(Integer.parseInt(story4.getEstimated()), storyJSONArray.getJSONObject(3).get(StoryEnum.ESTIMATE));
@@ -220,6 +227,7 @@ public class JSONEncoderTest {
 		JSONObject storyJson = JSONEncoder.toStoryJSON(story);
 
 		// Assert
+		assertEquals(story.getIssueID(), storyJson.get(StoryEnum.ID));
 		assertEquals(story.getSummary(), storyJson.get(StoryEnum.NAME));
 		assertEquals(story.getStatus(), storyJson.get(StoryEnum.STATUS));
 		assertEquals(Integer.parseInt(story.getEstimated()), storyJson.get(StoryEnum.ESTIMATE));
