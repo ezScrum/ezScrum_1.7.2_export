@@ -33,7 +33,7 @@ import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class AddableStoryRESTfulApiTest extends JerseyTest {
+public class WildStoryRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
 	private CreateSprint mCS;
@@ -47,7 +47,7 @@ public class AddableStoryRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(AddableStoryRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(WildStoryRESTfulApi.class);
 		return mResourceConfig;
 	}
 

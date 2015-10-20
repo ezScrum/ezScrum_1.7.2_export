@@ -35,7 +35,7 @@ import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class AddableTaskRESTfulApiTest extends JerseyTest {
+public class WildTaskRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
 	private CreateSprint mCS;
@@ -50,7 +50,7 @@ public class AddableTaskRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(AddableTaskRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(WildTaskRESTfulApi.class);
 		return mResourceConfig;
 	}
 
