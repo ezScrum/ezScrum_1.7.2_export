@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -84,60 +83,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testGet_NotFound() throws JSONException {
-		String notExistedProjectName = "NOT_EXISTED_PROJECT_NAME";
-		// Call '/projects/{projectName}/sprints' API
-		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + notExistedProjectName)
-		        .request()
-		        .get();
-
-		// Assert
-		assertEquals("", response.readEntity(String.class));
-		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
-	}
-
-	@Test
-	public void testGet_First() throws JSONException {
-		IProject firstProject = mCP.getProjectList().get(0);
-
-		// Test data
-		String projectNmae = firstProject.getName();
-
-		// Call '/projects/{projectName}' API
-		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + projectNmae)
-		        .request()
-		        .get();
-
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		// Assert
-		assertEquals(JSONEncoder.toProjectJSON(firstProject).toString(), jsonResponse.toString());
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-	}
-
-	@Test
-	public void testGet_Second() throws JSONException {
-		IProject secondProject = mCP.getProjectList().get(1);
-
-		// Test data
-		String projectNmae = secondProject.getName();
-
-		// Call '/projects/{projectName}' API
-		Response response = mClient.target(BASE_URL)
-		        .path("projects/" + projectNmae)
-		        .request()
-		        .get();
-
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(JSONEncoder.toProjectJSON(secondProject).toString(), jsonResponse.toString());
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-	}
-
-	@Test
-	public void testGetList_MultipleProjects() throws JSONException {
+	public void testGetProjects() throws JSONException {
 		// Get projects
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
 

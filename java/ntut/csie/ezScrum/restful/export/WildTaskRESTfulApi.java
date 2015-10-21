@@ -10,28 +10,25 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.ezScrum.web.support.export.ResourceFinder;
 import ntut.csie.jcis.resource.core.IProject;
 
-@Path("projects/{projectName}/sprints/{sprintId}/stories")
-public class StoryRESTfulApi {
+@Path("projects/{projectName}/tasks")
+public class WildTaskRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getStoriesInSprint(@PathParam("projectName") String projectName,
-	                        @PathParam("sprintId") long sprintId) {
+	public Response getWildTasks(@PathParam("projectName") String projectName) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
-		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
-		
-		if (project == null || sprint == null) {
+
+		if (project == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprint.getID());
-		IIssue[] storyInSprintArray = sprintBacklogHelper.getStoryInSprint(sprint.getID());
-		String entity = JSONEncoder.toStoryJSONArray(Arrays.asList(storyInSprintArray)).toString();
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project, null);
+		IIssue[] taskArray = productBacklogHelper.getAddableTasks();
+		String entity = JSONEncoder.toTaskJSONArray(Arrays.asList(taskArray)).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

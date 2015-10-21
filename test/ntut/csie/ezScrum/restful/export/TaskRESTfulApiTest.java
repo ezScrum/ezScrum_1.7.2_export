@@ -1,17 +1,15 @@
 package ntut.csie.ezScrum.restful.export;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
+import java.util.Arrays;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -23,20 +21,23 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class StoryRESTfulApiTest extends JerseyTest {
+public class TaskRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
 
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -46,7 +47,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(StoryRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(TaskRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -68,11 +69,16 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mASTS.exe();
 
+		// Add Task to project
+		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
+		mATTS.exe();
+		
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 
 		// Create Client
 		mClient = ClientBuilder.newClient();
+		
 	}
 
 	@After
@@ -97,47 +103,26 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		mBaseUri = null;
 		mClient = null;
 	}
-
+	
 	@Test
-	public void testGetStoriesInSprint() throws JSONException {
+	public void testGetTasksinStory() {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
-		IIssue story1 = mASTS.getIssueList().get(0);
-		IIssue story2 = mASTS.getIssueList().get(1);
-
-		// Call '/projects/{projectName}/stories/{storyId}' API
+		IIssue story = mASTS.getIssueList().get(0);
+		
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null,sprintId);
+		// Get Tasks
+		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(story.getIssueID()));
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}' API
 		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/")
-		        .request()
-		        .get();
-
-		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(story1.getIssueID(), jsonResponse.getJSONObject(0).get(StoryEnum.ID));
-		assertEquals(story1.getSummary(), jsonResponse.getJSONObject(0).get(StoryEnum.NAME));
-		assertEquals(story1.getStatus(), jsonResponse.getJSONObject(0).get(StoryEnum.STATUS));
-		assertEquals(Integer.parseInt(story1.getEstimated()), jsonResponse.getJSONObject(0).get(StoryEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story1.getImportance()), jsonResponse.getJSONObject(0).get(StoryEnum.IMPORTANCE));
-		assertEquals(Integer.parseInt(story1.getValue()), jsonResponse.getJSONObject(0).get(StoryEnum.VALUE));
-		assertEquals(story1.getNotes(), jsonResponse.getJSONObject(0).get(StoryEnum.NOTES));
-		assertEquals(story1.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryEnum.HOW_TO_DEMO));
-
-		assertEquals(story2.getIssueID(), jsonResponse.getJSONObject(1).get(StoryEnum.ID));
-		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(1).get(StoryEnum.NAME));
-		assertEquals(story2.getStatus(), jsonResponse.getJSONObject(1).get(StoryEnum.STATUS));
-		assertEquals(Integer.parseInt(story2.getEstimated()), jsonResponse.getJSONObject(1).get(StoryEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story2.getImportance()), jsonResponse.getJSONObject(1).get(StoryEnum.IMPORTANCE));
-		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(1).get(StoryEnum.VALUE));
-		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(1).get(StoryEnum.NOTES));
-		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(1).get(StoryEnum.HOW_TO_DEMO));
-
-		// No other JSONObject in JSONArray
-		try {
-			jsonResponse.getJSONObject(2);
-			assertTrue(false);
-		} catch (JSONException e) {
-			assertTrue(true);
-		}
+								   .path("projects/" + project.getName() +
+										 "/sprints/" + sprintId + 
+										 "/stories/" + story.getIssueID() + 
+										 "/tasks/")
+								   .request()
+								   .get();
+		assertEquals(JSONEncoder.toTaskJSONArray(Arrays.asList(tasks)).toString(), response.readEntity(String.class));
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 }
