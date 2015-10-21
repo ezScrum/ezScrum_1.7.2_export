@@ -19,7 +19,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class WildTaskRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getList(@PathParam("projectName") String projectName) {
+	public Response getWildTasks(@PathParam("projectName") String projectName) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 

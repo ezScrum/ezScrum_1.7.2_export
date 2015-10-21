@@ -91,7 +91,7 @@ public class SprintRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetList_MultipleSprints() throws JSONException {
+	public void testGetSprints() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
 		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();

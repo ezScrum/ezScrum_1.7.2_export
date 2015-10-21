@@ -83,7 +83,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testGetList_MultipleProjects() throws JSONException {
+	public void testGetProjects() throws JSONException {
 		// Get projects
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
 

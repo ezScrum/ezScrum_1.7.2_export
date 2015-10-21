@@ -21,7 +21,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class TaskRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getList(@PathParam("projectName") String projectName, 
+	public Response getTasksinStory(@PathParam("projectName") String projectName, 
 			                @PathParam("sprintId") long sprintId,
 			                @PathParam("storyId") long storyId) {
 		ResourceFinder resourceFinder = new ResourceFinder();

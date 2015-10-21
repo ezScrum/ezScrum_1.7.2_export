@@ -99,7 +99,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testGetList() throws JSONException {
+	public void testGetStoriesInSprint() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);

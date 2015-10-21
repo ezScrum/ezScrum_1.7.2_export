@@ -20,7 +20,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class StoryRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getList(@PathParam("projectName") String projectName,
+	public Response getStoriesInSprint(@PathParam("projectName") String projectName,
 	                        @PathParam("sprintId") long sprintId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);

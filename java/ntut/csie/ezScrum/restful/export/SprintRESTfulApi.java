@@ -21,7 +21,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class SprintRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getList(@PathParam("projectName") String projectName) throws JSONException {
+	public Response getSprints(@PathParam("projectName") String projectName) throws JSONException {
 		// Create ResourceFinder
 		ResourceFinder resourceFinder = new ResourceFinder();
 		// Get project By name

@@ -3,6 +3,7 @@ package ntut.csie.ezScrum.restful.export;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -11,7 +12,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -30,7 +30,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
@@ -110,24 +109,7 @@ public class WildTaskRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetList() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		
-		// Call '/projects/{projectName}/tasks' API
-		Response response = mClient.target(mBaseUri)
-		                           .path("projects/" +  project.getName() + "/tasks")
-		                           .request()
-		                           .get();
-		
-		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(4, jsonResponse.length());
-		assertEquals(JSONEncoder.toTaskJSONArray(mATTS.getTaskList()).toString(), jsonResponse.toString());
-	}
-	
-	@Test
-	public void testGetList_WithWildQuery() throws JSONException {
+	public void testGetWildTasks() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task1 = mATTS.getTaskList().get(0);
@@ -138,82 +120,20 @@ public class WildTaskRESTfulApiTest extends JerseyTest {
 		sprintBacklogHelper.removeTask(task1.getIssueID(), story.getIssueID());
 		sprintBacklogHelper.removeTask(task2.getIssueID(), story.getIssueID());
 		
-		// Call '/projects/{projectName}/tasks?isWild=true' API
+		ArrayList<IIssue> wildTasks = new ArrayList<IIssue>();
+		wildTasks.add(task1);
+		wildTasks.add(task2);
+		
+		// Call '/projects/{projectName}/tasks' API
 		Response response = mClient.target(mBaseUri)
-		                           .path("projects/" + project.getName() + "/tasks")
-		                           .queryParam("isWild", true)
+		                           .path("projects/" +  project.getName() + "/tasks")
 		                           .request()
 		                           .get();
-
-		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
 		// Assert
 		assertEquals(2, jsonResponse.length());
-		assertEquals(task1.getSummary(), jsonResponse.getJSONObject(0).get(TaskEnum.NAME));
-		assertEquals(task1.getAssignto(), jsonResponse.getJSONObject(0).get(TaskEnum.HANDLER));
-		assertEquals(Integer.parseInt(task1.getEstimated()), jsonResponse.getJSONObject(0).get(TaskEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(task1.getRemains()), jsonResponse.getJSONObject(0).get(TaskEnum.REMAIN));
-		assertEquals(Integer.parseInt(task1.getActualHour()), jsonResponse.getJSONObject(0).get(TaskEnum.ACTUAL));
-		assertEquals(task1.getNotes(), jsonResponse.getJSONObject(0).get(TaskEnum.NOTES));
-		assertEquals(task1.getStatus(), jsonResponse.getJSONObject(0).get(TaskEnum.STATUS));
-		
-		assertEquals(task2.getSummary(), jsonResponse.getJSONObject(1).get(TaskEnum.NAME));
-		assertEquals(task2.getAssignto(), jsonResponse.getJSONObject(1).get(TaskEnum.HANDLER));
-		assertEquals(Integer.parseInt(task2.getEstimated()), jsonResponse.getJSONObject(1).get(TaskEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(task2.getRemains()), jsonResponse.getJSONObject(1).get(TaskEnum.REMAIN));
-		assertEquals(Integer.parseInt(task2.getActualHour()), jsonResponse.getJSONObject(1).get(TaskEnum.ACTUAL));
-		assertEquals(task2.getNotes(), jsonResponse.getJSONObject(1).get(TaskEnum.NOTES));
-		assertEquals(task2.getStatus(), jsonResponse.getJSONObject(1).get(TaskEnum.STATUS));
-	}
-	
-	@Test
-	public void testGet() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		IIssue task = mATTS.getTaskList().get(0);
-		
-		// Call '/projects/{projectName}/tasks' API
-		Response response = mClient.target(mBaseUri)
-		                           .path("projects/" + project.getName() + "/tasks/" + task.getIssueID())
-		                           .request()
-		                           .get();
-		
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(task.getSummary(), jsonResponse.get(TaskEnum.NAME));
-		assertEquals(task.getAssignto(), jsonResponse.get(TaskEnum.HANDLER));
-		assertEquals(Integer.parseInt(task.getEstimated()), jsonResponse.get(TaskEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(task.getRemains()), jsonResponse.get(TaskEnum.REMAIN));
-		assertEquals(Integer.parseInt(task.getActualHour()), jsonResponse.get(TaskEnum.ACTUAL));
-		assertEquals(task.getNotes(), jsonResponse.get(TaskEnum.NOTES));
-		assertEquals(task.getStatus(), jsonResponse.get(TaskEnum.STATUS));
-	}
-	
-	@Test
-	public void testGet_Wild() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		IIssue story = mASTS.getIssueList().get(0);
-		IIssue task = mATTS.getTaskList().get(0);
-		
-		// Remove task from story
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
-		sprintBacklogHelper.removeTask(task.getIssueID(), story.getIssueID());
-		
-		// Call '/projects/{projectName}/tasks' API
-		Response response = mClient.target(mBaseUri)
-		                           .path("projects/" + project.getName() + "/tasks/" + task.getIssueID())
-		                           .request()
-		                           .get();
-		
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(task.getSummary(), jsonResponse.get(TaskEnum.NAME));
-		assertEquals(task.getAssignto(), jsonResponse.get(TaskEnum.HANDLER));
-		assertEquals(Integer.parseInt(task.getEstimated()), jsonResponse.get(TaskEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(task.getRemains()), jsonResponse.get(TaskEnum.REMAIN));
-		assertEquals(Integer.parseInt(task.getActualHour()), jsonResponse.get(TaskEnum.ACTUAL));
-		assertEquals(task.getNotes(), jsonResponse.get(TaskEnum.NOTES));
-		assertEquals(task.getStatus(), jsonResponse.get(TaskEnum.STATUS));
+		assertEquals(JSONEncoder.toTaskJSONArray(wildTasks).toString(), jsonResponse.toString());
 	}
 }

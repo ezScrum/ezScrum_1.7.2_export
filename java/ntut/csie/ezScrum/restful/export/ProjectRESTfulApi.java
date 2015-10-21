@@ -18,7 +18,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class ProjectRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getList() throws JSONException {
+	public Response getProjects() throws JSONException {
 		// Get projects
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
 		// Get Projects List JSON

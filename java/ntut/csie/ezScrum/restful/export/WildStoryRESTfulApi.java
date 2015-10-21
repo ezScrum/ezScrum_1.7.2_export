@@ -22,7 +22,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class WildStoryRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getList(@PathParam("projectName") String projectName) {
+	public Response getWildStories(@PathParam("projectName") String projectName) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 
@@ -48,7 +48,7 @@ public class WildStoryRESTfulApi {
 	@GET
 	@Path("/{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response get(@PathParam("projectName") String projectName,
+	public Response getTasksInWildStory(@PathParam("projectName") String projectName,
 	                    @PathParam("storyId") long storyId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);

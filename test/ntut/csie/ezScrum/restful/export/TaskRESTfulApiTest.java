@@ -105,7 +105,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetList() {
+	public void testGetTasksinStory() {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
