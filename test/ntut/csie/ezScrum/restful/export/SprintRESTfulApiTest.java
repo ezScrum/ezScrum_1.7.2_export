@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -89,60 +88,6 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		mCS = null;
 		mHttpServer = null;
 		mClient = null;
-	}
-	
-	@Test
-	public void testGet_NotFound() throws JSONException {
-		String notExistedSprintId = "9999";
-		IProject project = mCP.getProjectList().get(0);
-		String projectName = project.getName();
-		// Call '/projects/{projectName}/sprints' API
-		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + projectName + "/sprints/" + notExistedSprintId)
-				                 .request()
-				                 .get();
-		
-		// Assert
-		assertEquals("", response.readEntity(String.class));
-		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
-	}
-
-	@Test
-	public void testGet_First() throws JSONException {
-		String firstSprintId = mCS.getSprintIDList().get(0);
-		IProject project = mCP.getProjectList().get(0);
-		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		ISprintPlanDesc firstSprint = sprintPlanHelper.loadPlan(firstSprintId);
-		String projectName = project.getName();
-		// Call '/projects/{projectName}/sprints' API
-		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + projectName + "/sprints/" + firstSprintId)
-				                 .request()
-				                 .get();
-		
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		// Assert
-		assertEquals(JSONEncoder.toSprintJSON(firstSprint).toString(), jsonResponse.toString());
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-	}
-	
-	@Test
-	public void testGet_Second() throws JSONException {
-		String secondSprintId = mCS.getSprintIDList().get(1);
-		IProject project = mCP.getProjectList().get(0);
-		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		ISprintPlanDesc secondSprint = sprintPlanHelper.loadPlan(secondSprintId);
-		String projectName = project.getName();
-		// Call '/projects/{projectName}/sprints' API
-		Response response = mClient.target(BASE_URL)
-				                 .path("projects/" + projectName + "/sprints/" + secondSprintId)
-				                 .request()
-				                 .get();
-		
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-		// Assert
-		assertEquals(JSONEncoder.toSprintJSON(secondSprint).toString(), jsonResponse.toString());
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 	}
 	
 	@Test

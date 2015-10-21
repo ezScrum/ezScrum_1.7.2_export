@@ -36,21 +36,4 @@ public class SprintRESTfulApi {
 		String entity = JSONEncoder.toSprintJSONArray(sprints).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
-
-	@GET
-	@Path("/{sprintId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response get(@PathParam("projectName") String projectName, @PathParam("sprintId") long sprintId) throws JSONException {
-		// Create ResourceFinder
-		ResourceFinder resourceFinder = new ResourceFinder();
-		// Get Project
-		IProject project = resourceFinder.findProject(projectName);
-		// Get Sprint
-		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
-		if (project == null || sprint == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-		String entity = JSONEncoder.toSprintJSON(sprint).toString();
-		return Response.status(Response.Status.OK).entity(entity).build();
-	}
 }

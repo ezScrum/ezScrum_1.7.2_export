@@ -35,22 +35,4 @@ public class StoryRESTfulApi {
 		String entity = JSONEncoder.toStoryJSONArray(Arrays.asList(storyArray)).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
-
-	@GET
-	@Path("/{storyId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response get(@PathParam("projectName") String projectName, 
-			            @PathParam("sprintId") long sprintId,
-			            @PathParam("storyId") long storyId) {
-		ResourceFinder resourceFinder = new ResourceFinder();
-		IProject project = resourceFinder.findProject(projectName);
-		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
-		IIssue story = resourceFinder.findStory(storyId);
-		
-		if (project == null || sprint == null || story == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-		String entity = JSONEncoder.toStoryJSON(story).toString();
-		return Response.status(Response.Status.OK).entity(entity).build();
-	}
 }

@@ -3,12 +3,10 @@ package ntut.csie.ezScrum.restful.export;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -21,10 +19,6 @@ import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects/{projectName}/stories")
 public class WildStoryRESTfulApi {
-	@QueryParam("isWild")
-	@DefaultValue("false")
-	private boolean mIsWild;
-	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getList(@PathParam("projectName") String projectName) {
@@ -39,14 +33,11 @@ public class WildStoryRESTfulApi {
 		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
 		// Story List for response
 		ArrayList<IIssue> stories = new ArrayList<IIssue>(Arrays.asList(storyArray));
-
-		if (mIsWild) {
-			for (IIssue story : stories) {
-				long sprintId = Long.parseLong(story.getSprintID());
-				// 保留野生的Story
-				if (sprintId > 0) {
-					stories.remove(stories.indexOf(story));
-				}
+		for (IIssue story : stories) {
+			long sprintId = Long.parseLong(story.getSprintID());
+			// 保留野生的Story
+			if (sprintId > 0) {
+				stories.remove(stories.indexOf(story));
 			}
 		}
 		String entity = JSONEncoder.toStoryJSONArray(stories).toString();
@@ -54,7 +45,7 @@ public class WildStoryRESTfulApi {
 	}
 
 	@GET
-	@Path("/{storyId}")
+	@Path("/{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("projectName") String projectName,
 	                    @PathParam("storyId") long storyId) {

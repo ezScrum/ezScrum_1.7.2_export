@@ -1,7 +1,6 @@
 package ntut.csie.ezScrum.restful.export;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
@@ -13,7 +12,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -98,69 +96,6 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		mResourceConfig = null;
 		mBaseUri = null;
 		mClient = null;
-	}
-
-	@Test
-	public void testGet_InProject() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		String sprintId = mCS.getSprintIDList().get(0);
-		IIssue story = mASTS.getIssueList().get(0);
-
-		// Assert story is in the project
-		assertEquals(project.getName(), story.getProjectName());
-
-		// Call '/projects/{projectName}/stories/{storyId}' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/" + story.getIssueID())
-		        .request()
-		        .get();
-
-		JSONObject jsonResponse = new JSONObject(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(story.getIssueID(), jsonResponse.get(StoryEnum.ID));
-		assertEquals(story.getSummary(), jsonResponse.get(StoryEnum.NAME));
-		assertEquals(story.getStatus(), jsonResponse.get(StoryEnum.STATUS));
-		assertEquals(Integer.parseInt(story.getEstimated()), jsonResponse.get(StoryEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story.getImportance()), jsonResponse.get(StoryEnum.IMPORTANCE));
-		assertEquals(Integer.parseInt(story.getValue()), jsonResponse.get(StoryEnum.VALUE));
-		assertEquals(story.getNotes(), jsonResponse.get(StoryEnum.NOTES));
-		assertEquals(story.getHowToDemo(), jsonResponse.get(StoryEnum.HOW_TO_DEMO));
-	}
-
-	@Test
-	public void testGet_NoProject() throws JSONException {
-		String sprintId = mCS.getSprintIDList().get(0);
-		IIssue story = mASTS.getIssueList().get(3);
-
-		// Call '/projects/{projectName}/stories/{storyId}' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/xx/sprints/" + sprintId + "/stories/" + story.getIssueID())
-		        .request()
-		        .get();
-
-		// Assert
-		assertEquals("", response.readEntity(String.class));
-		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
-	}
-	
-	@Test
-	public void testGet_NoSprint() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		IIssue story = mASTS.getIssueList().get(3);
-
-		// Assert story IS NOT in the project
-		assertNotSame(project.getName(), story.getProjectName());
-
-		// Call '/projects/{projectName}/stories/{storyId}' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/sprints/xx/stories/" + story.getIssueID())
-		        .request()
-		        .get();
-
-		// Assert
-		assertEquals("", response.readEntity(String.class));
-		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 	}
 
 	@Test
