@@ -104,7 +104,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testIsPathConflict() {
+	public void testIsPathConflict() throws InterruptedException {
 		// Test Data
 		// Project 1
 		IProject project1 = mCP.getProjectList().get(0);
@@ -116,6 +116,10 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		
 		// Drop Story1
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project1);
+		
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		// Remove story1 from Sprint
 		productBacklogLogic.removeStoryFromSprint(story1.getIssueID());
 		
 		// Drop task1, task3 from story
@@ -174,6 +178,8 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
 		// Call '/projects/{projectName}/stories/{storyId}/tasks' API
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project1.getName() +

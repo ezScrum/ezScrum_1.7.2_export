@@ -22,6 +22,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -37,6 +38,7 @@ public class WildStoryRESTfulApiTest extends JerseyTest {
 	private CreateProject mCP;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
 
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -67,6 +69,10 @@ public class WildStoryRESTfulApiTest extends JerseyTest {
 		// Add Story to Sprint
 		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mASTS.exe();
+		
+		// Add Task to Story
+		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
+		mATTS.exe();
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -96,23 +102,28 @@ public class WildStoryRESTfulApiTest extends JerseyTest {
 		mResourceConfig = null;
 		mBaseUri = null;
 		mClient = null;
+		mATTS = null;
 	}
 	
 	@Test
-	public void testGetWildStories() throws JSONException {
+	public void testGetWildStories() throws JSONException, InterruptedException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story2 = mASTS.getIssueList().get(1);
-		
 		// Remove story2 from Sprint
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
-		productBacklogLogic.removeStoryFromSprint(story2.getIssueID());
+		//將Story自Sprint移除, 
+		long story2Id = story2.getIssueID();
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story2Id);
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
 		
 		// Call '/projects/{projectName}/stories' API
 		Response response = mClient.target(mBaseUri)
 		                           .path("projects/" +  project.getName() + "/stories")
 		                           .request()
 		                           .get();
-		
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
 		// Assert
@@ -129,7 +140,37 @@ public class WildStoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetTasksInWildStory() {
+	public void testGetTasksInWildStory() throws InterruptedException, JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story1 = mASTS.getIssueList().get(0);
+		// Remove story2 from Sprint
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		//將Story自Sprint移除, 
+		long story1Id = story1.getIssueID();
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story1Id);
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
 		
+		// Call '/projects/{projectName}/stories/{storyId}/tasks' API
+		Response response = mClient.target(mBaseUri)
+		                           .path("projects/" +  project.getName() + "/stories/" + story1Id + "/tasks")
+		                           .request()
+		                           .get();
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		// Assert
+		assertEquals(2, jsonResponse.length());
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/stories/{storyId}/tasks' API
+		IIssue story2 = mASTS.getIssueList().get(1);
+		long story2Id = story2.getIssueID();
+		response = mClient.target(mBaseUri)
+                           .path("projects/" +  project.getName() + "/stories/" + story2Id + "/tasks")
+                           .request()
+                           .get();
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 	}
 }
