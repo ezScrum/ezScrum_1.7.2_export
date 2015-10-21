@@ -1,6 +1,6 @@
 package ntut.csie.ezScrum.restful.export;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,8 +31,14 @@ public class StoryRESTfulApi {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
-		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
-		String entity = JSONEncoder.toStoryJSONArray(Arrays.asList(storyArray)).toString();
+		IIssue[] allStoryArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
+		ArrayList<IIssue> storiesInSprint = new ArrayList<IIssue>();
+		for (IIssue story : allStoryArray) {
+			if (sprint.getID().equals(story.getSprintID())) {
+				storiesInSprint.add(story);
+			}
+		}
+		String entity = JSONEncoder.toStoryJSONArray(storiesInSprint).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
