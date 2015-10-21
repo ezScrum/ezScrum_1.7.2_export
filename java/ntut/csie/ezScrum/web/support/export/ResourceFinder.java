@@ -5,7 +5,6 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
-import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
@@ -14,22 +13,6 @@ import ntut.csie.jcis.resource.core.IProject;
 public class ResourceFinder {
 	private IProject mProject;
 	private ISprintPlanDesc mSprint;
-	private IIssue mStory;
-
-	public ResourceFinder GetProject(String projectName) {
-		findProject(projectName);
-		return this;
-	}
-
-	public ResourceFinder GetSprint(long sprintId) {
-		findSprint(sprintId);
-		return this;
-	}
-
-	public ResourceFinder GetStory(long storyId) {
-		findStory(storyId);
-		return this;
-	}
 
 	public IProject findProject(String projectName) {
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
@@ -69,14 +52,13 @@ public class ResourceFinder {
 		for (IIssue story : storyArray) {
 			if (mSprint.getID().equals(story.getSprintID())
 			   && story.getIssueID() == storyId) {
-				mStory = story;
 				return story;
 			}
 		}
 		return null;
 	}
 	
-	public IIssue findStoryInProject(long storyId) {
+	public IIssue findWildStory(long storyId) {
 		if (mProject == null) {
 			return null;
 		}
@@ -87,37 +69,7 @@ public class ResourceFinder {
 
 		for (IIssue story : storyArray) {
 			if (story.getIssueID() == storyId) {
-				mStory = story;
 				return story;
-			}
-		}
-		return null;
-	}
-
-	public IIssue findTask(long taskId) {
-		if (mProject == null || mSprint == null || mStory == null) {
-			return null;
-		}
-
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, null, mSprint.getID());
-		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(mStory.getIssueID()));
-		for (IIssue task : tasks) {
-			if (task.getIssueID() == taskId) {
-				return task;
-			}
-		}
-		return null;
-	}
-	
-	public IIssue findTaskInProject(long taskId) {
-		if (mProject == null) {
-			return null;
-		}
-		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, null);
-		IIssue[] tasks = productBacklogMapper.getIssues(ScrumEnum.TASK_ISSUE_TYPE);
-		for (IIssue task : tasks) {
-			if (task.getIssueID() == taskId) {
-				return task;
 			}
 		}
 		return null;
