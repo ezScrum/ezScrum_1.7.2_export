@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.ezScrum.web.support.export.ResourceFinder;
@@ -30,17 +31,17 @@ public class WildStoryRESTfulApi {
 		}
 		// Get All Stories
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
-		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
+		IIssue[] allStoryArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
 		// Story List for response
-		ArrayList<IIssue> stories = new ArrayList<IIssue>(Arrays.asList(storyArray));
-		for (IIssue story : stories) {
+		ArrayList<IIssue> wildStories = new ArrayList<IIssue>();
+		for (IIssue story : allStoryArray) {
 			long sprintId = Long.parseLong(story.getSprintID());
 			// 保留野生的Story
-			if (sprintId > 0) {
-				stories.remove(stories.indexOf(story));
+			if (sprintId <= 0) {
+				wildStories.add(story);
 			}
 		}
-		String entity = JSONEncoder.toStoryJSONArray(stories).toString();
+		String entity = JSONEncoder.toStoryJSONArray(wildStories).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
@@ -56,7 +57,11 @@ public class WildStoryRESTfulApi {
 		if (project == null || story == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		String entity = JSONEncoder.toStoryJSON(story).toString();
+		
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		// Get Tasks
+		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(storyId));
+		String entity = JSONEncoder.toTaskJSONArray(Arrays.asList(tasks)).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

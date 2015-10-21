@@ -33,8 +33,8 @@ public class TaskRESTfulApi {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 		
-		// Create ProductbacklogMapper
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null,sprint.getID());
+		// Create SprintBacklogHelper
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprint.getID());
 		// Get Tasks
 		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(storyId));
 		String entity = JSONEncoder.toTaskJSONArray(Arrays.asList(tasks)).toString();

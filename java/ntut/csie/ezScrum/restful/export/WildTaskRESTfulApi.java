@@ -26,9 +26,8 @@ public class WildTaskRESTfulApi {
 		if (project == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		IIssue[] taskArray;
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project, null);
-		taskArray = productBacklogHelper.getAddableTasks();
+		IIssue[] taskArray = productBacklogHelper.getAddableTasks();
 		String entity = JSONEncoder.toTaskJSONArray(Arrays.asList(taskArray)).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}

@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.support.export;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
@@ -65,9 +66,17 @@ public class ResourceFinder {
 		// Create ProductbacklogMapper
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, null);
 		// Get Stories
-		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
-
-		for (IIssue story : storyArray) {
+		IIssue[] allStoryArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
+		// Story List for response
+		ArrayList<IIssue> wildStories = new ArrayList<IIssue>();
+		for (IIssue story : allStoryArray) {
+			long sprintId = Long.parseLong(story.getSprintID());
+			// 保留野生的Story
+			if (sprintId <= 0) {
+				wildStories.add(story);
+			}
+		}
+		for (IIssue story : wildStories) {
 			if (story.getIssueID() == storyId) {
 				return story;
 			}
