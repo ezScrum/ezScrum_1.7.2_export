@@ -7,7 +7,6 @@ var ExportPage = new Ext.Panel({
 	],
 	listeners : {
 		'show' : function() {
-			this.ExportProjectForm_ID.loadDataModel();
 		}
 	}
 });

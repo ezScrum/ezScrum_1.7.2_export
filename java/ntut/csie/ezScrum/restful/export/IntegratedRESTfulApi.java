@@ -143,6 +143,6 @@ public class IntegratedRESTfulApi {
 			JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
 			project.put(ExportEnum.WILD_TASKS, tasksArray);
 		}
-		return Response.status(Status.OK).entity(exportJSON.toString()).build();
+		return Response.status(Status.OK).entity(exportJSON.toString()).header("Content-Disposition",  "attachment; filename=\"projects.json\"").build();
 	}
 }
