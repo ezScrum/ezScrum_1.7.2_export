@@ -31,6 +31,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.databaseEnum.ExportEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -56,7 +57,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	@Override
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
-		                                     TaskRESTfulApi.class, WildStoryRESTfulApi.class, WildTaskRESTfulApi.class);
+		                                     TaskRESTfulApi.class, WildStoryRESTfulApi.class, WildTaskRESTfulApi.class,
+		                                     IntegratedRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -147,7 +149,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		
 		JSONObject jsonArrayResponse = new JSONObject(response.readEntity(String.class));
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		JSONArray projectJSONArray = jsonArrayResponse.getJSONArray("projects");
+		JSONArray projectJSONArray = jsonArrayResponse.getJSONArray(ExportEnum.PROJECTS);
 		assertEquals(1, projectJSONArray.length());
 		
 		// Assert project data
@@ -156,8 +158,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(project.getProjectDesc().getDisplayName(), projectJSON.getString(ProjectEnum.DISPLAY_NAME));
 		assertEquals(project.getProjectDesc().getComment(), projectJSON.getString(ProjectEnum.COMMENT));
 		assertEquals(project.getProjectDesc().getProjectManager(), projectJSON.getString(ProjectEnum.PRODUCT_OWNER));
-		assertEquals(project.getProjectDesc().getAttachFileSize(), projectJSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
-		JSONArray sprintJSONArray = projectJSON.getJSONArray("sprints");
+		assertEquals(Long.parseLong(project.getProjectDesc().getAttachFileSize()), projectJSON.getLong(ProjectEnum.ATTATCH_MAX_SIZE));
+		JSONArray sprintJSONArray = projectJSON.getJSONArray(ExportEnum.SPRINTS);
 		assertEquals(1, sprintJSONArray.length());
 		// end
 		
@@ -174,7 +176,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(sprint.getDemoDate(), sprintJSON.getString(SprintEnum.DEMO_DATE));
 		assertEquals(sprint.getDemoPlace(), sprintJSON.getString(SprintEnum.DEMO_PLACE));
 		assertEquals(sprint.getNotes(), sprintJSON.getString(SprintEnum.DAILY_INFO));
-		JSONArray storyJSONArray = sprintJSON.getJSONArray("stories");
+		JSONArray storyJSONArray = sprintJSON.getJSONArray(ExportEnum.STORIES);
 		assertEquals(1, storyJSONArray.length());
 		// end
 		
@@ -188,14 +190,14 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(story2.getValue()), story2JSON.getInt(StoryEnum.VALUE));
 		assertEquals(story2.getNotes(), story2JSON.getString(StoryEnum.NOTES));
 		assertEquals(story2.getHowToDemo(), story2JSON.getString(StoryEnum.HOW_TO_DEMO));
-		JSONArray taskInStory2JSONArray = story2JSON.getJSONArray("tasks");
+		JSONArray taskInStory2JSONArray = story2JSON.getJSONArray(ExportEnum.TASKS);
 		assertEquals(1, taskInStory2JSONArray.length());
 		// end
 		
 		// Assert task4 data
 		JSONObject task4JSON = taskInStory2JSONArray.getJSONObject(0);
 		assertEquals(task4.getSummary(), task4JSON.getString(TaskEnum.NAME));
-		assertEquals(task4.getAssignto(), task4JSON.getString(TaskEnum.HANDLER_ID));
+		assertEquals(task4.getAssignto(), task4JSON.getString(TaskEnum.HANDLER));
 		assertEquals(Integer.parseInt(task4.getEstimated()), task4JSON.getInt(TaskEnum.ESTIMATE));
 		assertEquals(Integer.parseInt(task4.getRemains()), task4JSON.getInt(TaskEnum.REMAIN));
 		assertEquals(Integer.parseInt(task4.getActualHour()), task4JSON.getInt(TaskEnum.ACTUAL));
@@ -203,7 +205,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(task4.getStatus(), task4JSON.getString(TaskEnum.STATUS));
 		// end
 		
-		JSONArray wildStoryJSONArray = jsonArrayResponse.getJSONArray("wild_stories");
+		JSONArray wildStoryJSONArray = projectJSON.getJSONArray(ExportEnum.WILD_STORIES);
 		assertEquals(1, wildStoryJSONArray.length());
 		
 		// Assert wild story1 data
@@ -216,14 +218,14 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(story1.getValue()), wildStory1JSON.getInt(StoryEnum.VALUE));
 		assertEquals(story1.getNotes(), wildStory1JSON.getString(StoryEnum.NOTES));
 		assertEquals(story1.getHowToDemo(), wildStory1JSON.getString(StoryEnum.HOW_TO_DEMO));
-		JSONArray taskInWildStory1JSONArray = wildStory1JSON.getJSONArray("tasks");
+		JSONArray taskInWildStory1JSONArray = wildStory1JSON.getJSONArray(ExportEnum.TASKS);
 		assertEquals(1, taskInWildStory1JSONArray.length());
 		// end
 		
 		// Assert task2 data
 		JSONObject task2JSON = taskInWildStory1JSONArray.getJSONObject(0);
 		assertEquals(task2.getSummary(), task2JSON.getString(TaskEnum.NAME));
-		assertEquals(task2.getAssignto(), task2JSON.getString(TaskEnum.HANDLER_ID));
+		assertEquals(task2.getAssignto(), task2JSON.getString(TaskEnum.HANDLER));
 		assertEquals(Integer.parseInt(task2.getEstimated()), task2JSON.getInt(TaskEnum.ESTIMATE));
 		assertEquals(Integer.parseInt(task2.getRemains()), task2JSON.getInt(TaskEnum.REMAIN));
 		assertEquals(Integer.parseInt(task2.getActualHour()), task2JSON.getInt(TaskEnum.ACTUAL));
@@ -231,13 +233,13 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(task2.getStatus(), task2JSON.getString(TaskEnum.STATUS));
 		// end
 		
-		JSONArray wildTaskJSONArray = jsonArrayResponse.getJSONArray("wild_tasks");
+		JSONArray wildTaskJSONArray = projectJSON.getJSONArray(ExportEnum.WILD_TASKS);
 		assertEquals(2, wildTaskJSONArray.length());
 		
 		// Assert wild task1 data
 		JSONObject wildTask1JSON = wildTaskJSONArray.getJSONObject(0);
 		assertEquals(task1.getSummary(), wildTask1JSON.getString(TaskEnum.NAME));
-		assertEquals(task1.getAssignto(), wildTask1JSON.getString(TaskEnum.HANDLER_ID));
+		assertEquals(task1.getAssignto(), wildTask1JSON.getString(TaskEnum.HANDLER));
 		assertEquals(Integer.parseInt(task1.getEstimated()), wildTask1JSON.getInt(TaskEnum.ESTIMATE));
 		assertEquals(Integer.parseInt(task1.getRemains()), wildTask1JSON.getInt(TaskEnum.REMAIN));
 		assertEquals(Integer.parseInt(task1.getActualHour()), wildTask1JSON.getInt(TaskEnum.ACTUAL));
@@ -248,7 +250,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Assert wild task3 data
 		JSONObject wildTask3JSON = wildTaskJSONArray.getJSONObject(1);
 		assertEquals(task3.getSummary(), wildTask3JSON.getString(TaskEnum.NAME));
-		assertEquals(task3.getAssignto(), wildTask3JSON.getString(TaskEnum.HANDLER_ID));
+		assertEquals(task3.getAssignto(), wildTask3JSON.getString(TaskEnum.HANDLER));
 		assertEquals(Integer.parseInt(task3.getEstimated()), wildTask3JSON.getInt(TaskEnum.ESTIMATE));
 		assertEquals(Integer.parseInt(task3.getRemains()), wildTask3JSON.getInt(TaskEnum.REMAIN));
 		assertEquals(Integer.parseInt(task3.getActualHour()), wildTask3JSON.getInt(TaskEnum.ACTUAL));

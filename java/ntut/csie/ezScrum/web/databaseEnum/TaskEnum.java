@@ -6,7 +6,6 @@ public class TaskEnum {
     public static final String SERIAL_ID = "serial_id";
     public static final String NAME = "name";
 	public static final String HANDLER = "handler";
-	public static final String HANDLER_ID = "handler_id";
     public static final String ESTIMATE = "estimate";
     public static final String REMAIN = "remain";
     public static final String ACTUAL = "actual";
