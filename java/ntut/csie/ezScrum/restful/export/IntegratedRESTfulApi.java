@@ -10,6 +10,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -17,6 +18,8 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.web.databaseEnum.ExportEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
+import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 
 @Path("export")
 public class IntegratedRESTfulApi {
@@ -35,10 +38,6 @@ public class IntegratedRESTfulApi {
 		JSONArray projects = null;
 		// Sprints In Project
 		Map<String, JSONArray> sprintsMap = new HashMap<String, JSONArray>();
-		// Stories In Sprint
-		Map<String, JSONArray> storiesMap = new HashMap<String, JSONArray>();
-		// Tasks In Story
-		Map<String, JSONArray> tasksMap = new HashMap<String, JSONArray>();
 		
 		//// Get Projects ////
 		// Get Projects
@@ -49,24 +48,101 @@ public class IntegratedRESTfulApi {
 		projects = new JSONArray(response.readEntity(String.class));
 		exportJSON.put(ExportEnum.PROJECTS, projects);
 		
+		
 		//// Get Sprints ////
 		for (int i = 0; i < projects.length(); i++) {
 			JSONObject project = projects.getJSONObject(i);
+			String projectName = project.getString(ProjectEnum.NAME);
 			// Get Sprints
 			response = mClient.target(BASE_URL)
-			        .path("projects/" + project.getString(ProjectEnum.NAME) + "/sprints")
+			        .path("projects/" + projectName + "/sprints")
 			        .request()
 			        .get();
 			JSONArray sprints = new JSONArray(response.readEntity(String.class));
-			sprintsMap.put(project.getString(ProjectEnum.NAME), sprints);
+			sprintsMap.put(projectName, sprints);
+		}
+		// Add Sprints to Project
+		for (int i = 0; i < projects.length(); i++) {
+			JSONObject project = projects.getJSONObject(i);
+			String projectName = project.getString(ProjectEnum.NAME);
+			JSONArray sprintsInProject = sprintsMap.get(projectName);
+			project.put(ExportEnum.SPRINTS, sprintsInProject);
 		}
 		
-		//// Get Story ////
 		
+		//// Get Stories ////
+		for (Map.Entry<String, JSONArray> sprintMap : sprintsMap.entrySet()) {
+			String projectName = sprintMap.getKey();
+			JSONArray sprintArray = sprintMap.getValue();
+			
+			// Get Stories from Sprint and add to Sprint
+			for(int i = 0; i < sprintArray.length(); i++){
+				JSONObject sprintJSON = sprintArray.getJSONObject(i);
+				long sprintId = sprintJSON.getLong(SprintEnum.ID);
+				response = mClient.target(BASE_URL)
+				        .path("projects/" + projectName +
+				              "/sprints/" + sprintId + "/stories")
+				        .request()
+				        .get();
+				JSONArray storiesArray = new JSONArray(response.readEntity(String.class));
+				sprintJSON.put(ExportEnum.STORIES, storiesArray);
+				
+				//// Get Tasks ////
+				for (int j = 0; j < storiesArray.length(); j++) {
+					JSONObject story = storiesArray.getJSONObject(j);
+					long storyId = story.getLong(StoryEnum.ID);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectName +
+					              "/sprints/" + sprintId + 
+					              "/stories/" + storyId + 
+					              "/tasks")
+					        .request()
+					        .get();
+					JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
+					story.put(ExportEnum.TASKS, tasksArray);
+				}
+			}
+		}
 		
+		//// Get WildStories ////
+		for (int i = 0; i < projects.length(); i++) {
+			JSONObject project = projects.getJSONObject(i);
+			String projectName = project.getString(ProjectEnum.NAME);
+			// Get Sprints
+			response = mClient.target(BASE_URL)
+			        .path("projects/" + projectName + "/stories")
+			        .request()
+			        .get();
+			JSONArray wildStoriesArray = new JSONArray(response.readEntity(String.class));
+			project.put(ExportEnum.WILD_STORIES, wildStoriesArray);
+			
+			// Get Tasks in WildStory
+			for (int j = 0; j < wildStoriesArray.length(); j++) {
+				JSONObject wildStory = wildStoriesArray.getJSONObject(j);
+				long wildStoryId = wildStory.getLong(StoryEnum.ID);
+				response = mClient.target(BASE_URL)
+				        .path("projects/" + projectName + 
+				        	  "/stories/" + wildStoryId + 
+				        	  "/tasks")
+				        .request()
+				        .get();
+				JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
+				wildStory.put(ExportEnum.TASKS, tasksArray);
+			}
+		}
 		
-		
-
-		return null;
+		//// Get WildTasks ////
+		for (int i = 0; i < projects.length(); i++) {
+			JSONObject project = projects.getJSONObject(i);
+			String projectName = project.getString(ProjectEnum.NAME);
+			// Get Sprints
+			response = mClient.target(BASE_URL)
+			        .path("projects/" + projectName + "/tasks")
+			        .request()
+			        .get();
+			JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
+			project.put(ExportEnum.WILD_TASKS, tasksArray);
+		}
+		return Response.status(Status.OK).entity(exportJSON.toString()).build();
 	}
 }
