@@ -34,7 +34,7 @@ import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class WildTaskRESTfulApiTest extends JerseyTest {
+public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
 	private CreateSprint mCS;
@@ -49,7 +49,7 @@ public class WildTaskRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(WildTaskRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(DroppedTaskRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -109,7 +109,7 @@ public class WildTaskRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetWildTasks() throws JSONException {
+	public void testGetDroppedTasks() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task1 = mATTS.getTaskList().get(0);
@@ -120,9 +120,9 @@ public class WildTaskRESTfulApiTest extends JerseyTest {
 		sprintBacklogHelper.removeTask(task1.getIssueID(), story.getIssueID());
 		sprintBacklogHelper.removeTask(task2.getIssueID(), story.getIssueID());
 		
-		ArrayList<IIssue> wildTasks = new ArrayList<IIssue>();
-		wildTasks.add(task1);
-		wildTasks.add(task2);
+		ArrayList<IIssue> droppedTasks = new ArrayList<IIssue>();
+		droppedTasks.add(task1);
+		droppedTasks.add(task2);
 		
 		// Call '/projects/{projectName}/tasks' API
 		Response response = mClient.target(mBaseUri)
@@ -134,6 +134,6 @@ public class WildTaskRESTfulApiTest extends JerseyTest {
 
 		// Assert
 		assertEquals(2, jsonResponse.length());
-		assertEquals(JSONEncoder.toTaskJSONArray(wildTasks).toString(), jsonResponse.toString());
+		assertEquals(JSONEncoder.toTaskJSONArray(droppedTasks).toString(), jsonResponse.toString());
 	}
 }

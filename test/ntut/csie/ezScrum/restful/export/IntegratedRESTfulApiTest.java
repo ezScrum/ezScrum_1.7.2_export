@@ -57,7 +57,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	@Override
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
-		                                     TaskRESTfulApi.class, WildStoryRESTfulApi.class, WildTaskRESTfulApi.class,
+		                                     TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class,
 		                                     IntegratedRESTfulApi.class);
 		return mResourceConfig;
 	}
@@ -205,25 +205,25 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(task4.getStatus(), task4JSON.getString(TaskEnum.STATUS));
 		// end
 		
-		JSONArray wildStoryJSONArray = projectJSON.getJSONArray(ExportEnum.WILD_STORIES);
-		assertEquals(1, wildStoryJSONArray.length());
+		JSONArray droppedStoryJSONArray = projectJSON.getJSONArray(ExportEnum.DROPPED_STORIES);
+		assertEquals(1, droppedStoryJSONArray.length());
 		
 		// Assert wild story1 data
-		JSONObject wildStory1JSON = wildStoryJSONArray.getJSONObject(0);
-		assertEquals(story1.getIssueID(), wildStory1JSON.getLong(StoryEnum.ID));
-		assertEquals(story1.getSummary(), wildStory1JSON.getString(StoryEnum.NAME));
-		assertEquals(story2.getStatus(), wildStory1JSON.getString(StoryEnum.STATUS));
-		assertEquals(Integer.parseInt(story1.getEstimated()), wildStory1JSON.getInt(StoryEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story1.getImportance()), wildStory1JSON.getInt(StoryEnum.IMPORTANCE));
-		assertEquals(Integer.parseInt(story1.getValue()), wildStory1JSON.getInt(StoryEnum.VALUE));
-		assertEquals(story1.getNotes(), wildStory1JSON.getString(StoryEnum.NOTES));
-		assertEquals(story1.getHowToDemo(), wildStory1JSON.getString(StoryEnum.HOW_TO_DEMO));
-		JSONArray taskInWildStory1JSONArray = wildStory1JSON.getJSONArray(ExportEnum.TASKS);
-		assertEquals(1, taskInWildStory1JSONArray.length());
+		JSONObject droppedStory1JSON = droppedStoryJSONArray.getJSONObject(0);
+		assertEquals(story1.getIssueID(), droppedStory1JSON.getLong(StoryEnum.ID));
+		assertEquals(story1.getSummary(), droppedStory1JSON.getString(StoryEnum.NAME));
+		assertEquals(story2.getStatus(), droppedStory1JSON.getString(StoryEnum.STATUS));
+		assertEquals(Integer.parseInt(story1.getEstimated()), droppedStory1JSON.getInt(StoryEnum.ESTIMATE));
+		assertEquals(Integer.parseInt(story1.getImportance()), droppedStory1JSON.getInt(StoryEnum.IMPORTANCE));
+		assertEquals(Integer.parseInt(story1.getValue()), droppedStory1JSON.getInt(StoryEnum.VALUE));
+		assertEquals(story1.getNotes(), droppedStory1JSON.getString(StoryEnum.NOTES));
+		assertEquals(story1.getHowToDemo(), droppedStory1JSON.getString(StoryEnum.HOW_TO_DEMO));
+		JSONArray taskInDroppedStory1JSONArray = droppedStory1JSON.getJSONArray(ExportEnum.TASKS);
+		assertEquals(1, taskInDroppedStory1JSONArray.length());
 		// end
 		
 		// Assert task2 data
-		JSONObject task2JSON = taskInWildStory1JSONArray.getJSONObject(0);
+		JSONObject task2JSON = taskInDroppedStory1JSONArray.getJSONObject(0);
 		assertEquals(task2.getSummary(), task2JSON.getString(TaskEnum.NAME));
 		assertEquals(task2.getAssignto(), task2JSON.getString(TaskEnum.HANDLER));
 		assertEquals(Integer.parseInt(task2.getEstimated()), task2JSON.getInt(TaskEnum.ESTIMATE));
@@ -233,29 +233,29 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(task2.getStatus(), task2JSON.getString(TaskEnum.STATUS));
 		// end
 		
-		JSONArray wildTaskJSONArray = projectJSON.getJSONArray(ExportEnum.WILD_TASKS);
-		assertEquals(2, wildTaskJSONArray.length());
+		JSONArray droppedTaskJSONArray = projectJSON.getJSONArray(ExportEnum.DROPPED_TASKS);
+		assertEquals(2, droppedTaskJSONArray.length());
 		
 		// Assert wild task1 data
-		JSONObject wildTask1JSON = wildTaskJSONArray.getJSONObject(0);
-		assertEquals(task1.getSummary(), wildTask1JSON.getString(TaskEnum.NAME));
-		assertEquals(task1.getAssignto(), wildTask1JSON.getString(TaskEnum.HANDLER));
-		assertEquals(Integer.parseInt(task1.getEstimated()), wildTask1JSON.getInt(TaskEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(task1.getRemains()), wildTask1JSON.getInt(TaskEnum.REMAIN));
-		assertEquals(Integer.parseInt(task1.getActualHour()), wildTask1JSON.getInt(TaskEnum.ACTUAL));
-		assertEquals(task1.getNotes(), wildTask1JSON.getString(TaskEnum.NOTES));
-		assertEquals(task1.getStatus(), wildTask1JSON.getString(TaskEnum.STATUS));
+		JSONObject droppedTask1JSON = droppedTaskJSONArray.getJSONObject(0);
+		assertEquals(task1.getSummary(), droppedTask1JSON.getString(TaskEnum.NAME));
+		assertEquals(task1.getAssignto(), droppedTask1JSON.getString(TaskEnum.HANDLER));
+		assertEquals(Integer.parseInt(task1.getEstimated()), droppedTask1JSON.getInt(TaskEnum.ESTIMATE));
+		assertEquals(Integer.parseInt(task1.getRemains()), droppedTask1JSON.getInt(TaskEnum.REMAIN));
+		assertEquals(Integer.parseInt(task1.getActualHour()), droppedTask1JSON.getInt(TaskEnum.ACTUAL));
+		assertEquals(task1.getNotes(), droppedTask1JSON.getString(TaskEnum.NOTES));
+		assertEquals(task1.getStatus(), droppedTask1JSON.getString(TaskEnum.STATUS));
 		// end
 		
 		// Assert wild task3 data
-		JSONObject wildTask3JSON = wildTaskJSONArray.getJSONObject(1);
-		assertEquals(task3.getSummary(), wildTask3JSON.getString(TaskEnum.NAME));
-		assertEquals(task3.getAssignto(), wildTask3JSON.getString(TaskEnum.HANDLER));
-		assertEquals(Integer.parseInt(task3.getEstimated()), wildTask3JSON.getInt(TaskEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(task3.getRemains()), wildTask3JSON.getInt(TaskEnum.REMAIN));
-		assertEquals(Integer.parseInt(task3.getActualHour()), wildTask3JSON.getInt(TaskEnum.ACTUAL));
-		assertEquals(task3.getNotes(), wildTask3JSON.getString(TaskEnum.NOTES));
-		assertEquals(task3.getStatus(), wildTask3JSON.getString(TaskEnum.STATUS));
+		JSONObject droppedTask3JSON = droppedTaskJSONArray.getJSONObject(1);
+		assertEquals(task3.getSummary(), droppedTask3JSON.getString(TaskEnum.NAME));
+		assertEquals(task3.getAssignto(), droppedTask3JSON.getString(TaskEnum.HANDLER));
+		assertEquals(Integer.parseInt(task3.getEstimated()), droppedTask3JSON.getInt(TaskEnum.ESTIMATE));
+		assertEquals(Integer.parseInt(task3.getRemains()), droppedTask3JSON.getInt(TaskEnum.REMAIN));
+		assertEquals(Integer.parseInt(task3.getActualHour()), droppedTask3JSON.getInt(TaskEnum.ACTUAL));
+		assertEquals(task3.getNotes(), droppedTask3JSON.getString(TaskEnum.NOTES));
+		assertEquals(task3.getStatus(), droppedTask3JSON.getString(TaskEnum.STATUS));
 		// end
 	}
 }

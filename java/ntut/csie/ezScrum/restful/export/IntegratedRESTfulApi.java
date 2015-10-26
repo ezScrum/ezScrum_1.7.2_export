@@ -115,7 +115,7 @@ public class IntegratedRESTfulApi {
 			        .request()
 			        .get();
 			JSONArray wildStoriesArray = new JSONArray(response.readEntity(String.class));
-			project.put(ExportEnum.WILD_STORIES, wildStoriesArray);
+			project.put(ExportEnum.DROPPED_STORIES, wildStoriesArray);
 			
 			// Get Tasks in WildStory
 			for (int j = 0; j < wildStoriesArray.length(); j++) {
@@ -142,7 +142,7 @@ public class IntegratedRESTfulApi {
 			        .request()
 			        .get();
 			JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
-			project.put(ExportEnum.WILD_TASKS, tasksArray);
+			project.put(ExportEnum.DROPPED_TASKS, tasksArray);
 		}
 		return Response.status(Status.OK).entity(exportJSON.toString()).header("Content-Disposition", "attachment; filename=\"" + getFileName() + "\"").build();
 	}

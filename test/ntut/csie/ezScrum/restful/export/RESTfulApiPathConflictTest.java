@@ -47,7 +47,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	@Override
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
-		                                     TaskRESTfulApi.class, WildStoryRESTfulApi.class, WildTaskRESTfulApi.class);
+		                                     TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class);
 		return mResourceConfig;
 	}
 
