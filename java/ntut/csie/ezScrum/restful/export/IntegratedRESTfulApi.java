@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.restful.export;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,7 +115,7 @@ public class IntegratedRESTfulApi {
 			        .request()
 			        .get();
 			JSONArray wildStoriesArray = new JSONArray(response.readEntity(String.class));
-			project.put(ExportEnum.WILD_STORIES, wildStoriesArray);
+			project.put(ExportEnum.DROPPED_STORIES, wildStoriesArray);
 			
 			// Get Tasks in WildStory
 			for (int j = 0; j < wildStoriesArray.length(); j++) {
@@ -141,8 +142,14 @@ public class IntegratedRESTfulApi {
 			        .request()
 			        .get();
 			JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
-			project.put(ExportEnum.WILD_TASKS, tasksArray);
+			project.put(ExportEnum.DROPPED_TASKS, tasksArray);
 		}
-		return Response.status(Status.OK).entity(exportJSON.toString()).build();
+		return Response.status(Status.OK).entity(exportJSON.toString()).header("Content-Disposition", "attachment; filename=\"" + getFileName() + "\"").build();
+	}
+	
+	private String getFileName() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HHmm");
+		String fileName = simpleDateFormat.format(System.currentTimeMillis()) + "_ezScrum_export.json";
+		return fileName;
 	}
 }

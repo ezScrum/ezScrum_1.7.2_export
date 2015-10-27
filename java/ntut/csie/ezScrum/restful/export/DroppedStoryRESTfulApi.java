@@ -19,10 +19,10 @@ import ntut.csie.ezScrum.web.support.export.ResourceFinder;
 import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects/{projectName}/stories")
-public class WildStoryRESTfulApi {
+public class DroppedStoryRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getWildStories(@PathParam("projectName") String projectName) {
+	public Response getDroppedStories(@PathParam("projectName") String projectName) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 
@@ -33,22 +33,22 @@ public class WildStoryRESTfulApi {
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
 		IIssue[] allStoryArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
 		// Story List for response
-		ArrayList<IIssue> wildStories = new ArrayList<IIssue>();
+		ArrayList<IIssue> droppedStories = new ArrayList<IIssue>();
 		for (IIssue story : allStoryArray) {
 			long sprintId = Long.parseLong(story.getSprintID());
 			// 保留野生的Story
 			if (sprintId <= 0) {
-				wildStories.add(story);
+				droppedStories.add(story);
 			}
 		}
-		String entity = JSONEncoder.toStoryJSONArray(wildStories).toString();
+		String entity = JSONEncoder.toStoryJSONArray(droppedStories).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
 	@GET
 	@Path("/{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTasksInWildStory(@PathParam("projectName") String projectName,
+	public Response getTasksInDroppedStory(@PathParam("projectName") String projectName,
 	                    @PathParam("storyId") long storyId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);

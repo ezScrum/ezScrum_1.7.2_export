@@ -16,10 +16,10 @@ import ntut.csie.ezScrum.web.support.export.ResourceFinder;
 import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects/{projectName}/tasks")
-public class WildTaskRESTfulApi {
+public class DroppedTaskRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getWildTasks(@PathParam("projectName") String projectName) {
+	public Response getDroppedTasks(@PathParam("projectName") String projectName) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 

@@ -43,10 +43,9 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 	buttonAlign		: 'left',
 	monitorValid	: true,
 	initComponent	: function() {
-		var config = {
-			url			: 'viewProjectList.do',
-			export_url	: 'saveConfiguration.do',	
-			items		: myCheckboxGroup,
+		var config = {	
+			export_url : "/ezScrum/resource/export/projects",
+//			items		: myCheckboxGroup,
 	        buttons : [{
 	        	formBind : true,
 	        	scope    : this,
@@ -70,51 +69,17 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		var obj = this;
 		var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info..."});
 		loadmask.show();
-		Ext.Ajax.request({
-			url: obj.url,
-			success : function(response) {
-				ProjectStore.loadData(response.responseXML);
-				console.log(ProjectStore.data);
-				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
-				loadmask.hide();
-			},
-			failure : function(){
-				var loadmask = new Ext.LoadMask(obj.getEl(), {msg:"loading info..."});
-    			loadmask.hide();
-				Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
-			}
-		});
 	},
-    setDataModel: function(record) {
-    	this.getForm().reset();
-    	this.getForm().setValues({
-			ServerUrl	: record.get('ServerUrl'),
-			DBAccount	: record.get('DBAccount'),
-			DBType		: record.get('DBType'),
-			DBName		: record.get('DBName')
-		});
-    },
     doExport: function() {
 		var obj = this;
     	var form = this.getForm();
-    	this.showMask('loading info...');
-    	Ext.Ajax.request({
-    		url		: obj.export_url,
-    		params	: form.getValues(),
-    		success	: function(response) {
-				var result = response.responseText;
-				if (result == "success") {
-					Ext.example.msg('Modify DB Config', 'Success.');
-				} else {
-					Ext.example.msg('Modify DB Config', 'Sorry, the action is failure.');
-				}
-				obj.closeMask();
-    		},
-    		failure	: function(response){
-    			obj.closeMask();
-    			Ext.example.msg('Server Error', 'Sorry, the connection is failure.');
-    		}
-    	});
+    	var form = Ext.DomHelper.append(document.body, {
+	        tag : 'form',
+	        method : 'get',
+	        action : obj.export_url
+	    });
+	    form.submit();
+	    Ext.example.msg('Success', 'Export Projects Success');
 	}
 });
 

@@ -33,7 +33,7 @@ import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class WildStoryRESTfulApiTest extends JerseyTest {
+public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
 	private CreateSprint mCS;
@@ -48,7 +48,7 @@ public class WildStoryRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(WildStoryRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(DroppedStoryRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -106,7 +106,7 @@ public class WildStoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetWildStories() throws JSONException, InterruptedException {
+	public void testGetDroppedStories() throws JSONException, InterruptedException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story2 = mASTS.getIssueList().get(1);
 		// Remove story2 from Sprint
@@ -140,7 +140,7 @@ public class WildStoryRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetTasksInWildStory() throws InterruptedException, JSONException {
+	public void testGetTasksInDroppedStory() throws InterruptedException, JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
 		// Remove story2 from Sprint
