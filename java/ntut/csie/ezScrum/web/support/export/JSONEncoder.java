@@ -8,6 +8,8 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
+import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
@@ -116,5 +118,26 @@ public class JSONEncoder {
 			e.printStackTrace();
 		}
 		return taskJson;
+	}
+	
+	public static JSONArray toReleaseJSONArray(List<IReleasePlanDesc> releases) {
+		JSONArray releaseJsonArray = new JSONArray();
+		for (IReleasePlanDesc release : releases) {
+			releaseJsonArray.put(toReleaseJSON(release));
+		}
+		return releaseJsonArray;
+	}
+
+	public static JSONObject toReleaseJSON(IReleasePlanDesc release) {
+		JSONObject releaseJson = new JSONObject();
+		try {
+			releaseJson.put(ReleaseEnum.NAME, release.getName())
+			           .put(ReleaseEnum.DESCRIPTION, release.getDescription())
+			           .put(ReleaseEnum.START_DATE, release.getStartDate())
+			           .put(ReleaseEnum.DUE_DATE, release.getEndDate());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return releaseJson;
 	}
 }

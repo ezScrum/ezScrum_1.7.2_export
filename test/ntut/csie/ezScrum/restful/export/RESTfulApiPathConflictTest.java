@@ -24,6 +24,7 @@ import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
@@ -34,6 +35,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class RESTfulApiPathConflictTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
+	private CreateRelease mCR;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
@@ -47,7 +49,8 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	@Override
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
-		                                     TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class);
+		                                     TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class,
+		                                     ReleaseRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -60,6 +63,10 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		// Create Project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
+		
+		// Create Release
+		mCR = new CreateRelease(2, mCP);
+		mCR.exe();
 
 		// Create Sprint
 		mCS = new CreateSprint(2, mCP);
@@ -185,6 +192,14 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .path("projects/" + project1.getName() +
 		        	  "/stories/" + story1.getIssueID() + 
 		        	  "/tasks")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/releases' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project1.getName() +
+		              "/releases")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
