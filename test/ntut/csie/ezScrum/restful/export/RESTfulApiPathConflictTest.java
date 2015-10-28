@@ -25,6 +25,7 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
+import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
@@ -37,6 +38,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	private CreateProject mCP;
 	private CreateRelease mCR;
 	private CreateSprint mCS;
+	private CreateRetrospective mCRE;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
 
@@ -50,7 +52,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
 		                                     TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class,
-		                                     ReleaseRESTfulApi.class);
+		                                     ReleaseRESTfulApi.class, AccountRESTfulApi.class, RetrospectiveRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -71,6 +73,10 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		// Create Sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
+		
+		// Create Retrospective
+		mCRE = new CreateRetrospective(2, 2, mCP, mCS);
+		mCRE.exe();
 
 		// Add Story to project
 		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
@@ -200,6 +206,20 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project1.getName() +
 		              "/releases")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/retrospectives' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project1.getName() + "/sprints/" + sprintId1 + "/retrospectives")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/accounts' API
+		response = mClient.target(mBaseUri)
+		        .path("accounts")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

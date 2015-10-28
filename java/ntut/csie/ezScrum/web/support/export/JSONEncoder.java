@@ -10,15 +10,41 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple account to JSONArray
+	public static JSONArray toAccountJSONArray(List<IAccount> accounts) {
+		JSONArray accountJsonArray = new JSONArray();
+		for (IAccount account : accounts) {
+			accountJsonArray.put(toAccountJSON(account));
+		}
+		return accountJsonArray;
+	}
+
+	// Translate account to JSON
+	public static JSONObject toAccountJSON(IAccount account) {
+		JSONObject accountJson = new JSONObject();
+		try {
+			accountJson.put(AccountEnum.USERNAME, account.getID());
+			accountJson.put(AccountEnum.NICK_NAME, account.getName());
+			accountJson.put(AccountEnum.PASSWORD, account.getPassword());
+			accountJson.put(AccountEnum.EMAIL, account.getEmail());
+			accountJson.put(AccountEnum.ENABLE, account.getEnable().equalsIgnoreCase("true") ? 1 : 0);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return accountJson;
+	}
+
 	// Translate multiple retrospective to JSONArray
 	public static JSONArray toRetrospectiveJSONArray(List<IScrumIssue> retrospectives) {
 		JSONArray retrospectiveJsonArray = new JSONArray();
