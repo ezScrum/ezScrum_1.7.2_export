@@ -7,17 +7,19 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
-import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
-	// Translate multiple retrospective to JSON
+	// Translate multiple retrospective to JSONArray
 	public static JSONArray toRetrospectiveJSONArray(List<IScrumIssue> retrospectives) {
 		JSONArray retrospectiveJsonArray = new JSONArray();
 		for (IScrumIssue retrospective : retrospectives) {
@@ -40,7 +42,7 @@ public class JSONEncoder {
 		return retrospectiveJson;
 	}
 	
-	// Translate multiple sprint to JSON
+	// Translate multiple sprint to JSONArray
 	public static JSONArray toSprintJSONArray(List<ISprintPlanDesc> sprints) {
 		JSONArray sprintJsonArray = new JSONArray();
 		for (ISprintPlanDesc sprint : sprints) {
@@ -93,6 +95,7 @@ public class JSONEncoder {
 		return projectJson;
 	}
 
+	// Translate multiple story to JSONArray
 	public static JSONArray toStoryJSONArray(List<IIssue> stories) {
 		JSONArray storyJsonArray = new JSONArray();
 		for (IIssue story : stories) {
@@ -119,6 +122,7 @@ public class JSONEncoder {
 		return storyJson;
 	}
 	
+	// Translate multiple task to JSONArray
 	public static JSONArray toTaskJSONArray(List<IIssue> tasks) {
 		JSONArray taskJsonArray = new JSONArray();
 		for (IIssue task : tasks) {
@@ -127,6 +131,7 @@ public class JSONEncoder {
 		return taskJsonArray;
 	}
 
+	// Translate task to JSON
 	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
@@ -141,5 +146,28 @@ public class JSONEncoder {
 			e.printStackTrace();
 		}
 		return taskJson;
+	}
+	
+	// Translate multiple release to JSONArray
+	public static JSONArray toReleaseJSONArray(List<IReleasePlanDesc> releases) {
+		JSONArray releaseJsonArray = new JSONArray();
+		for (IReleasePlanDesc release : releases) {
+			releaseJsonArray.put(toReleaseJSON(release));
+		}
+		return releaseJsonArray;
+	}
+
+	// Translate release to JSON
+	public static JSONObject toReleaseJSON(IReleasePlanDesc release) {
+		JSONObject releaseJson = new JSONObject();
+		try {
+			releaseJson.put(ReleaseEnum.NAME, release.getName())
+			           .put(ReleaseEnum.DESCRIPTION, release.getDescription())
+			           .put(ReleaseEnum.START_DATE, release.getStartDate())
+			           .put(ReleaseEnum.DUE_DATE, release.getEndDate());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return releaseJson;
 	}
 }

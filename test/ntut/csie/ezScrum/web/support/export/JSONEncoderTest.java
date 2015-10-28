@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
@@ -21,11 +22,13 @@ import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
@@ -36,6 +39,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class JSONEncoderTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
+	private CreateRelease mCR;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private CreateTask mCT;
@@ -49,6 +53,10 @@ public class JSONEncoderTest {
 		// Create Project
 		mCP = new CreateProject(2);
 		mCP.exeCreate();
+		
+		// Create Release
+		mCR = new CreateRelease(1, mCP);
+		mCR.exe();
 
 		// Create Sprint
 		mCS = new CreateSprint(2, mCP);
@@ -332,5 +340,40 @@ public class JSONEncoderTest {
 		assertEquals(Integer.parseInt(task.getActualHour()), taskJSON.getInt(TaskEnum.ACTUAL));
 		assertEquals(task.getNotes(), taskJSON.getString(TaskEnum.NOTES));
 		assertEquals(task.getStatus(), taskJSON.getString(TaskEnum.STATUS));
+	}
+	
+	@Test
+	public void testToReleaseJSONArray() throws JSONException {
+		List<IReleasePlanDesc> releases = mCR.getReleaseList();
+		// Convert to JSONOArray
+		JSONArray releaseJSONArray = JSONEncoder.toReleaseJSONArray(releases);
+
+		// Assert
+		JSONObject releaseJSON1 = releaseJSONArray.getJSONObject(0);
+		IReleasePlanDesc release1 = releases.get(0);
+		assertEquals(release1.getName(), releaseJSON1.getString(ReleaseEnum.NAME));
+		assertEquals(release1.getDescription(), releaseJSON1.getString(ReleaseEnum.DESCRIPTION));
+		assertEquals(release1.getStartDate(), releaseJSON1.getString(ReleaseEnum.START_DATE));
+		assertEquals(release1.getEndDate(), releaseJSON1.getString(ReleaseEnum.DUE_DATE));
+
+		JSONObject releaseJSON2 = releaseJSONArray.getJSONObject(1);
+		IReleasePlanDesc release2 = releases.get(1);
+		assertEquals(release2.getName(), releaseJSON2.getString(ReleaseEnum.NAME));
+		assertEquals(release2.getDescription(), releaseJSON2.getString(ReleaseEnum.DESCRIPTION));
+		assertEquals(release2.getStartDate(), releaseJSON2.getString(ReleaseEnum.START_DATE));
+		assertEquals(release2.getEndDate(), releaseJSON2.getString(ReleaseEnum.DUE_DATE));
+	}
+
+	@Test
+	public void testToReleaseJSON() throws JSONException {
+		IReleasePlanDesc release = mCR.getReleaseList().get(0);
+		// Convert to JSONObject
+		JSONObject releaseJSON = JSONEncoder.toReleaseJSON(release);
+
+		// Assert
+		assertEquals(release.getName(), releaseJSON.getString(ReleaseEnum.NAME));
+		assertEquals(release.getDescription(), releaseJSON.getString(ReleaseEnum.DESCRIPTION));
+		assertEquals(release.getStartDate(), releaseJSON.getString(ReleaseEnum.START_DATE));
+		assertEquals(release.getEndDate(), releaseJSON.getString(ReleaseEnum.DUE_DATE));
 	}
 }
