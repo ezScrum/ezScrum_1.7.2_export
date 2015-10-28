@@ -52,7 +52,7 @@ public class DroppedStoryRESTfulApi {
 	                    @PathParam("storyId") long storyId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
-		IIssue story = resourceFinder.findWildStory(storyId);
+		IIssue story = resourceFinder.findDroppedStory(storyId);
 
 		if (project == null || story == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();

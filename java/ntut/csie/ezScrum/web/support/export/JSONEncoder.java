@@ -8,6 +8,8 @@ import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
@@ -15,6 +17,29 @@ import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple retrospective to JSON
+	public static JSONArray toRetrospectiveJSONArray(List<IScrumIssue> retrospectives) {
+		JSONArray retrospectiveJsonArray = new JSONArray();
+		for (IScrumIssue retrospective : retrospectives) {
+			retrospectiveJsonArray.put(toRetrospectiveJSON(retrospective));
+		}
+		return retrospectiveJsonArray;
+	}
+	
+	// Translate retrospective to JSON
+	public static JSONObject toRetrospectiveJSON(IScrumIssue retrospective) {
+		JSONObject retrospectiveJson = new JSONObject();
+		try {
+			retrospectiveJson.put(RetrospectiveEnum.NAME, retrospective.getName());
+			retrospectiveJson.put(RetrospectiveEnum.DESCRIPTION, retrospective.getDescription());
+			retrospectiveJson.put(RetrospectiveEnum.TYPE, retrospective.getCategory());
+			retrospectiveJson.put(RetrospectiveEnum.STATUS, retrospective.getStatus());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return retrospectiveJson;
+	}
+	
 	// Translate multiple sprint to JSON
 	public static JSONArray toSprintJSONArray(List<ISprintPlanDesc> sprints) {
 		JSONArray sprintJsonArray = new JSONArray();
