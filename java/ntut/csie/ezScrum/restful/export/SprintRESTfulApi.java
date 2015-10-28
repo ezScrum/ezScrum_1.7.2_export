@@ -9,8 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONException;
-
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
@@ -21,7 +19,7 @@ import ntut.csie.jcis.resource.core.IProject;
 public class SprintRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getSprints(@PathParam("projectName") String projectName) throws JSONException {
+	public Response getSprints(@PathParam("projectName") String projectName) {
 		// Create ResourceFinder
 		ResourceFinder resourceFinder = new ResourceFinder();
 		// Get project By name

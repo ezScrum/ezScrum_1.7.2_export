@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.support.export;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -12,7 +13,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -22,6 +26,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
+import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
@@ -72,6 +77,53 @@ public class JSONEncoderTest {
 		copyProject = null;
 		mCP = null;
 		mCS = null;
+	}
+	
+	@Test
+	public void testToRetrospectiveJSONArray() throws JSONException {
+		IIssue issue1 = new Issue();
+		issue1.setSummary("Good name");
+		issue1.setDescription("Good description");
+		issue1.setCategory("Good");
+		issue1.setStatus("new");
+		IScrumIssue good = new ScrumIssue(issue1);
+		IIssue issue2 = new Issue();
+		issue2.setSummary("Improvement name");
+		issue2.setDescription("Improvement description");
+		issue2.setCategory("Improvement");
+		issue2.setStatus("closed");
+		IScrumIssue improvement = new ScrumIssue(issue2);
+		List<IScrumIssue> retrospectives = new ArrayList<IScrumIssue>();
+		retrospectives.add(good);
+		retrospectives.add(improvement);
+		
+		JSONArray retrospectiveJSONArray = JSONEncoder.toRetrospectiveJSONArray(retrospectives);
+		assertEquals(2, retrospectiveJSONArray.length());
+		
+		assertEquals("Good name", retrospectiveJSONArray.getJSONObject(0).getString(RetrospectiveEnum.NAME));
+		assertEquals("Good description", retrospectiveJSONArray.getJSONObject(0).getString(RetrospectiveEnum.DESCRIPTION));
+		assertEquals("Good", retrospectiveJSONArray.getJSONObject(0).getString(RetrospectiveEnum.TYPE));
+		assertEquals("new", retrospectiveJSONArray.getJSONObject(0).getString(RetrospectiveEnum.STATUS));
+		
+		assertEquals("Improvement name", retrospectiveJSONArray.getJSONObject(1).getString(RetrospectiveEnum.NAME));
+		assertEquals("Improvement description", retrospectiveJSONArray.getJSONObject(1).getString(RetrospectiveEnum.DESCRIPTION));
+		assertEquals("Improvement", retrospectiveJSONArray.getJSONObject(1).getString(RetrospectiveEnum.TYPE));
+		assertEquals("closed", retrospectiveJSONArray.getJSONObject(1).getString(RetrospectiveEnum.STATUS));
+	}
+	
+	@Test
+	public void testToRetrospectiveJSON() throws JSONException {
+		IIssue issue = new Issue();
+		issue.setSummary("Retrospective name");
+		issue.setDescription("Retrospective description");
+		issue.setCategory("Good");
+		issue.setStatus("new");
+		IScrumIssue retrospective = new ScrumIssue(issue);
+		JSONObject retrospectiveJSON = JSONEncoder.toRetrospectiveJSON(retrospective);
+		assertEquals("Retrospective name", retrospectiveJSON.getString(RetrospectiveEnum.NAME));
+		assertEquals("Retrospective description", retrospectiveJSON.getString(RetrospectiveEnum.DESCRIPTION));
+		assertEquals("Good", retrospectiveJSON.getString(RetrospectiveEnum.TYPE));
+		assertEquals("new", retrospectiveJSON.getString(RetrospectiveEnum.STATUS));
 	}
 
 	@Test
