@@ -110,20 +110,10 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		        .get();
 		
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-		ArrayList<JSONObject> jsonList = new ArrayList<JSONObject>();
-		// Remove Admin in JSONArray
-		for (int i = 0; i < jsonResponse.length(); i++) {
-			JSONObject accountJSON = jsonResponse.getJSONObject(i);
-			if(!accountJSON.getString(AccountEnum.USERNAME).equalsIgnoreCase("admin")){
-				jsonList.add(accountJSON);
-			}
-		}
-		
-		jsonResponse = new JSONArray(jsonList);
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(2, jsonResponse.length());
+		assertEquals(3, jsonResponse.length());
 		
 		JSONObject accountJSON1 = jsonResponse.getJSONObject(0);
 		assertEquals(account1.getID(), accountJSON1.getString(AccountEnum.USERNAME));
@@ -133,10 +123,15 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		assertEquals(1, accountJSON1.getInt(AccountEnum.ENABLE));
 		
 		JSONObject accountJSON2 = jsonResponse.getJSONObject(1);
-		assertEquals(account2.getID(), accountJSON2.getString(AccountEnum.USERNAME));
-		assertEquals(account2.getName(), accountJSON2.getString(AccountEnum.NICK_NAME));
-		assertEquals(account2.getPassword(), accountJSON2.getString(AccountEnum.PASSWORD));
-		assertEquals(account2.getEmail(), accountJSON2.getString(AccountEnum.EMAIL));
-		assertEquals(1, accountJSON1.getInt(AccountEnum.ENABLE));
+		assertEquals("admin", accountJSON2.getString(AccountEnum.USERNAME));
+		assertEquals("admin", accountJSON2.getString(AccountEnum.NICK_NAME));
+		assertEquals(1, accountJSON2.getInt(AccountEnum.ENABLE));
+		
+		JSONObject accountJSON3 = jsonResponse.getJSONObject(2);
+		assertEquals(account2.getID(), accountJSON3.getString(AccountEnum.USERNAME));
+		assertEquals(account2.getName(), accountJSON3.getString(AccountEnum.NICK_NAME));
+		assertEquals(account2.getPassword(), accountJSON3.getString(AccountEnum.PASSWORD));
+		assertEquals(account2.getEmail(), accountJSON3.getString(AccountEnum.EMAIL));
+		assertEquals(1, accountJSON3.getInt(AccountEnum.ENABLE));
 	}
 }
