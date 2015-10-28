@@ -50,7 +50,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
 		                                     TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class,
-		                                     ReleaseRESTfulApi.class);
+		                                     ReleaseRESTfulApi.class, AccountRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -200,6 +200,13 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project1.getName() +
 		              "/releases")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/accounts' API
+		response = mClient.target(mBaseUri)
+		        .path("accounts")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

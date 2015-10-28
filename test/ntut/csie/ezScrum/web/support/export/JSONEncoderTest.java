@@ -27,13 +27,17 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.UserInformation;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoderTest {
@@ -85,6 +89,72 @@ public class JSONEncoderTest {
 		copyProject = null;
 		mCP = null;
 		mCS = null;
+	}
+	
+	@Test
+	public void testToAccountJSONArray() throws JSONException {
+		// Test Data
+		String userName = "TEST_USER_NAME_";
+		String userRealName = "TEST_USER_REAL_NAME_";
+		String password = "TEST_USER_PASSWORD_";
+		String email = "TEST_USER_EMAIL_";
+		String enable = "true";
+
+		// Create Account
+		AccountHelper accountHelper = new AccountHelper();
+		// Account 1
+		UserInformation userInformation = new UserInformation(userName + 1, userRealName + 1, password + 1, email + 1, enable);
+		IAccount account1 = accountHelper.createAccount(userInformation, "user");
+		// Account 2
+		userInformation = new UserInformation(userName + 2, userRealName + 2, password + 2, email + 2, enable);
+		IAccount account2 = accountHelper.createAccount(userInformation, "user");
+
+		// Add accounts to List
+		List<IAccount> accounts = new ArrayList<IAccount>();
+		accounts.add(account1);
+		accounts.add(account2);
+
+		JSONArray accountJSONArray = JSONEncoder.toAccountJSONArray(accounts);
+
+		// Assert
+		assertEquals(2, accountJSONArray.length());
+
+		JSONObject accountJSON1 = accountJSONArray.getJSONObject(0);
+		assertEquals(account1.getID(), accountJSON1.getString(AccountEnum.USERNAME));
+		assertEquals(account1.getName(), accountJSON1.getString(AccountEnum.NICK_NAME));
+		assertEquals(account1.getPassword(), accountJSON1.getString(AccountEnum.PASSWORD));
+		assertEquals(account1.getEmail(), accountJSON1.getString(AccountEnum.EMAIL));
+		assertEquals(1, accountJSON1.getInt(AccountEnum.ENABLE));
+
+		JSONObject accountJSON2 = accountJSONArray.getJSONObject(1);
+		assertEquals(account2.getID(), accountJSON2.getString(AccountEnum.USERNAME));
+		assertEquals(account2.getName(), accountJSON2.getString(AccountEnum.NICK_NAME));
+		assertEquals(account2.getPassword(), accountJSON2.getString(AccountEnum.PASSWORD));
+		assertEquals(account2.getEmail(), accountJSON2.getString(AccountEnum.EMAIL));
+		assertEquals(1, accountJSON1.getInt(AccountEnum.ENABLE));
+	}
+	
+	@Test
+	public void testToAccountJSON() throws JSONException {
+		// Test Data
+		String userName = "TEST_USER_NAME";
+		String userRealName = "TEST_USER_REAL_NAME";
+		String password = "TEST_USER_PASSWORD";
+		String email = "TEST_USER_EMAIL";
+		String enable = "true";
+
+		// Create Account
+		AccountHelper accountHelper = new AccountHelper();
+		UserInformation userInformation = new UserInformation(userName, userRealName, password, email, enable);
+		IAccount account = accountHelper.createAccount(userInformation, "user");
+		JSONObject accountJSON = JSONEncoder.toAccountJSON(account);
+
+		// Assert
+		assertEquals(userName, accountJSON.getString(AccountEnum.USERNAME));
+		assertEquals(userRealName, accountJSON.getString(AccountEnum.NICK_NAME));
+		assertEquals(account.getPassword(), accountJSON.getString(AccountEnum.PASSWORD));
+		assertEquals(email, accountJSON.getString(AccountEnum.EMAIL));
+		assertEquals(1, accountJSON.getInt(AccountEnum.ENABLE));
 	}
 	
 	@Test
