@@ -38,7 +38,7 @@ public class RetrospectiveRESTfulApi {
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 	
-	public List<IScrumIssue> getRetrospectives(long sprintId, RetrospectiveMapper retrospectiveMapper) {
+	private List<IScrumIssue> getRetrospectives(long sprintId, RetrospectiveMapper retrospectiveMapper) {
 		List<IScrumIssue> retrospectives = new ArrayList<IScrumIssue>();
 		List<IScrumIssue> goods = retrospectiveMapper.getList(ScrumEnum.GOOD_ISSUE_TYPE);
 		for (IScrumIssue good : goods) {

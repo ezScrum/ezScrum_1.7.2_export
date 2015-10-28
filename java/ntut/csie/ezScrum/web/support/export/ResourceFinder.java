@@ -59,7 +59,7 @@ public class ResourceFinder {
 		return null;
 	}
 	
-	public IIssue findWildStory(long storyId) {
+	public IIssue findDroppedStory(long storyId) {
 		if (mProject == null) {
 			return null;
 		}
