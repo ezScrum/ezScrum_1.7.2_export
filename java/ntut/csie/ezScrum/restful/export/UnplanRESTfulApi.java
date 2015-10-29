@@ -47,6 +47,7 @@ public class UnplanRESTfulApi {
 		if (project == null || sprint == null || unplan == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
+		@SuppressWarnings("deprecation")
 		String partners = unplan.getPartners();
 		String entity = JSONEncoder.toPartnerJSONArray(partners).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
