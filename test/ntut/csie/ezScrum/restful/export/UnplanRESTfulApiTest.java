@@ -1,9 +1,9 @@
 package ntut.csie.ezScrum.restful.export;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -22,22 +22,21 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
-import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
-public class StoryRESTfulApiTest extends JerseyTest {
+public class UnplanRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
 	private CreateProject mCP;
 	private CreateSprint mCS;
-	private AddStoryToSprint mASTS;
-
+	private CreateUnplannedItem mCU;
+	
 	private Client mClient;
 	private HttpServer mHttpServer;
 	private ResourceConfig mResourceConfig;
@@ -46,7 +45,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		mResourceConfig = new ResourceConfig(StoryRESTfulApi.class);
+		mResourceConfig = new ResourceConfig(UnplanRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -63,11 +62,11 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Create Sprint
 		mCS = new CreateSprint(1, mCP);
 		mCS.exe();
-
-		// Add Story to project
-		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
-		mASTS.exe();
-
+		
+		// Create Unplan
+		mCU = new CreateUnplannedItem(2, mCP, mCS);
+		mCU.exe();
+		
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 
@@ -92,52 +91,43 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		ini = null;
 		copyProject = null;
 		mCP = null;
+		mCS = null;
+		mCU = null;
 		mHttpServer = null;
 		mResourceConfig = null;
 		mBaseUri = null;
 		mClient = null;
 	}
-
+	
 	@Test
-	public void testGetStoriesInSprint() throws JSONException {
+	public void testGetUnplansInSprint() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
-		IIssue story1 = mASTS.getIssueList().get(0);
-		IIssue story2 = mASTS.getIssueList().get(1);
-
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories' API
+		List<IIssue> unplans = mCU.getIssueList();
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/unplans' API
 		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/")
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/unplans/")
 		        .request()
 		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-
+		
 		// Assert
-		assertEquals(story1.getIssueID(), jsonResponse.getJSONObject(0).get(StoryEnum.ID));
-		assertEquals(story1.getSummary(), jsonResponse.getJSONObject(0).get(StoryEnum.NAME));
-		assertEquals(story1.getStatus(), jsonResponse.getJSONObject(0).get(StoryEnum.STATUS));
-		assertEquals(Integer.parseInt(story1.getEstimated()), jsonResponse.getJSONObject(0).get(StoryEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story1.getImportance()), jsonResponse.getJSONObject(0).get(StoryEnum.IMPORTANCE));
-		assertEquals(Integer.parseInt(story1.getValue()), jsonResponse.getJSONObject(0).get(StoryEnum.VALUE));
-		assertEquals(story1.getNotes(), jsonResponse.getJSONObject(0).get(StoryEnum.NOTES));
-		assertEquals(story1.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryEnum.HOW_TO_DEMO));
-
-		assertEquals(story2.getIssueID(), jsonResponse.getJSONObject(1).get(StoryEnum.ID));
-		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(1).get(StoryEnum.NAME));
-		assertEquals(story2.getStatus(), jsonResponse.getJSONObject(1).get(StoryEnum.STATUS));
-		assertEquals(Integer.parseInt(story2.getEstimated()), jsonResponse.getJSONObject(1).get(StoryEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story2.getImportance()), jsonResponse.getJSONObject(1).get(StoryEnum.IMPORTANCE));
-		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(1).get(StoryEnum.VALUE));
-		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(1).get(StoryEnum.NOTES));
-		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(1).get(StoryEnum.HOW_TO_DEMO));
-
-		// No other JSONObject in JSONArray
-		try {
-			jsonResponse.getJSONObject(2);
-			assertTrue(false);
-		} catch (JSONException e) {
-			assertTrue(true);
-		}
+		assertEquals(2, jsonResponse.length());
+		
+		assertEquals(unplans.get(0).getSummary(), jsonResponse.getJSONObject(0).getString(UnplanEnum.NAME));
+		assertEquals(unplans.get(0).getAssignto(), jsonResponse.getJSONObject(0).getString(UnplanEnum.HANDLER));
+		assertEquals(unplans.get(0).getEstimated(), jsonResponse.getJSONObject(0).getString(UnplanEnum.ESTIMATE));
+		assertEquals(unplans.get(0).getActualHour(), jsonResponse.getJSONObject(0).getString(UnplanEnum.ACTUAL));
+		assertEquals(unplans.get(0).getNotes(), jsonResponse.getJSONObject(0).getString(UnplanEnum.NOTES));
+		assertEquals(unplans.get(0).getStatus(), jsonResponse.getJSONObject(0).getString(UnplanEnum.STATUS));
+		
+		assertEquals(unplans.get(1).getSummary(), jsonResponse.getJSONObject(1).getString(UnplanEnum.NAME));
+		assertEquals(unplans.get(1).getAssignto(), jsonResponse.getJSONObject(1).getString(UnplanEnum.HANDLER));
+		assertEquals(unplans.get(1).getEstimated(), jsonResponse.getJSONObject(1).getString(UnplanEnum.ESTIMATE));
+		assertEquals(unplans.get(1).getActualHour(), jsonResponse.getJSONObject(1).getString(UnplanEnum.ACTUAL));
+		assertEquals(unplans.get(1).getNotes(), jsonResponse.getJSONObject(1).getString(UnplanEnum.NOTES));
+		assertEquals(unplans.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(UnplanEnum.STATUS));
 	}
 }

@@ -17,10 +17,36 @@ import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple unplan to JSONArray
+	public static JSONArray toUnplanJSONArray(List<IIssue> unplans) {
+		JSONArray unplanJSONArray = new JSONArray();
+		for (IIssue unplan : unplans) {
+			unplanJSONArray.put(toUnplanJSON(unplan));
+		}
+		return unplanJSONArray;
+	}
+	
+	// Translate unplan to JSON
+	public static JSONObject toUnplanJSON(IIssue unplan) {
+		JSONObject unplanJSON = new JSONObject();
+		try {
+			unplanJSON.put(UnplanEnum.NAME, unplan.getSummary());
+			unplanJSON.put(UnplanEnum.HANDLER, unplan.getAssignto());
+			unplanJSON.put(UnplanEnum.ESTIMATE, unplan.getEstimated());
+			unplanJSON.put(UnplanEnum.ACTUAL, unplan.getActualHour());
+			unplanJSON.put(UnplanEnum.NOTES, unplan.getNotes());
+			unplanJSON.put(UnplanEnum.STATUS, unplan.getStatus());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return unplanJSON;
+	}
+	
 	// Translate multiple account to JSONArray
 	public static JSONArray toAccountJSONArray(List<IAccount> accounts) {
 		JSONArray accountJsonArray = new JSONArray();

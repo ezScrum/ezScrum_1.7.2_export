@@ -27,6 +27,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
@@ -38,6 +39,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	private CreateProject mCP;
 	private CreateRelease mCR;
 	private CreateSprint mCS;
+	private CreateUnplannedItem mCU;
 	private CreateRetrospective mCRE;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
@@ -52,7 +54,7 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
 		                                     TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class,
-		                                     ReleaseRESTfulApi.class, AccountRESTfulApi.class, RetrospectiveRESTfulApi.class);
+		                                     ReleaseRESTfulApi.class, AccountRESTfulApi.class, RetrospectiveRESTfulApi.class, UnplanRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -73,6 +75,10 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		// Create Sprint
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
+		
+		// Create Unplan
+		mCU = new CreateUnplannedItem(2, mCP, mCS);
+		mCU.exe();
 		
 		// Create Retrospective
 		mCRE = new CreateRetrospective(2, 2, mCP, mCS);
@@ -110,6 +116,10 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		ini = null;
 		copyProject = null;
 		mCP = null;
+		mCS = null;
+		mCU = null;
+		mCR = null;
+		mCRE = null;
 		mASTS = null;
 		mATTS = null;
 		mHttpServer = null;
@@ -220,6 +230,13 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		// Call '/accounts' API
 		response = mClient.target(mBaseUri)
 		        .path("accounts")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/unplans' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project1.getName() + "/sprints/" + sprintId1 + "/unplans/")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

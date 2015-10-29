@@ -3,7 +3,6 @@ package ntut.csie.ezScrum.restful.export;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
