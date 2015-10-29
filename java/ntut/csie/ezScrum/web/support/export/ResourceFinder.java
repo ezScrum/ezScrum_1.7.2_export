@@ -6,6 +6,7 @@ import java.util.List;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
+import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
@@ -79,6 +80,17 @@ public class ResourceFinder {
 		for (IIssue story : wildStories) {
 			if (story.getIssueID() == storyId) {
 				return story;
+			}
+		}
+		return null;
+	}
+	
+	public IIssue findDroppedTask(long taskId) {
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject, null);
+		IIssue[] taskArray = productBacklogHelper.getAddableTasks();
+		for (IIssue task : taskArray) {
+			if (task.getIssueID() == taskId) {
+				return task;
 			}
 		}
 		return null;

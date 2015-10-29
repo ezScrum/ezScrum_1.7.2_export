@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.web.support.export;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +15,13 @@ import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.Issue;
+import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
+import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
@@ -27,8 +30,10 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
@@ -36,7 +41,9 @@ import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -46,6 +53,7 @@ public class JSONEncoderTest {
 	private CreateRelease mCR;
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
+	private AddTaskToStory mATTS;
 	private CreateTask mCT;
 
 	@Before
@@ -66,10 +74,15 @@ public class JSONEncoderTest {
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 
+		// Add Story to Sprint
 		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
 		mASTS.exe();
+		
+		// Add Task to Story
+		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
+		mATTS.exe();
 
-		// Create Task
+		// Create Dropped Task
 		mCT = new CreateTask(2, mCP);
 		mCT.exe();
 	}
@@ -89,6 +102,68 @@ public class JSONEncoderTest {
 		copyProject = null;
 		mCP = null;
 		mCS = null;
+	}
+	
+	@Test
+	public void testToAttachFileJSONArray() throws JSONException {
+		// Test Data
+		String testFile1 = "./TestData/RoleBase.xml";
+		String testFile2 = "./TestData/InitialData/ScrumRole.xml";
+		IIssue task = mATTS.getTaskList().get(0);
+		IProject project = mCP.getProjectList().get(0);
+
+		// Upload Attach File
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		sprintBacklogMapper.addAttachFile(task.getIssueID(), testFile1);
+		sprintBacklogMapper.addAttachFile(task.getIssueID(), testFile2);
+		
+		// Get Task again
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		task = sprintBacklogHelper.getTaskById(task.getIssueID());
+		
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project, null);
+		List<IssueAttachFile> attachFiles = task.getAttachFile();
+		List<File> sourceFiles = new ArrayList<File>();
+		for (IssueAttachFile attachFile : attachFiles) {
+			String attachFileIdString = String.valueOf(attachFile.getAttachFileId());
+			File srouceFile = productBacklogHelper.getAttachFile(attachFileIdString);
+			sourceFiles.add(srouceFile);
+		}
+		JSONArray attachFilesJSONArray = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles);
+		
+		String expectedXmlBinary1 = FileEncoder.toBase64BinaryString(new File(testFile1));
+		String expectedXmlBinary2 = FileEncoder.toBase64BinaryString(new File(testFile2));
+
+		// Assert
+		assertEquals(2, attachFilesJSONArray.length());
+		assertEquals("RoleBase.xml", attachFilesJSONArray.getJSONObject(0).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", attachFilesJSONArray.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary1, attachFilesJSONArray.getJSONObject(0).getString(AttachFileEnum.BINARY));
+
+		assertEquals("ScrumRole.xml", attachFilesJSONArray.getJSONObject(1).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", attachFilesJSONArray.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary2, attachFilesJSONArray.getJSONObject(1).getString(AttachFileEnum.BINARY));
+	}
+
+	@Test
+	public void testToAttachFileJSON() throws JSONException {
+		// Test Data
+		String fileName = "RoleBase.xml";
+		String fileType = "text/xml";
+
+		// Create IssueAttachFile
+		IssueAttachFile attachFile = new IssueAttachFile();
+		attachFile.setFilename(fileName);
+		attachFile.setFileType(fileType);
+
+		File sourceFile = new File("./TestData/RoleBase.xml");
+		JSONObject attachFileJSON = JSONEncoder.toAttachFileJSON(attachFile, sourceFile);
+		String expectedFileBase64Binary = FileEncoder.toBase64BinaryString(sourceFile);
+
+		// Assert
+		assertEquals(fileName, attachFileJSON.getString(AttachFileEnum.NAME));
+		assertEquals(fileType, attachFileJSON.getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedFileBase64Binary, attachFileJSON.getString(AttachFileEnum.BINARY));
 	}
 	
 	@Test
