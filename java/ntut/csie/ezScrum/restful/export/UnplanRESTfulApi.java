@@ -34,4 +34,21 @@ public class UnplanRESTfulApi {
 		String entity = JSONEncoder.toUnplanJSONArray(unplans).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
+	
+	@GET
+	@Path("/{unplanId}/partners")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPartnersInUnplan(@PathParam("projectName") String projectName,
+	                        @PathParam("sprintId") long sprintId, @PathParam("unplanId") long unplanId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
+		IIssue unplan = resourceFinder.findUnplan(unplanId);
+		if (project == null || sprint == null || unplan == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		String partners = unplan.getPartners();
+		String entity = JSONEncoder.toPartnerJSONArray(partners).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
 }

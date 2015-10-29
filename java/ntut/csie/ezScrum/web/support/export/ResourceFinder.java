@@ -7,8 +7,10 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
+import ntut.csie.ezScrum.web.mapper.UnplannedItemMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class ResourceFinder {
@@ -68,19 +70,30 @@ public class ResourceFinder {
 		// Get Stories
 		IIssue[] allStoryArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
 		// Story List for response
-		ArrayList<IIssue> wildStories = new ArrayList<IIssue>();
+		ArrayList<IIssue> droppedStories = new ArrayList<IIssue>();
 		for (IIssue story : allStoryArray) {
 			long sprintId = Long.parseLong(story.getSprintID());
 			// 保留野生的Story
 			if (sprintId <= 0) {
-				wildStories.add(story);
+				droppedStories.add(story);
 			}
 		}
-		for (IIssue story : wildStories) {
+		for (IIssue story : droppedStories) {
 			if (story.getIssueID() == storyId) {
 				return story;
 			}
 		}
 		return null;
+	}
+	
+	public IIssue findUnplan(long unplanId) {
+		if (mProject == null) {
+			return null;
+		}
+		
+		// Create UnplannedItemHelper
+		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(mProject, null);
+		IIssue unplannedItem = unplannedItemHelper.getIssue(unplanId);
+		return unplannedItem;
 	}
 }

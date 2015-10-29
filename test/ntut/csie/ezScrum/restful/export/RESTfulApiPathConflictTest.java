@@ -19,6 +19,7 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -31,7 +32,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
+import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class RESTfulApiPathConflictTest extends JerseyTest {
@@ -150,6 +153,19 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		sprintBacklogHelper.removeTask(task1.getIssueID(), story1.getIssueID());
 		sprintBacklogHelper.removeTask(task3.getIssueID(), story2.getIssueID());
 		
+		// Create an unplan has two partners
+		String name = "unplan name";
+		String estimation = "5";
+		String handler = "Jay";
+		String partners = "Henry;Mike;Jonathan;Tony";
+		String notes = "unplan notes";
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		String specificTime = DateUtil.getNow();
+		// Add new unplanned item
+		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, mConfig.getUserSession());
+		long unplanId = unplannedItemHelper.addUnplannedItem(name, estimation, handler, partners, notes, DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE, sprintId);
+		
 		//{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}
 		// Api Test
 		// Call '/projects' API
@@ -237,6 +253,13 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		// Call '/projects/{projectName}/sprints/{sprintId}/unplans' API
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project1.getName() + "/sprints/" + sprintId1 + "/unplans/")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/unplans/{unplanId}/partners' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project1.getName() + "/sprints/" + sprintId1 + "/unplans/" + unplanId + "/partners")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

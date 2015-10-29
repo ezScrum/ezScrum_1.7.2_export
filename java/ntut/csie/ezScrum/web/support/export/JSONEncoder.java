@@ -22,6 +22,28 @@ import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple partner to JSONArray
+	public static JSONArray toPartnerJSONArray(String partnersString) {
+		JSONArray partnerJSONArray = new JSONArray();
+		String delimiters = ";";
+
+	    // analyzing the string 
+	    String[] partnerStringArray = partnersString.split(delimiters);
+	    for (String partnerString : partnerStringArray) {
+	    	if (partnerString.equals("")) {
+	    		continue;
+	    	}
+	    	JSONObject partnerJSON = new JSONObject();
+	    	try {
+				partnerJSON.put(AccountEnum.USERNAME, partnerString);
+				partnerJSONArray.put(partnerJSON);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+	    }
+		return partnerJSONArray;
+	}
+	
 	// Translate multiple unplan to JSONArray
 	public static JSONArray toUnplanJSONArray(List<IIssue> unplans) {
 		JSONArray unplanJSONArray = new JSONArray();

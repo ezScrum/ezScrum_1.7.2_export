@@ -103,6 +103,46 @@ public class JSONEncoderTest {
 	}
 	
 	@Test
+	public void testToPartnerJSONArray() throws JSONException {
+		String partnersString1 = "";
+		String partnersString2 = "Jay";
+		String partnersString3 = "Jay;";
+		String partnersString4 = "Jay;Mike";
+		String partnersString5 = "Jay;Mike;";
+		String partnersString6 = "Jay;Henry;Mike;Jonathan;Tony";
+		
+		// Assert
+		JSONArray partnerJSONArray1 = JSONEncoder.toPartnerJSONArray(partnersString1);
+		assertEquals(0, partnerJSONArray1.length());
+		
+		JSONArray partnerJSONArray2 = JSONEncoder.toPartnerJSONArray(partnersString2);
+		assertEquals(1, partnerJSONArray2.length());
+		assertEquals("Jay", partnerJSONArray2.getJSONObject(0).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray3 = JSONEncoder.toPartnerJSONArray(partnersString3);
+		assertEquals(1, partnerJSONArray3.length());
+		assertEquals("Jay", partnerJSONArray3.getJSONObject(0).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray4 = JSONEncoder.toPartnerJSONArray(partnersString4);
+		assertEquals(2, partnerJSONArray4.length());
+		assertEquals("Jay", partnerJSONArray4.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("Mike", partnerJSONArray4.getJSONObject(1).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray5 = JSONEncoder.toPartnerJSONArray(partnersString5);
+		assertEquals(2, partnerJSONArray5.length());
+		assertEquals("Jay", partnerJSONArray5.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("Mike", partnerJSONArray5.getJSONObject(1).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray6 = JSONEncoder.toPartnerJSONArray(partnersString6);
+		assertEquals(5, partnerJSONArray6.length());
+		assertEquals("Jay", partnerJSONArray6.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("Henry", partnerJSONArray6.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals("Mike", partnerJSONArray6.getJSONObject(2).getString(AccountEnum.USERNAME));
+		assertEquals("Jonathan", partnerJSONArray6.getJSONObject(3).getString(AccountEnum.USERNAME));
+		assertEquals("Tony", partnerJSONArray6.getJSONObject(4).getString(AccountEnum.USERNAME));
+	}
+	
+	@Test
 	public void testToUnplanJSONArray() throws JSONException {
 		List<IIssue> unplans = mCU.getIssueList();
 		JSONArray unplanJSONArray = JSONEncoder.toUnplanJSONArray(unplans);

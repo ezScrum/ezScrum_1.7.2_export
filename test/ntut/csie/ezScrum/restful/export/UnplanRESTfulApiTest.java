@@ -22,13 +22,17 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
+import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
+import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class UnplanRESTfulApiTest extends JerseyTest {
@@ -107,7 +111,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		
 		// Call '/projects/{projectName}/sprints/{sprintId}/unplans' API
 		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/unplans/")
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/unplans")
 		        .request()
 		        .get();
 
@@ -129,5 +133,36 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		assertEquals(unplans.get(1).getActualHour(), jsonResponse.getJSONObject(1).getString(UnplanEnum.ACTUAL));
 		assertEquals(unplans.get(1).getNotes(), jsonResponse.getJSONObject(1).getString(UnplanEnum.NOTES));
 		assertEquals(unplans.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(UnplanEnum.STATUS));
+	}
+	
+	@Test
+	public void testGetPartnersInUnplan() throws JSONException, InterruptedException {
+		String name = "unplan name";
+		String estimation = "5";
+		String handler = "Jay";
+		String partners = "Henry;Mike;Jonathan;Tony";
+		String notes = "unplan notes";
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		String specificTime = DateUtil.getNow();
+		// Add new unplanned item
+		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, mConfig.getUserSession());
+		long unplanId = unplannedItemHelper.addUnplannedItem(name, estimation, handler, partners, notes, DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE, sprintId);
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/unplans' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/unplans/" + unplanId + "/partners")
+		        .request()
+		        .get();
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert
+		assertEquals(4, jsonResponse.length());
+		
+		assertEquals("Henry", jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("Mike", jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals("Jonathan", jsonResponse.getJSONObject(2).getString(AccountEnum.USERNAME));
+		assertEquals("Tony", jsonResponse.getJSONObject(3).getString(AccountEnum.USERNAME));
 	}
 }
