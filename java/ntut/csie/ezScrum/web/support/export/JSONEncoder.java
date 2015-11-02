@@ -1,5 +1,6 @@
 package ntut.csie.ezScrum.web.support.export;
 
+import java.io.File;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -7,10 +8,12 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
@@ -21,6 +24,51 @@ import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple attach file to JSONArray
+	public static JSONArray toAttachFileJSONArray(List<IssueAttachFile> attachFiles, List<File> sourceFiles) {
+		JSONArray attachFileJSONArray = new JSONArray();
+		for (int i = 0; i < attachFiles.size(); i++) {
+			attachFileJSONArray.put(toAttachFileJSON(attachFiles.get(i), sourceFiles.get(i)));
+		}
+		return attachFileJSONArray;
+	}
+	
+	// Translate account to JSON
+	public static JSONObject toAttachFileJSON(IssueAttachFile attachFile, File sourceFile) {
+		JSONObject attachFileJson = new JSONObject();
+		try {
+			attachFileJson.put(AttachFileEnum.NAME, attachFile.getFilename());
+			attachFileJson.put(AttachFileEnum.CONTENT_TYPE, attachFile.getFileType());
+			String base64BinaryString = FileEncoder.toBase64BinaryString(sourceFile);
+			attachFileJson.put(AttachFileEnum.BINARY, base64BinaryString);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return attachFileJson;
+	}
+	
+	// Translate multiple partner to JSONArray
+	public static JSONArray toPartnerJSONArray(String partnersString) {
+		JSONArray partnerJSONArray = new JSONArray();
+		String delimiters = ";";
+
+		// analyzing the string 
+		String[] partnerStringArray = partnersString.split(delimiters);
+		for (String partnerString : partnerStringArray) {
+			if (partnerString.equals("")) {
+				continue;
+			}
+			JSONObject partnerJSON = new JSONObject();
+			try {
+				partnerJSON.put(AccountEnum.USERNAME, partnerString);
+				partnerJSONArray.put(partnerJSON);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return partnerJSONArray;
+	}
+		
 	// Translate multiple account to JSONArray
 	public static JSONArray toAccountJSONArray(List<IAccount> accounts) {
 		JSONArray accountJsonArray = new JSONArray();
