@@ -105,7 +105,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		IIssue story1 = mASTS.getIssueList().get(0);
 		IIssue story2 = mASTS.getIssueList().get(1);
 
-		// Call '/projects/{projectName}/stories/{storyId}' API
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories' API
 		Response response = mClient.target(mBaseUri)
 		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/")
 		        .request()

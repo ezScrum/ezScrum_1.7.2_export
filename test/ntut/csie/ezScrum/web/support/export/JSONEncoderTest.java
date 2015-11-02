@@ -28,6 +28,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
+import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
@@ -52,6 +53,7 @@ public class JSONEncoderTest {
 	private CreateProject mCP;
 	private CreateRelease mCR;
 	private CreateSprint mCS;
+	private CreateUnplannedItem mCU;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
 	private CreateTask mCT;
@@ -85,6 +87,10 @@ public class JSONEncoderTest {
 		// Create Dropped Task
 		mCT = new CreateTask(2, mCP);
 		mCT.exe();
+		
+		// Create Unplan
+		mCU = new CreateUnplannedItem(2, mCP, mCS);
+		mCU.exe();
 	}
 
 	@After
@@ -101,7 +107,88 @@ public class JSONEncoderTest {
 		ini = null;
 		copyProject = null;
 		mCP = null;
+		mCR = null;
 		mCS = null;
+		mCU = null;
+		mASTS = null;
+		mCT = null;
+	}
+	
+	@Test
+	public void testToPartnerJSONArray() throws JSONException {
+		String partnersString1 = "";
+		String partnersString2 = "Jay";
+		String partnersString3 = "Jay;";
+		String partnersString4 = "Jay;Mike";
+		String partnersString5 = "Jay;Mike;";
+		String partnersString6 = "Jay;Henry;Mike;Jonathan;Tony";
+		
+		// Assert
+		JSONArray partnerJSONArray1 = JSONEncoder.toPartnerJSONArray(partnersString1);
+		assertEquals(0, partnerJSONArray1.length());
+		
+		JSONArray partnerJSONArray2 = JSONEncoder.toPartnerJSONArray(partnersString2);
+		assertEquals(1, partnerJSONArray2.length());
+		assertEquals("Jay", partnerJSONArray2.getJSONObject(0).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray3 = JSONEncoder.toPartnerJSONArray(partnersString3);
+		assertEquals(1, partnerJSONArray3.length());
+		assertEquals("Jay", partnerJSONArray3.getJSONObject(0).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray4 = JSONEncoder.toPartnerJSONArray(partnersString4);
+		assertEquals(2, partnerJSONArray4.length());
+		assertEquals("Jay", partnerJSONArray4.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("Mike", partnerJSONArray4.getJSONObject(1).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray5 = JSONEncoder.toPartnerJSONArray(partnersString5);
+		assertEquals(2, partnerJSONArray5.length());
+		assertEquals("Jay", partnerJSONArray5.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("Mike", partnerJSONArray5.getJSONObject(1).getString(AccountEnum.USERNAME));
+		
+		JSONArray partnerJSONArray6 = JSONEncoder.toPartnerJSONArray(partnersString6);
+		assertEquals(5, partnerJSONArray6.length());
+		assertEquals("Jay", partnerJSONArray6.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("Henry", partnerJSONArray6.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals("Mike", partnerJSONArray6.getJSONObject(2).getString(AccountEnum.USERNAME));
+		assertEquals("Jonathan", partnerJSONArray6.getJSONObject(3).getString(AccountEnum.USERNAME));
+		assertEquals("Tony", partnerJSONArray6.getJSONObject(4).getString(AccountEnum.USERNAME));
+	}
+	
+	@Test
+	public void testToUnplanJSONArray() throws JSONException {
+//		List<IIssue> unplans = mCU.getIssueList();
+//		JSONArray unplanJSONArray = JSONEncoder.toUnplanJSONArray(unplans);
+//		
+//		// Assert
+//		assertEquals(8, unplanJSONArray.length());
+//		
+//		assertEquals(unplans.get(0).getSummary(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.NAME));
+//		assertEquals(unplans.get(0).getAssignto(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.HANDLER));
+//		assertEquals(unplans.get(0).getEstimated(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.ESTIMATE));
+//		assertEquals(unplans.get(0).getActualHour(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.ACTUAL));
+//		assertEquals(unplans.get(0).getNotes(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.NOTES));
+//		assertEquals(unplans.get(0).getStatus(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.STATUS));
+//		
+//		assertEquals(unplans.get(1).getSummary(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.NAME));
+//		assertEquals(unplans.get(1).getAssignto(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.HANDLER));
+//		assertEquals(unplans.get(1).getEstimated(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.ESTIMATE));
+//		assertEquals(unplans.get(1).getActualHour(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.ACTUAL));
+//		assertEquals(unplans.get(1).getNotes(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.NOTES));
+//		assertEquals(unplans.get(1).getStatus(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.STATUS));
+	}
+	
+	@Test
+	public void testToUnplanJSON() throws JSONException {
+//		IIssue unplan = mCU.getIssueList().get(0);
+//		JSONObject unplanJSON = JSONEncoder.toUnplanJSON(unplan);
+//		
+//		// Assert
+//		assertEquals(unplan.getSummary(), unplanJSON.getString(UnplanEnum.NAME));
+//		assertEquals(unplan.getAssignto(), unplanJSON.getString(UnplanEnum.HANDLER));
+//		assertEquals(unplan.getEstimated(), unplanJSON.getString(UnplanEnum.ESTIMATE));
+//		assertEquals(unplan.getActualHour(), unplanJSON.getString(UnplanEnum.ACTUAL));
+//		assertEquals(unplan.getNotes(), unplanJSON.getString(UnplanEnum.NOTES));
+//		assertEquals(unplan.getStatus(), unplanJSON.getString(UnplanEnum.STATUS));
 	}
 	
 	@Test
