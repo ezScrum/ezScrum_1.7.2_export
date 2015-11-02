@@ -1,8 +1,8 @@
 package ntut.csie.ezScrum.restful.export;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.net.URI;
 
 import javax.ws.rs.client.Client;
@@ -29,7 +29,10 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
+import ntut.csie.ezScrum.web.support.export.FileEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class StoryRESTfulApiTest extends JerseyTest {
@@ -114,6 +117,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
 		// Assert
+		assertEquals(2, jsonResponse.length());
 		assertEquals(story1.getIssueID(), jsonResponse.getJSONObject(0).get(StoryEnum.ID));
 		assertEquals(story1.getSummary(), jsonResponse.getJSONObject(0).get(StoryEnum.NAME));
 		assertEquals(story1.getStatus(), jsonResponse.getJSONObject(0).get(StoryEnum.STATUS));
@@ -131,13 +135,74 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(1).get(StoryEnum.VALUE));
 		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(1).get(StoryEnum.NOTES));
 		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(1).get(StoryEnum.HOW_TO_DEMO));
+	}
+	
+	@Test
+	public void testGetDroppedTaskAttachFiles() throws JSONException {
+		// Test Data
+		String testFile = "./TestData/RoleBase.xml";
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
 
-		// No other JSONObject in JSONArray
-		try {
-			jsonResponse.getJSONObject(2);
-			assertTrue(false);
-		} catch (JSONException e) {
-			assertTrue(true);
-		}
+		// Upload Attach File
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		sprintBacklogMapper.addAttachFile(story.getIssueID(), testFile);
+
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId +
+		                "/stories/" + story.getIssueID()
+		                + "/attachfiles")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		String expectedXmlBinary = FileEncoder.toBase64BinaryString(new File(testFile));
+
+		// Assert
+		assertEquals(1, jsonResponse.length());
+		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary, jsonResponse.getJSONObject(0).getString(AttachFileEnum.BINARY));
+	}
+	
+	@Test
+	public void testGetDroppedTaskAttachFiles_MultipleFiles() throws JSONException {
+		// Test Data
+		String testFile1 = "./TestData/RoleBase.xml";
+		String testFile2 = "./TestData/InitialData/ScrumRole.xml";
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+
+		// Upload Attach File
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		sprintBacklogMapper.addAttachFile(story.getIssueID(), testFile1);
+		sprintBacklogMapper.addAttachFile(story.getIssueID(), testFile2);
+
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId +
+		                "/stories/" + story.getIssueID()
+		                + "/attachfiles")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		String expectedXmlBinary1 = FileEncoder.toBase64BinaryString(new File(testFile1));
+		String expectedXmlBinary2 = FileEncoder.toBase64BinaryString(new File(testFile2));
+
+		// Assert
+		assertEquals(2, jsonResponse.length());
+		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary1, jsonResponse.getJSONObject(0).getString(AttachFileEnum.BINARY));
+
+		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
 	}
 }
