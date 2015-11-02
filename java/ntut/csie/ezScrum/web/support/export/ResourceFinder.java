@@ -7,6 +7,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
 import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
@@ -16,6 +17,8 @@ import ntut.csie.jcis.resource.core.IProject;
 public class ResourceFinder {
 	private IProject mProject;
 	private ISprintPlanDesc mSprint;
+	private IIssue mStory;
+	
 
 	public IProject findProject(String projectName) {
 		List<IProject> projects = new ProjectMapper().getAllProjectList();
@@ -55,7 +58,22 @@ public class ResourceFinder {
 		for (IIssue story : storyArray) {
 			if (mSprint.getID().equals(story.getSprintID())
 			        && story.getIssueID() == storyId) {
+				mStory = story;
 				return story;
+			}
+		}
+		return null;
+	}
+	
+	public IIssue findTask(long taskId) {
+		if (mProject == null || mSprint == null || mStory == null) {
+			return null;
+		}
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, null, mSprint.getID());
+		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(mStory.getIssueID()));
+		for (IIssue task : tasks) {
+			if (task.getIssueID() == taskId) {
+				return task;
 			}
 		}
 		return null;
