@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
@@ -19,13 +20,33 @@ import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
-
+	// Translate multiple tag to JSONArray
+	public static JSONArray toTagJSONArray(List<IIssueTag> tags) {
+		JSONArray tagJSONArray = new JSONArray();
+		for (IIssueTag tag : tags) {
+			tagJSONArray.put(toTagJSON(tag));
+		}
+		return tagJSONArray;
+	}
+	
+	// Translate tag to JSON
+	public static JSONObject toTagJSON(IIssueTag tag) {
+		JSONObject tagJSON = new JSONObject();
+		try {
+			tagJSON.put(TagEnum.NAME, tag.getTagName());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return tagJSON;
+	}
+	
 	// Translate multiple unplan to JSONArray
 	public static JSONArray toUnplanJSONArray(List<IIssue> unplans) {
 		JSONArray unplanJSONArray = new JSONArray();

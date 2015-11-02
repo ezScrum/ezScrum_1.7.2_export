@@ -22,6 +22,7 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
@@ -31,6 +32,8 @@ import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.export.FileEncoder;
 import ntut.csie.jcis.resource.core.IProject;
@@ -204,5 +207,37 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
 		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
 		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
+	}
+	
+	@Test
+	public void testGetTagsInStory() throws JSONException {
+		String tagName1 = "Data Migration";
+		String tagName2 = "Thesis";
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
+		productBacklogHelper.addNewTag(tagName1);
+		productBacklogHelper.addNewTag(tagName2);
+		IIssueTag tag1 = productBacklogHelper.getTagByName(tagName1);
+		productBacklogHelper.addStoryTag(String.valueOf(story.getIssueID()), String.valueOf(tag1.getTagId()));
+		IIssueTag tag2 = productBacklogHelper.getTagByName(tagName2);
+		productBacklogHelper.addStoryTag(String.valueOf(story.getIssueID()), String.valueOf(tag2.getTagId()));
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tags' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId +
+		                "/stories/" + story.getIssueID()
+		                + "/tags")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert
+		assertEquals(2, jsonResponse.length());
+		assertEquals(tagName1, jsonResponse.getJSONObject(0).getString(TagEnum.NAME));
+		assertEquals(tagName2, jsonResponse.getJSONObject(1).getString(TagEnum.NAME));
 	}
 }

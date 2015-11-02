@@ -14,8 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
+import ntut.csie.ezScrum.issue.internal.IssueTag;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -40,6 +42,7 @@ import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
@@ -607,5 +610,36 @@ public class JSONEncoderTest {
 		assertEquals(release.getDescription(), releaseJSON.getString(ReleaseEnum.DESCRIPTION));
 		assertEquals(release.getStartDate(), releaseJSON.getString(ReleaseEnum.START_DATE));
 		assertEquals(release.getEndDate(), releaseJSON.getString(ReleaseEnum.DUE_DATE));
+	}
+	
+	@Test
+	public void testToTagJSONArray() throws JSONException {
+		List<IIssueTag> tags = new ArrayList<IIssueTag>();
+		IIssueTag tag1 = new IssueTag();
+		tag1.setTagName("Data Migration");
+		IIssueTag tag2 = new IssueTag();
+		tag2.setTagName("Thesis");
+		tags.add(tag1);
+		tags.add(tag2);
+		
+		// Convert to JSONArray
+		JSONArray tagJSONArray = JSONEncoder.toTagJSONArray(tags);
+		
+		// Assert
+		assertEquals(2, tagJSONArray.length());
+		assertEquals("Data Migration", tagJSONArray.getJSONObject(0).getString(TagEnum.NAME));
+		assertEquals("Thesis", tagJSONArray.getJSONObject(1).getString(TagEnum.NAME));
+	}
+	
+	@Test
+	public void testToTagJSON() throws JSONException {
+		IIssueTag tag = new IssueTag();
+		tag.setTagName("Data Migration");
+		
+		// Convert to JSONObject
+		JSONObject tagJSON = JSONEncoder.toTagJSON(tag);
+		
+		// Assert
+		assertEquals("Data Migration", tagJSON.getString(TagEnum.NAME));
 	}
 }
