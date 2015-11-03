@@ -28,7 +28,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.dataObject.UserInformation;
-import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
