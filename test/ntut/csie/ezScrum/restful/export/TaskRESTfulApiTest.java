@@ -32,12 +32,15 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
+import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.export.FileEncoder;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
+import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class TaskRESTfulApiTest extends JerseyTest {
@@ -209,17 +212,28 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testGetPartners() throws JSONException {
 		// Test Data
+		String userName = "TEST_USER_NAME_";
+		String userRealName = "TEST_USER_REAL_NAME_";
+		String password = "TEST_USER_PASSWORD_";
+		String email = "TEST_USER_EMAIL_";
+		String enable = "true";
+		
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
 				
-		// Create Account
-		CreateAccount createAccount = new CreateAccount(2);
-		createAccount.exe();
+		// Create Accounts
+		AccountHelper accountHelper = new AccountHelper();
+		// Account 1
+		UserInformation userInformation = new UserInformation(userName + 1, userRealName + 1, password + 1, email + 1, enable);
+		IAccount account1 = accountHelper.createAccount(userInformation, "user");
+		// Account 2
+		userInformation = new UserInformation(userName + 2, userRealName + 2, password + 2, email + 2, enable);
+		IAccount account2 = accountHelper.createAccount(userInformation, "user");
 
 		// Add Partners to Task
-		String partners = createAccount.getAccountList().get(0).getName() + ";" + createAccount.getAccountList().get(1).getName();
+		String partners = account1.getName() + ";" + account2.getName();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
 		sprintBacklogHelper.checkOutTask(task.getIssueID(), task.getSummary(), task.getAssignto(), partners, "", null);
 		
@@ -237,7 +251,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 
 		// Assert
 		assertEquals(2, jsonResponse.length());
-		assertEquals(createAccount.getAccountList().get(0).getName(), jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals(createAccount.getAccountList().get(1).getName(), jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals(account1.getName(), jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals(account2.getName(), jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
 	}
 }
