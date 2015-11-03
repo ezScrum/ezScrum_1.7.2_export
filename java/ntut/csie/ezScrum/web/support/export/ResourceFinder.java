@@ -117,6 +117,10 @@ public class ResourceFinder {
 	}
 
 	public IIssue findDroppedTask(long taskId) {
+		if (mProject == null) {
+			return null;
+		}
+		
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject, null);
 		IIssue[] taskArray = productBacklogHelper.getAddableTasks();
 		for (IIssue task : taskArray) {
@@ -128,6 +132,10 @@ public class ResourceFinder {
 	}
 	
 	public IIssue findTaskInDroppedStory(long taskId) {
+		if (mProject == null || mStory == null) {
+			return null;
+		}
+		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, null);
 		IIssue[] taskArray = sprintBacklogHelper.getTaskInStory(String.valueOf(mStory.getIssueID()));
 		for (IIssue task : taskArray) {

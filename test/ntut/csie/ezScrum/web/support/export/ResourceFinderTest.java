@@ -1,9 +1,13 @@
 package ntut.csie.ezScrum.web.support.export;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -15,6 +19,9 @@ import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
+import ntut.csie.jcis.resource.core.IProject;
 
 public class ResourceFinderTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
@@ -84,41 +91,103 @@ public class ResourceFinderTest {
 	
 	@Test
 	public void testFindProject() {
-		
+		IProject project = mCP.getProjectList().get(0);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findProject("not exist project"));
+		assertNotNull(resourceFinder.findProject(project.getName()));
 	}
 	
 	@Test
 	public void testFindSprint() {
-		
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findSprint(Long.parseLong(sprintId)));
+		resourceFinder.findProject(project.getName());
+		assertNotNull(resourceFinder.findSprint(Long.parseLong(sprintId)));
 	}
 	
 	@Test
 	public void testFindStory() {
-		
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findStory(story.getIssueID()));
+		resourceFinder.findProject(project.getName());
+		resourceFinder.findSprint(Long.parseLong(sprintId));
+		assertNotNull(resourceFinder.findStory(story.getIssueID()));
 	}
 	
 	@Test
 	public void testFindTask() {
-		
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findTask(task.getIssueID()));
+		resourceFinder.findProject(project.getName());
+		resourceFinder.findSprint(Long.parseLong(sprintId));
+		resourceFinder.findStory(story.getIssueID());
+		assertNotNull(resourceFinder.findTask(task.getIssueID()));
 	}
 	
 	@Test
-	public void testFindDroppedStory() {
-		
+	public void testFindDroppedStory() throws InterruptedException {
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findDroppedStory(story.getIssueID()));
+		resourceFinder.findProject(project.getName());
+		assertNotNull(resourceFinder.findDroppedStory(story.getIssueID()));
 	}
 	
 	@Test
 	public void testFindUnplan() {
-		
+		IProject project = mCP.getProjectList().get(0);
+		IIssue unplan = mCU.getIssueList().get(0);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findUnplan(unplan.getIssueID()));
+		resourceFinder.findProject(project.getName());
+		assertNotNull(resourceFinder.findUnplan(unplan.getIssueID()));
 	}
 	
 	@Test
 	public void testFindDroppedTask() {
-		
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		// Remove task from story
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		sprintBacklogHelper.removeTask(task.getIssueID(), story.getIssueID());
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findDroppedTask(task.getIssueID()));
+		resourceFinder.findProject(project.getName());
+		assertNotNull(resourceFinder.findDroppedTask(task.getIssueID()));
 	}
 	
 	@Test
-	public void testFindTaskInDroppedStory() {
-		
+	public void testFindTaskInDroppedStory() throws InterruptedException {
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+		ResourceFinder resourceFinder = new ResourceFinder();
+		assertNull(resourceFinder.findTaskInDroppedStory(task.getIssueID()));
+		resourceFinder.findProject(project.getName());
+		resourceFinder.findDroppedStory(story.getIssueID());
+		assertNotNull(resourceFinder.findTaskInDroppedStory(task.getIssueID()));
 	}
 }
