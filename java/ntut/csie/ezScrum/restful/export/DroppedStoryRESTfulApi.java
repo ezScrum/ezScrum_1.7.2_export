@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
@@ -80,7 +81,14 @@ public class DroppedStoryRESTfulApi {
 	public Response getTagsInDroppedStory(@PathParam("projectName") String projectName, @PathParam("storyId") long storyId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
-		String entity = "";
+		IIssue story = resourceFinder.findDroppedStory(storyId);
+		
+		if (project == null || story == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
+		List<IIssueTag> tags = story.getTag();
+		String entity = JSONEncoder.toTagJSONArray(tags).toString();;
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
