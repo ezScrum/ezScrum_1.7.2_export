@@ -44,6 +44,26 @@ public class DroppedStoryRESTfulApi {
 		String entity = JSONEncoder.toStoryJSONArray(droppedStories).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
+	
+	@GET
+	@Path("/{storyId}/attachfiles")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAttachFilesInDroppedStory(@PathParam("projectName") String projectName, @PathParam("storyId") long storyId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		String entity = "";
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{storyId}/tags")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTagsInDroppedStory(@PathParam("projectName") String projectName, @PathParam("storyId") long storyId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		String entity = "";
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
 
 	@GET
 	@Path("/{storyId}/tasks")
@@ -62,6 +82,28 @@ public class DroppedStoryRESTfulApi {
 		// Get Tasks
 		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(storyId));
 		String entity = JSONEncoder.toTaskJSONArray(Arrays.asList(tasks)).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{storyId}/tasks/{taskId}/attachfiles")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAttachFilesInTask(@PathParam("projectName") String projectName,
+	                    @PathParam("storyId") long storyId, @PathParam("taskId") long taskId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		String entity = "";
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{storyId}/tasks/{taskId}/partners")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPartnersInTask(@PathParam("projectName") String projectName,
+	                    @PathParam("storyId") long storyId, @PathParam("taskId") long taskId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		String entity = "";
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

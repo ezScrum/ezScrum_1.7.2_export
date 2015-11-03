@@ -173,4 +173,24 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
                            .get();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 	}
+	
+	@Test
+	public void testGetAttachFilesInDroppedStory() {
+		
+	}
+	
+	@Test
+	public void testGetTagsInDroppedStory() {
+		
+	}
+	
+	@Test
+	public void testGetAttachFilesInTask() {
+		
+	}
+	
+	@Test
+	public void testGetPartnersInTask() {
+		
+	}
 }
