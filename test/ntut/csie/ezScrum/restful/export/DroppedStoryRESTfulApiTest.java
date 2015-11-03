@@ -2,6 +2,7 @@ package ntut.csie.ezScrum.restful.export;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.net.URI;
 
 import javax.ws.rs.client.Client;
@@ -21,16 +22,26 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
+import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
+import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
+import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
+import ntut.csie.ezScrum.web.support.export.FileEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class DroppedStoryRESTfulApiTest extends JerseyTest {
@@ -143,9 +154,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	public void testGetTasksInDroppedStory() throws InterruptedException, JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
-		// Remove story2 from Sprint
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
-		//將Story自Sprint移除, 
 		long story1Id = story1.getIssueID();
 		// It's need some delay for manipulating file IO (add story to sprint)
 		Thread.sleep(1000);
@@ -172,5 +181,173 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
                            .request()
                            .get();
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testGetAttachFilesInDroppedStory() throws JSONException, InterruptedException {
+		// Test Data
+		String testFile1 = "./TestData/RoleBase.xml";
+		String testFile2 = "./TestData/InitialData/ScrumRole.xml";
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+		
+		// Upload Attach File
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
+		productBacklogMapper.addAttachFile(story.getIssueID(), testFile1);
+		productBacklogMapper.addAttachFile(story.getIssueID(), testFile2);
+		
+		// Call '/projects/{projectName}/stories/{storyId}/attachfiles' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story.getIssueID()
+		                + "/attachfiles")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		String expectedXmlBinary1 = FileEncoder.toBase64BinaryString(new File(testFile1));
+		String expectedXmlBinary2 = FileEncoder.toBase64BinaryString(new File(testFile2));
+
+		// Assert
+		assertEquals(2, jsonResponse.length());
+		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary1, jsonResponse.getJSONObject(0).getString(AttachFileEnum.BINARY));
+
+		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
+	}
+	
+	@Test
+	public void testGetTagsInDroppedStory() throws JSONException, InterruptedException {
+		String tagName1 = "Data Migration";
+		String tagName2 = "Thesis";
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+				
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
+		productBacklogHelper.addNewTag(tagName1);
+		productBacklogHelper.addNewTag(tagName2);
+		IIssueTag tag1 = productBacklogHelper.getTagByName(tagName1);
+		productBacklogHelper.addStoryTag(String.valueOf(story.getIssueID()), String.valueOf(tag1.getTagId()));
+		IIssueTag tag2 = productBacklogHelper.getTagByName(tagName2);
+		productBacklogHelper.addStoryTag(String.valueOf(story.getIssueID()), String.valueOf(tag2.getTagId()));
+		
+		// Call '/projects/{projectName}/stories/{storyId}/tags' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story.getIssueID()
+		                + "/tags")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert
+		assertEquals(2, jsonResponse.length());
+		assertEquals(tagName1, jsonResponse.getJSONObject(0).getString(TagEnum.NAME));
+		assertEquals(tagName2, jsonResponse.getJSONObject(1).getString(TagEnum.NAME));
+	}
+	
+	@Test
+	public void testGetAttachFilesInTask() throws InterruptedException, JSONException {
+		// Test Data
+		String testFile1 = "./TestData/RoleBase.xml";
+		String testFile2 = "./TestData/InitialData/ScrumRole.xml";
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+
+		// Upload Attach File
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		sprintBacklogMapper.addAttachFile(task.getIssueID(), testFile1);
+		sprintBacklogMapper.addAttachFile(task.getIssueID(), testFile2);
+		
+		// Remove story from Sprint
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/attachfiles' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story.getIssueID() +
+		                "/tasks/" + task.getIssueID() +
+		                "/attachfiles")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		String expectedXmlBinary1 = FileEncoder.toBase64BinaryString(new File(testFile1));
+		String expectedXmlBinary2 = FileEncoder.toBase64BinaryString(new File(testFile2));
+
+		// Assert
+		assertEquals(2, jsonResponse.length());
+		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary1, jsonResponse.getJSONObject(0).getString(AttachFileEnum.BINARY));
+
+		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
+	}
+	
+	@Test
+	public void testGetPartnersInTask() throws JSONException, InterruptedException {
+		// Test Data
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+
+		// Create Account
+		CreateAccount createAccount = new CreateAccount(2);
+		createAccount.exe();
+
+		// Add Partners to Task
+		String partners = createAccount.getAccountList().get(0).getName() + ";" + createAccount.getAccountList().get(1).getName();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		sprintBacklogHelper.checkOutTask(task.getIssueID(), task.getSummary(), task.getAssignto(), partners, "", null);
+		
+		// Remove story from Sprint
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/partners' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story.getIssueID() +
+		                "/tasks/" + task.getIssueID() +
+		                "/partners")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
+		// Assert
+		assertEquals(2, jsonResponse.length());
+		assertEquals(createAccount.getAccountList().get(0).getName(), jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals(createAccount.getAccountList().get(1).getName(), jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
 	}
 }
