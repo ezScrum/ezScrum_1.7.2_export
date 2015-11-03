@@ -25,6 +25,8 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
+import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
@@ -99,5 +101,28 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		assertEquals(2, jsonArrayResponse.length());
 		assertEquals(JSONEncoder.toProjectJSONArray(projects).toString(), jsonArrayResponse.toString());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testGetTagsInProject() throws JSONException {
+		String tagName1 = "Data Migration";
+		String tagName2 = "Thesis";
+		IProject project = mCP.getProjectList().get(0);
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
+		productBacklogHelper.addNewTag(tagName1);
+		productBacklogHelper.addNewTag(tagName2);
+		
+		// Call '/projects/{projectName}/tags' API
+		Response response = mClient.target(BASE_URL)
+		        .path("projects/" + project.getName() + "/tags")
+		        .request()
+		        .get();
+		
+		JSONArray jsonArrayResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert
+		assertEquals(2, jsonArrayResponse.length());
+		assertEquals(tagName1, jsonArrayResponse.getJSONObject(0).getString(TagEnum.NAME));
+		assertEquals(tagName2, jsonArrayResponse.getJSONObject(1).getString(TagEnum.NAME));
 	}
 }
