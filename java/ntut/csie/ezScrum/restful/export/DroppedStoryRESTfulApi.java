@@ -116,10 +116,25 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/tasks/{taskId}/attachfiles")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAttachFilesInTask(@PathParam("projectName") String projectName,
-	                    @PathParam("storyId") long storyId, @PathParam("taskId") long taskId) {
+	                    				 @PathParam("storyId") long storyId, 
+	                    				 @PathParam("taskId") long taskId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
-		String entity = "";
+		IIssue story = resourceFinder.findDroppedStory(storyId);
+		IIssue task = resourceFinder.findTaskInDroppedStory(taskId);
+		
+		if (project == null || story == null || task == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(project, null);
+		List<File> sourceFiles = new ArrayList<File>();
+		List<IssueAttachFile> attachFiles = task.getAttachFile();
+		for (IssueAttachFile attachFile : attachFiles) {
+			String attachFileIdString = String.valueOf(attachFile.getAttachFileId());
+			File srouceFile = productBacklogHelper.getAttachFile(attachFileIdString);
+			sourceFiles.add(srouceFile);
+		}
+		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 	
@@ -127,10 +142,18 @@ public class DroppedStoryRESTfulApi {
 	@Path("/{storyId}/tasks/{taskId}/partners")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getPartnersInTask(@PathParam("projectName") String projectName,
-	                    @PathParam("storyId") long storyId, @PathParam("taskId") long taskId) {
+	                    			  @PathParam("storyId") long storyId, 
+	                    			  @PathParam("taskId") long taskId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
-		String entity = "";
+		IIssue story = resourceFinder.findDroppedStory(storyId);
+		IIssue task = resourceFinder.findTaskInDroppedStory(taskId);
+		if (project == null || story == null || task == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		@SuppressWarnings("deprecation")
+		String partnersString = task.getPartners();
+		String entity = JSONEncoder.toPartnerJSONArray(partnersString).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

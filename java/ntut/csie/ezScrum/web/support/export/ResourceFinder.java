@@ -98,6 +98,7 @@ public class ResourceFinder {
 		}
 		for (IIssue story : droppedStories) {
 			if (story.getIssueID() == storyId) {
+				mStory = story;
 				return story;
 			}
 		}
@@ -118,6 +119,17 @@ public class ResourceFinder {
 	public IIssue findDroppedTask(long taskId) {
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(mProject, null);
 		IIssue[] taskArray = productBacklogHelper.getAddableTasks();
+		for (IIssue task : taskArray) {
+			if (task.getIssueID() == taskId) {
+				return task;
+			}
+		}
+		return null;
+	}
+	
+	public IIssue findTaskInDroppedStory(long taskId) {
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(mProject, null);
+		IIssue[] taskArray = sprintBacklogHelper.getTaskInStory(String.valueOf(mStory.getIssueID()));
 		for (IIssue task : taskArray) {
 			if (task.getIssueID() == taskId) {
 				return task;
