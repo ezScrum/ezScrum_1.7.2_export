@@ -786,4 +786,67 @@ public class JSONEncoderTest {
 		assertEquals(scrumRole.getReadReport(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
 		assertEquals(scrumRole.getEditProject(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
 	}
+	
+	@Test
+	public void testToProjectRoleJSONArray() throws Exception {
+		IProject project = mCP.getProjectList().get(0);
+		
+		// Test Data
+		String userName = "TEST_USER_NAME_";
+		String userRealName = "TEST_USER_REAL_NAME_";
+		String password = "TEST_USER_PASSWORD_";
+		String email = "TEST_USER_EMAIL_";
+		String enable = "true";
+		
+		// Create Accounts
+		AccountHelper accountHelper = new AccountHelper();
+		// Account 1
+		UserInformation userInformation = new UserInformation(userName + 1, userRealName + 1, password + 1, email + 1, enable);
+		IAccount account1 = accountHelper.createAccount(userInformation, "user");
+		// Account 2
+		userInformation = new UserInformation(userName + 2, userRealName + 2, password + 2, email + 2, enable);
+		IAccount account2 = accountHelper.createAccount(userInformation, "user");
+		
+		IAccount resultAccount1 = accountHelper.assignRole_add(mConfig.getUserSession(), account1.getID(), project.getName(), ScrumRoleEnum.PRODUCT_OWNER);
+		IAccount resultAccount2 = accountHelper.assignRole_add(mConfig.getUserSession(), account2.getID(), project.getName(), ScrumRoleEnum.SCRUM_MASTER);
+		
+		List<IAccount> projectRoles = new ArrayList<IAccount>();
+		projectRoles.add(resultAccount1);
+		projectRoles.add(resultAccount2);
+		JSONArray projectRoleJSONArray = JSONEncoder.toProjectRoleJSONArray(project.getName(), projectRoles);
+		
+		// Assert
+		assertEquals(2, projectRoleJSONArray.length());
+		
+		assertEquals(account1.getID(), projectRoleJSONArray.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals(ScrumRoleEnum.PRODUCT_OWNER, projectRoleJSONArray.getJSONObject(0).getString(ScrumRoleEnum.ROLE));
+		
+		assertEquals(account2.getID(), projectRoleJSONArray.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals(ScrumRoleEnum.SCRUM_MASTER, projectRoleJSONArray.getJSONObject(1).getString(ScrumRoleEnum.ROLE));
+	}
+	
+	@Test
+	public void testToProjectRoleJSON() throws Exception {
+		IProject project = mCP.getProjectList().get(0);
+		
+		// Test Data
+		String userName = "TEST_USER_NAME";
+		String userRealName = "TEST_USER_REAL_NAME";
+		String password = "TEST_USER_PASSWORD";
+		String email = "TEST_USER_EMAIL";
+		String enable = "true";
+		
+		// Create Accounts
+		AccountHelper accountHelper = new AccountHelper();
+		// Account
+		UserInformation userInformation = new UserInformation(userName, userRealName, password, email, enable);
+		IAccount projectRole = accountHelper.createAccount(userInformation, "user");
+		
+		IAccount resultAccount = accountHelper.assignRole_add(mConfig.getUserSession(), projectRole.getID(), project.getName(), ScrumRoleEnum.PRODUCT_OWNER);
+		JSONObject projectRoleJSON = JSONEncoder.toProjectRoleJSON(project.getName(), resultAccount);
+		
+		// Assert
+		assertEquals(userName, projectRoleJSON.getString(AccountEnum.USERNAME));
+		assertEquals(ScrumRoleEnum.PRODUCT_OWNER, projectRoleJSON.getString(ScrumRoleEnum.ROLE));
+	}
 }

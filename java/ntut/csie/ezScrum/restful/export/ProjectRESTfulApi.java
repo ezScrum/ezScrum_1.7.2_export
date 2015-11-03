@@ -18,6 +18,7 @@ import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
 import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.ezScrum.web.support.export.ResourceFinder;
+import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects")
@@ -68,8 +69,25 @@ public class ProjectRESTfulApi {
 		ScrumRole stakeholder = scrumRoleMapper.getPermission(projectName, ScrumRoleEnum.STAKEHOLDER);
 		ScrumRole guest = scrumRoleMapper.getPermission(projectName, ScrumRoleEnum.GUEST);
 		
-		// Get Tag List JSON
 		String entity = JSONEncoder.toScrumRolesJSON(productOwner, scrumMaster, scrumTeam, stakeholder, guest).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{projectName}/projectroles")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getProjectRolesInProject(@PathParam("projectName") String projectName) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		
+		if (project == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
+		ProjectMapper projectMapper = new ProjectMapper();
+		List<IAccount> projectRoles = projectMapper.getProjectMemberList(null, project);
+		
+		String entity = JSONEncoder.toProjectRoleJSONArray(projectName, projectRoles).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

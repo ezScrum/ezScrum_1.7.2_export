@@ -26,9 +26,49 @@ import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 import ntut.csie.jcis.account.core.IAccount;
+import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple project role to JSONArray
+	public static JSONArray toProjectRoleJSONArray(String projectName, List<IAccount> projectRoles) {
+		JSONArray projectRoleJSONArray = new JSONArray();
+		for (IAccount projectRole : projectRoles) {
+			projectRoleJSONArray.put(toProjectRoleJSON(projectName, projectRole));
+		}
+		return projectRoleJSONArray;
+	}
+	
+	// Translate project role to JSON
+	public static JSONObject toProjectRoleJSON(String projectName, IAccount projectRole) {
+		JSONObject projectRoleJSON = new JSONObject();
+		try {
+			projectRoleJSON.put(AccountEnum.USERNAME, projectRole.getID());
+			projectRoleJSON.put(ScrumRoleEnum.ROLE, splitRole(projectName, projectRole.getRoles()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return projectRoleJSON;
+	}
+	
+	// refer to GetProjectMembersAction splitRole(IProject project, IRole[] roles)
+	private static String splitRole(String projectName, IRole[] roles) {
+		String split_role = "";
+
+		if (roles.length > 0) {
+			for (IRole role : roles) {
+				// 將專案的角色以切字串方式取出
+				String[] token = role.getRoleId().split(projectName + "_");
+				if ((token.length == 2) && (token[1].length() > 0)) {
+					// 取得此專案的角色即可
+					split_role = token[1];
+					break;
+				}
+			}
+		}
+		return split_role;
+	}
+	
 	// Translate multiple scrum role to JSON
 	public static JSONObject toScrumRolesJSON(ScrumRole productOwner, ScrumRole scrumMaster, ScrumRole scrumTeam, ScrumRole stakeholder, ScrumRole guest) {
 		JSONObject scrumRolesJSON = new JSONObject();
