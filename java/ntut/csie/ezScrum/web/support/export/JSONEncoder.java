@@ -13,20 +13,98 @@ import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 import ntut.csie.jcis.account.core.IAccount;
+import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple project role to JSONArray
+	public static JSONArray toProjectRoleJSONArray(String projectName, List<IAccount> projectRoles) {
+		JSONArray projectRoleJSONArray = new JSONArray();
+		for (IAccount projectRole : projectRoles) {
+			projectRoleJSONArray.put(toProjectRoleJSON(projectName, projectRole));
+		}
+		return projectRoleJSONArray;
+	}
+	
+	// Translate project role to JSON
+	public static JSONObject toProjectRoleJSON(String projectName, IAccount projectRole) {
+		JSONObject projectRoleJSON = new JSONObject();
+		try {
+			projectRoleJSON.put(AccountEnum.USERNAME, projectRole.getID());
+			projectRoleJSON.put(ScrumRoleEnum.ROLE, splitRole(projectName, projectRole.getRoles()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return projectRoleJSON;
+	}
+	
+	// refer to GetProjectMembersAction splitRole(IProject project, IRole[] roles)
+	private static String splitRole(String projectName, IRole[] roles) {
+		String split_role = "";
+
+		if (roles.length > 0) {
+			for (IRole role : roles) {
+				// 將專案的角色以切字串方式取出
+				String[] token = role.getRoleId().split(projectName + "_");
+				if ((token.length == 2) && (token[1].length() > 0)) {
+					// 取得此專案的角色即可
+					split_role = token[1];
+					break;
+				}
+			}
+		}
+		return split_role;
+	}
+	
+	// Translate multiple scrum role to JSON
+	public static JSONObject toScrumRolesJSON(ScrumRole productOwner, ScrumRole scrumMaster, ScrumRole scrumTeam, ScrumRole stakeholder, ScrumRole guest) {
+		JSONObject scrumRolesJSON = new JSONObject();
+		try {
+			// set scrum role to scrum roles JSON
+			scrumRolesJSON.put(productOwner.getRoleName(), toScrumRoleJSON(productOwner));
+			scrumRolesJSON.put(scrumMaster.getRoleName(), toScrumRoleJSON(scrumMaster));
+			scrumRolesJSON.put(scrumTeam.getRoleName(), toScrumRoleJSON(scrumTeam));
+			scrumRolesJSON.put(stakeholder.getRoleName(), toScrumRoleJSON(stakeholder));
+			scrumRolesJSON.put(guest.getRoleName(), toScrumRoleJSON(guest));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return scrumRolesJSON;
+	}
+	
+	// Translate scrum role to JSON
+	public static JSONObject toScrumRoleJSON(ScrumRole scrumRole) {
+		JSONObject scrumRoleJSON = new JSONObject();
+		try {
+			// set scrum role's access
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG, scrumRole.getAccessProductBacklog());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_SPRINT_PLAN, scrumRole.getAccessSprintPlan());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_TASKBOARD, scrumRole.getAccessTaskBoard());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG, scrumRole.getAccessSprintBacklog());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_RELEASE_PLAN, scrumRole.getAccessReleasePlan());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_RETROSPECTIVE, scrumRole.getAccessRetrospective());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_UNPLANNED, scrumRole.getAccessUnplannedItem());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_REPORT, scrumRole.getReadReport());
+			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_EDIT_PROJECT, scrumRole.getEditProject());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return scrumRoleJSON;
+	}
+	
 	// Translate multiple tag to JSONArray
 	public static JSONArray toTagJSONArray(List<IIssueTag> tags) {
 		JSONArray tagJSONArray = new JSONArray();

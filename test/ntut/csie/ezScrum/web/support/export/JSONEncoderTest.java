@@ -22,6 +22,7 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
+import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -40,6 +41,7 @@ import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
 import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
+import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
@@ -641,5 +643,210 @@ public class JSONEncoderTest {
 		
 		// Assert
 		assertEquals("Data Migration", tagJSON.getString(TagEnum.NAME));
+	}
+	
+	@Test
+	public void testToScrumRolesJSON() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		ScrumRole productOwner = new ScrumRole(project.getName(), ScrumRoleEnum.PRODUCT_OWNER);
+		productOwner.setAccessProductBacklog(true);
+		productOwner.setAccessSprintPlan(true);
+		productOwner.setAccessTaskBoard(false);
+		productOwner.setAccessSprintBacklog(true);
+		productOwner.setAccessReleasePlan(true);
+		productOwner.setAccessRetrospective(false);
+		productOwner.setAccessUnplannedItem(false);
+		productOwner.setReadReport(true);
+		productOwner.setEditProject(true);
+		
+		ScrumRole scrumMaster = new ScrumRole(project.getName(), ScrumRoleEnum.SCRUM_MASTER);
+		scrumMaster.setAccessProductBacklog(true);
+		scrumMaster.setAccessSprintPlan(true);
+		scrumMaster.setAccessTaskBoard(true);
+		scrumMaster.setAccessSprintBacklog(true);
+		scrumMaster.setAccessReleasePlan(true);
+		scrumMaster.setAccessRetrospective(true);
+		scrumMaster.setAccessUnplannedItem(true);
+		scrumMaster.setReadReport(true);
+		scrumMaster.setEditProject(false);
+		
+		ScrumRole scrumTeam = new ScrumRole(project.getName(), ScrumRoleEnum.SCRUM_TEAM);
+		scrumTeam.setAccessProductBacklog(false);
+		scrumTeam.setAccessSprintPlan(true);
+		scrumTeam.setAccessTaskBoard(true);
+		scrumTeam.setAccessSprintBacklog(true);
+		scrumTeam.setAccessReleasePlan(true);
+		scrumTeam.setAccessRetrospective(true);
+		scrumTeam.setAccessUnplannedItem(true);
+		scrumTeam.setReadReport(true);
+		scrumTeam.setEditProject(false);
+		
+		ScrumRole stakeholder = new ScrumRole(project.getName(), ScrumRoleEnum.STAKEHOLDER);
+		stakeholder.setAccessProductBacklog(false);
+		stakeholder.setAccessSprintPlan(false);
+		stakeholder.setAccessTaskBoard(false);
+		stakeholder.setAccessSprintBacklog(false);
+		stakeholder.setAccessReleasePlan(true);
+		stakeholder.setAccessRetrospective(false);
+		stakeholder.setAccessUnplannedItem(false);
+		stakeholder.setReadReport(true);
+		stakeholder.setEditProject(false);
+		
+		ScrumRole guest = new ScrumRole(project.getName(), ScrumRoleEnum.GUEST);
+		guest.setAccessProductBacklog(false);
+		guest.setAccessSprintPlan(false);
+		guest.setAccessTaskBoard(false);
+		guest.setAccessSprintBacklog(false);
+		guest.setAccessReleasePlan(true);
+		guest.setAccessRetrospective(false);
+		guest.setAccessUnplannedItem(false);
+		guest.setReadReport(true);
+		guest.setEditProject(false);
+		
+		JSONObject scrumRolesJSON = JSONEncoder.toScrumRolesJSON(productOwner, scrumMaster, scrumTeam, stakeholder, guest);
+		
+		// Assert Product Owner
+		JSONObject productOwnerJSON = scrumRolesJSON.getJSONObject(ScrumRoleEnum.PRODUCT_OWNER);
+		assertEquals(productOwner.getAccessProductBacklog(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		assertEquals(productOwner.getAccessSprintPlan(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		assertEquals(productOwner.getAccessTaskBoard(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		assertEquals(productOwner.getAccessSprintBacklog(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		assertEquals(productOwner.getAccessReleasePlan(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		assertEquals(productOwner.getAccessRetrospective(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		assertEquals(productOwner.getAccessUnplannedItem(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		assertEquals(productOwner.getReadReport(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		assertEquals(productOwner.getEditProject(), productOwnerJSON.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		
+		// Assert Scrum Master
+		JSONObject scrumMasterJSON = scrumRolesJSON.getJSONObject(ScrumRoleEnum.SCRUM_MASTER);
+		assertEquals(scrumMaster.getAccessProductBacklog(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		assertEquals(scrumMaster.getAccessSprintPlan(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		assertEquals(scrumMaster.getAccessTaskBoard(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		assertEquals(scrumMaster.getAccessSprintBacklog(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		assertEquals(scrumMaster.getAccessReleasePlan(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		assertEquals(scrumMaster.getAccessRetrospective(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		assertEquals(scrumMaster.getAccessUnplannedItem(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		assertEquals(scrumMaster.getReadReport(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		assertEquals(scrumMaster.getEditProject(), scrumMasterJSON.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		
+		// Assert Scrum Team
+		JSONObject scrumTeamJSON = scrumRolesJSON.getJSONObject(ScrumRoleEnum.SCRUM_TEAM);
+		assertEquals(scrumTeam.getAccessProductBacklog(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		assertEquals(scrumTeam.getAccessSprintPlan(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		assertEquals(scrumTeam.getAccessTaskBoard(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		assertEquals(scrumTeam.getAccessSprintBacklog(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		assertEquals(scrumTeam.getAccessReleasePlan(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		assertEquals(scrumTeam.getAccessRetrospective(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		assertEquals(scrumTeam.getAccessUnplannedItem(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		assertEquals(scrumTeam.getReadReport(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		assertEquals(scrumTeam.getEditProject(), scrumTeamJSON.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		
+		// Assert Stakeholder
+		JSONObject stakeholderJSON = scrumRolesJSON.getJSONObject(ScrumRoleEnum.STAKEHOLDER);
+		assertEquals(stakeholder.getAccessProductBacklog(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		assertEquals(stakeholder.getAccessSprintPlan(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		assertEquals(stakeholder.getAccessTaskBoard(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		assertEquals(stakeholder.getAccessSprintBacklog(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		assertEquals(stakeholder.getAccessReleasePlan(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		assertEquals(stakeholder.getAccessRetrospective(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		assertEquals(stakeholder.getAccessUnplannedItem(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		assertEquals(stakeholder.getReadReport(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		assertEquals(stakeholder.getEditProject(), stakeholderJSON.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+		
+		// Assert Guest
+		JSONObject guestJSON = scrumRolesJSON.getJSONObject(ScrumRoleEnum.GUEST);
+		assertEquals(guest.getAccessProductBacklog(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		assertEquals(guest.getAccessSprintPlan(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		assertEquals(guest.getAccessTaskBoard(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		assertEquals(guest.getAccessSprintBacklog(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		assertEquals(guest.getAccessReleasePlan(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		assertEquals(guest.getAccessRetrospective(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		assertEquals(guest.getAccessUnplannedItem(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		assertEquals(guest.getReadReport(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		assertEquals(guest.getEditProject(), guestJSON.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+	}
+	
+	@Test
+	public void testToScrumRoleJSON() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		ScrumRole scrumRole = new ScrumRole(project.getName(), ScrumRoleEnum.PRODUCT_OWNER);
+		scrumRole.setAccessProductBacklog(true);
+		scrumRole.setEditProject(true);
+		
+		JSONObject scrumRoleJSON = JSONEncoder.toScrumRoleJSON(scrumRole);
+		
+		// Assert
+		assertEquals(scrumRole.getAccessProductBacklog(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG));
+		assertEquals(scrumRole.getAccessSprintPlan(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_PLAN));
+		assertEquals(scrumRole.getAccessTaskBoard(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_TASKBOARD));
+		assertEquals(scrumRole.getAccessSprintBacklog(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG));
+		assertEquals(scrumRole.getAccessReleasePlan(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_RELEASE_PLAN));
+		assertEquals(scrumRole.getAccessRetrospective(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_RETROSPECTIVE));
+		assertEquals(scrumRole.getAccessUnplannedItem(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_UNPLANNED));
+		assertEquals(scrumRole.getReadReport(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_REPORT));
+		assertEquals(scrumRole.getEditProject(), scrumRoleJSON.getBoolean(ScrumRoleEnum.ACCESS_EDIT_PROJECT));
+	}
+	
+	@Test
+	public void testToProjectRoleJSONArray() throws Exception {
+		IProject project = mCP.getProjectList().get(0);
+		
+		// Test Data
+		String userName = "TEST_USER_NAME_";
+		String userRealName = "TEST_USER_REAL_NAME_";
+		String password = "TEST_USER_PASSWORD_";
+		String email = "TEST_USER_EMAIL_";
+		String enable = "true";
+		
+		// Create Accounts
+		AccountHelper accountHelper = new AccountHelper();
+		// Account 1
+		UserInformation userInformation = new UserInformation(userName + 1, userRealName + 1, password + 1, email + 1, enable);
+		IAccount account1 = accountHelper.createAccount(userInformation, "user");
+		// Account 2
+		userInformation = new UserInformation(userName + 2, userRealName + 2, password + 2, email + 2, enable);
+		IAccount account2 = accountHelper.createAccount(userInformation, "user");
+		
+		IAccount resultAccount1 = accountHelper.assignRole_add(mConfig.getUserSession(), account1.getID(), project.getName(), ScrumRoleEnum.PRODUCT_OWNER);
+		IAccount resultAccount2 = accountHelper.assignRole_add(mConfig.getUserSession(), account2.getID(), project.getName(), ScrumRoleEnum.SCRUM_MASTER);
+		
+		List<IAccount> projectRoles = new ArrayList<IAccount>();
+		projectRoles.add(resultAccount1);
+		projectRoles.add(resultAccount2);
+		JSONArray projectRoleJSONArray = JSONEncoder.toProjectRoleJSONArray(project.getName(), projectRoles);
+		
+		// Assert
+		assertEquals(2, projectRoleJSONArray.length());
+		
+		assertEquals(account1.getID(), projectRoleJSONArray.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals(ScrumRoleEnum.PRODUCT_OWNER, projectRoleJSONArray.getJSONObject(0).getString(ScrumRoleEnum.ROLE));
+		
+		assertEquals(account2.getID(), projectRoleJSONArray.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals(ScrumRoleEnum.SCRUM_MASTER, projectRoleJSONArray.getJSONObject(1).getString(ScrumRoleEnum.ROLE));
+	}
+	
+	@Test
+	public void testToProjectRoleJSON() throws Exception {
+		IProject project = mCP.getProjectList().get(0);
+		
+		// Test Data
+		String userName = "TEST_USER_NAME";
+		String userRealName = "TEST_USER_REAL_NAME";
+		String password = "TEST_USER_PASSWORD";
+		String email = "TEST_USER_EMAIL";
+		String enable = "true";
+		
+		// Create Accounts
+		AccountHelper accountHelper = new AccountHelper();
+		// Account
+		UserInformation userInformation = new UserInformation(userName, userRealName, password, email, enable);
+		IAccount projectRole = accountHelper.createAccount(userInformation, "user");
+		
+		IAccount resultAccount = accountHelper.assignRole_add(mConfig.getUserSession(), projectRole.getID(), project.getName(), ScrumRoleEnum.PRODUCT_OWNER);
+		JSONObject projectRoleJSON = JSONEncoder.toProjectRoleJSON(project.getName(), resultAccount);
+		
+		// Assert
+		assertEquals(userName, projectRoleJSON.getString(AccountEnum.USERNAME));
+		assertEquals(ScrumRoleEnum.PRODUCT_OWNER, projectRoleJSON.getString(ScrumRoleEnum.ROLE));
 	}
 }
