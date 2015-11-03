@@ -26,15 +26,14 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.ezScrum.web.support.export.FileEncoder;
@@ -48,6 +47,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
+	private CreateAccount mCA;
 
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -82,6 +82,10 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		// Add Task to project
 		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
 		mATTS.exe();
+		
+		// Create Account
+		mCA = new CreateAccount(2);
+		mCA.exe();
 		
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -210,27 +214,14 @@ public class TaskRESTfulApiTest extends JerseyTest {
 
 	@Test
 	public void testGetPartners() throws JSONException {
-		// Test Data
-		String userName = "TEST_USER_NAME_";
-		String userRealName = "TEST_USER_REAL_NAME_";
-		String password = "TEST_USER_PASSWORD_";
-		String email = "TEST_USER_EMAIL_";
-		String enable = "true";
-		
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
-				
-		// Create Accounts
-		AccountHelper accountHelper = new AccountHelper();
-		// Account 1
-		UserInformation userInformation = new UserInformation(userName + 1, userRealName + 1, password + 1, email + 1, enable);
-		IAccount account1 = accountHelper.createAccount(userInformation, "user");
-		// Account 2
-		userInformation = new UserInformation(userName + 2, userRealName + 2, password + 2, email + 2, enable);
-		IAccount account2 = accountHelper.createAccount(userInformation, "user");
 
+		IAccount account1 = mCA.getAccountList().get(0);
+		IAccount account2 = mCA.getAccountList().get(1);
+		
 		// Add Partners to Task
 		String partners = account1.getName() + ";" + account2.getName();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
