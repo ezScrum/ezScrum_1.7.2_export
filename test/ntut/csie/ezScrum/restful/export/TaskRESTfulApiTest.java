@@ -32,7 +32,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -131,7 +130,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		IAccount account1 = mCA.getAccountList().get(0);
 		IAccount account2 = mCA.getAccountList().get(1);
 		// Add Partners to Task1
-		String partners = account1.getName() + ";" + account2.getName();
+		String partners = account1.getID() + ";" + account2.getID();
 		sprintBacklogHelper.checkOutTask(tasks[0].getIssueID(), tasks[0].getSummary(), tasks[0].getAssignto(), partners, "", null);
 		// Refresh tasks
 		tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(story.getIssueID()));
