@@ -4,6 +4,7 @@ public class TaskEnum {
     public static final String ID = "id";
     public static final String NAME = "name";
 	public static final String HANDLER = "handler";
+	public static final String PARTNERS = "partners";
     public static final String ESTIMATE = "estimate";
     public static final String REMAIN = "remain";
     public static final String ACTUAL = "actual";
@@ -14,5 +15,4 @@ public class TaskEnum {
     public static final String STORY_ID = "story_id";
     public static final String CREATE_TIME = "create_time";
     public static final String UPDATE_TIME = "update_time";
-    public static final String PARTNERS = "partners";
 }

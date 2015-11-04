@@ -12,4 +12,6 @@ public class SprintEnum {
 	public static final String DEMO_DATE = "demo_date";
 	public static final String DEMO_PLACE = "demo_place";
 	public static final String DAILY_INFO = "daily_info";
+	public static final String RETROSPECTIVES = "retrospectives";
+	public static final String UNPLANS = "unplans";
 }
