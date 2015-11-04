@@ -79,21 +79,21 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		mCS = new CreateSprint(2, mCP);
 		mCS.exe();
 		
-		// Create Unplan
-		mCU = new CreateUnplannedItem(2, mCP, mCS);
-		mCU.exe();
+		// Add Story to sprint
+		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
+		mASTS.exe();
+
+		// Add Task to Story
+		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
+		mATTS.exe();
 		
 		// Create Retrospective
 		mCRE = new CreateRetrospective(2, 2, mCP, mCS);
 		mCRE.exe();
-
-		// Add Story to project
-		mASTS = new AddStoryToSprint(2, 8, mCS, mCP, CreateProductBacklog.TYPE_ESTIMATION);
-		mASTS.exe();
-
-		// Add Task to project
-		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
-		mATTS.exe();
+		
+		// Create Unplan
+		mCU = new CreateUnplannedItem(2, mCP, mCS);
+		mCU.exe();
 				
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -133,25 +133,14 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 	public void testIsPathConflict() throws InterruptedException {
 		// Test Data
 		// Project 1
-		IProject project1 = mCP.getProjectList().get(0);
+		IProject project = mCP.getProjectList().get(0);
 		String sprintId1 = mCS.getSprintIDList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
 		IIssue story2 = mASTS.getIssueList().get(1);
 		IIssue task1 = mATTS.getTaskList().get(0);
+		IIssue task2 = mATTS.getTaskList().get(1);
 		IIssue task3 = mATTS.getTaskList().get(2);
-		
-		// Drop Story1
-		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project1);
-		
-		// It's need some delay for manipulating file IO (add story to sprint)
-		Thread.sleep(1000);
-		// Remove story1 from Sprint
-		productBacklogLogic.removeStoryFromSprint(story1.getIssueID());
-		
-		// Drop task1, task3 from story
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project1, null);
-		sprintBacklogHelper.removeTask(task1.getIssueID(), story1.getIssueID());
-		sprintBacklogHelper.removeTask(task3.getIssueID(), story2.getIssueID());
+		IIssue task4 = mATTS.getTaskList().get(3);
 		
 		// Create an unplan has two partners
 		String name = "unplan name";
@@ -159,41 +148,87 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		String handler = "Jay";
 		String partners = "Henry;Mike;Jonathan;Tony";
 		String notes = "unplan notes";
-		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		String specificTime = DateUtil.getNow();
 		// Add new unplanned item
 		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, mConfig.getUserSession());
 		long unplanId = unplannedItemHelper.addUnplannedItem(name, estimation, handler, partners, notes, DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE, sprintId);
 		
-		//{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}
 		// Api Test
-		// Call '/projects' API
+		// Call '/accounts' API
 		Response response = mClient.target(mBaseUri)
+		        .path("accounts")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects' API
+		response = mClient.target(mBaseUri)
 		        .path("projects")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/tags' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() + "/tags")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/scrumroles' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() + "/scrumroles")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/projectroles' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() + "/projectroles")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
 		// Call '/projects/{projectName}/sprints' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() + "/sprints")
+		        .path("projects/" + project.getName() + "/sprints")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() +
+		        .path("projects/" + project.getName() +
 		              "/sprints/" + sprintId1 +
 		              "/stories")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId1 +
+		              "/stories/" + story2.getIssueID() +
+		              "/attachfiles")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tags' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId1 +
+		                "/stories/" + story2.getIssueID() +
+		                "/tags")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() +
+		        .path("projects/" + project.getName() +
 		              "/sprints/" + sprintId1 +
 		              "/stories/" + story2.getIssueID() +
 		              "/tasks")
@@ -201,36 +236,31 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
-		// Call '/projects/{projectName}/stories' API
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/attachfiles' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() +
-		              "/stories")
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId1 +
+		                "/stories/" + story2.getIssueID() +
+		                "/tasks/" + task4.getIssueID() +
+		                "/attachfiles")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
-		// Call '/projects/{projectName}/stories' API
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/partners' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() +
-		              "/tasks")
-		        .request()
-		        .get();
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		
-		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
-		Thread.sleep(1000);
-		// Call '/projects/{projectName}/stories/{storyId}/tasks' API
-		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() +
-		        	  "/stories/" + story1.getIssueID() + 
-		        	  "/tasks")
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId1 +
+		                "/stories/" + story2.getIssueID() +
+		                "/tasks/" + task4.getIssueID() +
+		                "/partners")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
 		// Call '/projects/{projectName}/releases' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() +
+		        .path("projects/" + project.getName() +
 		              "/releases")
 		        .request()
 		        .get();
@@ -238,28 +268,118 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		
 		// Call '/projects/{projectName}/sprints/{sprintId}/retrospectives' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() + "/sprints/" + sprintId1 + "/retrospectives")
-		        .request()
-		        .get();
-		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		
-		// Call '/accounts' API
-		response = mClient.target(mBaseUri)
-		        .path("accounts")
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId1 + "/retrospectives")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
 		// Call '/projects/{projectName}/sprints/{sprintId}/unplans' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() + "/sprints/" + sprintId1 + "/unplans/")
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId1 + "/unplans/")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
 		// Call '/projects/{projectName}/sprints/{sprintId}/unplans/{unplanId}/partners' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project1.getName() + "/sprints/" + sprintId1 + "/unplans/" + unplanId + "/partners")
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId1 + "/unplans/" + unplanId + "/partners")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		//// Dropped Resource Test
+		// Drop Story1
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		// Remove story1 from Sprint
+		productBacklogLogic.removeStoryFromSprint(story1.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+
+		// Drop task1, task3 from story
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		sprintBacklogHelper.removeTask(task1.getIssueID(), story1.getIssueID());
+		sprintBacklogHelper.removeTask(task3.getIssueID(), story2.getIssueID());
+		
+		// Call '/projects/{projectName}/stories' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/stories/{storyId}/tasks' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/stories/" + story1.getIssueID() +
+		              "/tasks")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/stories/{storyId}/attachfiles' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/stories/" + story1.getIssueID() + 
+		              "/attachfiles")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/stories/{storyId}/tags' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/stories/" + story1.getIssueID() +
+		              "/tags")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/attachfiles' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/stories/" + story1.getIssueID() +
+		              "/tasks/" + task2.getIssueID() +
+		              "/attachfiles")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/partners' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/stories/" + story1.getIssueID() +
+		              "/tasks/" + task2.getIssueID() +
+		              "/partners")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+		// Call '/projects/{projectName}/tasks' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/tasks")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/tasks/{taskId}/attachfiles' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/tasks/" + task1.getIssueID() +
+		              "/attachfiles")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/tasks/{taskId}/partners' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/tasks/" + task1.getIssueID() +
+		                "/partners")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

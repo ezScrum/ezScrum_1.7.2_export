@@ -21,20 +21,17 @@ import org.junit.Test;
 
 import com.sun.net.httpserver.HttpServer;
 
-import ntut.csie.ezScrum.test.CreateData.CopyProject;
-import ntut.csie.ezScrum.test.CreateData.CreateProject;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
-import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.jcis.account.core.IAccount;
 
 public class AccountRESTfulApiTest extends JerseyTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
-	private CreateProject mCP;
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
+	private CreateAccount mCA;
 	private HttpServer mHttpServer;
 	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
 	private URI mBaseUri = URI.create(BASE_URL);
@@ -51,10 +48,10 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// Create Project
-		mCP = new CreateProject(1);
-		mCP.exeCreate();
-
+		// Create Account
+		mCA = new CreateAccount(2);
+		mCA.exe();
+		
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 
@@ -68,39 +65,17 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		InitialSQL ini = new InitialSQL(mConfig);
 		ini.exe();
 
-		// 刪除測試檔案
-		CopyProject copyProject = new CopyProject(mCP);
-		copyProject.exeDelete_Project();
-
 		// Stop Server
 		mHttpServer.stop(0);
 
 		// ============= release ==============
 		ini = null;
-		copyProject = null;
-		mCP = null;
 		mHttpServer = null;
 		mClient = null;
 	}
 	
 	@Test
 	public void testGetAccounts() throws JSONException {
-		// Test Data
-		String userName = "TEST_USER_NAME_";
-		String userRealName = "TEST_USER_REAL_NAME_";
-		String password = "TEST_USER_PASSWORD_";
-		String email = "TEST_USER_EMAIL_";
-		String enable = "true";
-		
-		// Create Accounts
-		AccountHelper accountHelper = new AccountHelper();
-		// Account 1
-		UserInformation userInformation = new UserInformation(userName + 1, userRealName + 1, password + 1, email + 1, enable);
-		IAccount account1 = accountHelper.createAccount(userInformation, "user");
-		// Account 2
-		userInformation = new UserInformation(userName + 2, userRealName + 2, password + 2, email + 2, enable);
-		IAccount account2 = accountHelper.createAccount(userInformation, "user");
-
 		// Api Test
 		// Call '/accounts' API
 		Response response = mClient.target(mBaseUri)
@@ -115,18 +90,20 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		assertEquals(3, jsonResponse.length());
 		
 		JSONObject accountJSON1 = jsonResponse.getJSONObject(0);
-		assertEquals(account1.getID(), accountJSON1.getString(AccountEnum.USERNAME));
-		assertEquals(account1.getName(), accountJSON1.getString(AccountEnum.NICK_NAME));
-		assertEquals(account1.getPassword(), accountJSON1.getString(AccountEnum.PASSWORD));
-		assertEquals(account1.getEmail(), accountJSON1.getString(AccountEnum.EMAIL));
+		assertEquals("admin", accountJSON1.getString(AccountEnum.USERNAME));
+		assertEquals("admin", accountJSON1.getString(AccountEnum.NICK_NAME));
 		assertEquals(1, accountJSON1.getInt(AccountEnum.ENABLE));
 		
 		JSONObject accountJSON2 = jsonResponse.getJSONObject(1);
-		assertEquals("admin", accountJSON2.getString(AccountEnum.USERNAME));
-		assertEquals("admin", accountJSON2.getString(AccountEnum.NICK_NAME));
+		IAccount account1 = mCA.getAccountList().get(0);
+		assertEquals(account1.getID(), accountJSON2.getString(AccountEnum.USERNAME));
+		assertEquals(account1.getName(), accountJSON2.getString(AccountEnum.NICK_NAME));
+		assertEquals(account1.getPassword(), accountJSON2.getString(AccountEnum.PASSWORD));
+		assertEquals(account1.getEmail(), accountJSON2.getString(AccountEnum.EMAIL));
 		assertEquals(1, accountJSON2.getInt(AccountEnum.ENABLE));
 		
 		JSONObject accountJSON3 = jsonResponse.getJSONObject(2);
+		IAccount account2 = mCA.getAccountList().get(1);
 		assertEquals(account2.getID(), accountJSON3.getString(AccountEnum.USERNAME));
 		assertEquals(account2.getName(), accountJSON3.getString(AccountEnum.NICK_NAME));
 		assertEquals(account2.getPassword(), accountJSON3.getString(AccountEnum.PASSWORD));

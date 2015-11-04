@@ -46,6 +46,7 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
+	private CreateAccount mCA;
 
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -80,6 +81,10 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		// Add Task to Story
 		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
 		mATTS.exe();
+		
+		// Create Account
+		mCA = new CreateAccount(2);
+		mCA.exe();
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -148,10 +153,6 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task1 = mATTS.getTaskList().get(0);
-
-		// Create Account
-		CreateAccount createAccount = new CreateAccount(2);
-		createAccount.exe();
 
 		// Add Partners to Task
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);

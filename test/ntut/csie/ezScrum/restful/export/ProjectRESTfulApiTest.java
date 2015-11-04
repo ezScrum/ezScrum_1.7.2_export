@@ -24,10 +24,10 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
+import ntut.csie.ezScrum.test.CreateData.CreateAccount;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
@@ -43,6 +43,7 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	private CreateProject mCP;
 	private ResourceConfig mResourceConfig;
 	private Client mClient;
+	private CreateAccount mCA;
 	private HttpServer mHttpServer;
 	private static String BASE_URL = "http://localhost:8080/ezScrum/resource/";
 	private URI mBaseUri = URI.create(BASE_URL);
@@ -62,6 +63,10 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 		// Create Project
 		mCP = new CreateProject(2);
 		mCP.exeCreate();
+		
+		// Create Account
+		mCA = new CreateAccount(2);
+		mCA.exe();
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -273,24 +278,10 @@ public class ProjectRESTfulApiTest extends JerseyTest {
 	@Test
 	public void testGetProjectRolesInProject() throws Exception {
 		IProject project = mCP.getProjectList().get(0);
-
-		// Test Data
-		String userName = "TEST_USER_NAME_";
-		String userRealName = "TEST_USER_REAL_NAME_";
-		String password = "TEST_USER_PASSWORD_";
-		String email = "TEST_USER_EMAIL_";
-		String enable = "true";
-
-		// Create Accounts
+		IAccount account1 = mCA.getAccountList().get(0);
+		IAccount account2 = mCA.getAccountList().get(1);
+		
 		AccountHelper accountHelper = new AccountHelper();
-		// Account 1
-		UserInformation userInformation = new UserInformation(userName + 1, userRealName + 1, password + 1, email + 1,
-				enable);
-		IAccount account1 = accountHelper.createAccount(userInformation, "user");
-		// Account 2
-		userInformation = new UserInformation(userName + 2, userRealName + 2, password + 2, email + 2, enable);
-		IAccount account2 = accountHelper.createAccount(userInformation, "user");
-
 		accountHelper.assignRole_add(mConfig.getUserSession(), account1.getID(),
 				project.getName(), ScrumRoleEnum.PRODUCT_OWNER);
 		accountHelper.assignRole_add(mConfig.getUserSession(), account2.getID(),

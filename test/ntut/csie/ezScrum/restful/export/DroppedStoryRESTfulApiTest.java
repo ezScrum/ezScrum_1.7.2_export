@@ -50,6 +50,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 	private CreateSprint mCS;
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
+	private CreateAccount mCA;
 
 	private Client mClient;
 	private HttpServer mHttpServer;
@@ -84,6 +85,10 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Add Task to Story
 		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
 		mATTS.exe();
+		
+		// Create Account
+		mCA = new CreateAccount(2);
+		mCA.exe();
 
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
@@ -317,12 +322,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
 
-		// Create Account
-		CreateAccount createAccount = new CreateAccount(2);
-		createAccount.exe();
-
 		// Add Partners to Task
-		String partners = createAccount.getAccountList().get(0).getName() + ";" + createAccount.getAccountList().get(1).getName();
+		String partners = mCA.getAccountList().get(0).getName() + ";" + mCA.getAccountList().get(1).getName();
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
 		sprintBacklogHelper.checkOutTask(task.getIssueID(), task.getSummary(), task.getAssignto(), partners, "", null);
 		
@@ -347,7 +348,7 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 
 		// Assert
 		assertEquals(2, jsonResponse.length());
-		assertEquals(createAccount.getAccountList().get(0).getName(), jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals(createAccount.getAccountList().get(1).getName(), jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals(mCA.getAccountList().get(0).getName(), jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals(mCA.getAccountList().get(1).getName(), jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
 	}
 }
