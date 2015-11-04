@@ -335,7 +335,8 @@ public class JSONEncoder {
 	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
-			taskJson.put(TaskEnum.NAME, task.getSummary())
+			taskJson.put(TaskEnum.ID, task.getIssueID())
+			        .put(TaskEnum.NAME, task.getSummary())
 			        .put(TaskEnum.HANDLER, task.getAssignto())
 			        .put(TaskEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
 			        .put(TaskEnum.REMAIN, Integer.parseInt(task.getRemains()))
