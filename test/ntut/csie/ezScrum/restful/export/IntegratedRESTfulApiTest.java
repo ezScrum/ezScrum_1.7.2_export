@@ -62,6 +62,7 @@ import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
+import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -261,9 +262,9 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	
 		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, mConfig.getUserSession());
 		// assign account1 as handler for unplan1
-		unplannedItemHelper.modifyUnplannedItemIssue(unplan1.getIssueID(), unplan1.getSummary(), account1.getID(), unplan1.getStatus(), account1.getID(), unplan1.getEstimated(), unplan1.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
+		unplannedItemHelper.modifyUnplannedItemIssue(unplan1.getIssueID(), unplan1.getSummary(), account1.getID(), unplan1.getStatus(), "", unplan1.getEstimated(), unplan1.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
 		// assign account1 as handler, and assign account2, account3 as partners for unplan2
-		unplannedItemHelper.modifyUnplannedItemIssue(unplan2.getIssueID(), unplan2.getSummary(), account2.getID() + ";" + account3.getID(), unplan2.getStatus(), account1.getID(), unplan2.getEstimated(), unplan2.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
+		unplannedItemHelper.modifyUnplannedItemIssue(unplan2.getIssueID(), unplan2.getSummary(), account1.getID(), unplan2.getStatus(), account2.getID() + ";" + account3.getID(), unplan2.getEstimated(), unplan2.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
 	}
 	
 	private void setUpAttachFiles() throws IOException {
@@ -471,15 +472,24 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	
 	@Test
 	public void testGetExportedJSON() throws InterruptedException, JSONException {
-		// Test Data
-		// Project 1
 		IProject project = mCP.getProjectList().get(0);
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
 		IIssue story1 = mASTS.getIssueList().get(0);
+		story1 = productBacklogMapper.getIssue(story1.getIssueID());
 		IIssue story2 = mASTS.getIssueList().get(1);
+		story2 = productBacklogMapper.getIssue(story2.getIssueID());
 		IIssue task1 = mATTS.getTaskList().get(0);
+		task1 = productBacklogMapper.getIssue(task1.getIssueID());
 		IIssue task2 = mATTS.getTaskList().get(1);
+		task2 = productBacklogMapper.getIssue(task2.getIssueID());
 		IIssue task3 = mATTS.getTaskList().get(2);
+		task3 = productBacklogMapper.getIssue(task3.getIssueID());
 		IIssue task4 = mATTS.getTaskList().get(3);
+		task4 = productBacklogMapper.getIssue(task4.getIssueID());
+		IIssue unplan1 = mCU.getIssueList().get(0);
+		unplan1 = productBacklogMapper.getIssue(unplan1.getIssueID());
+		IIssue unplan2 = mCU.getIssueList().get(1);
+		unplan2 = productBacklogMapper.getIssue(unplan2.getIssueID());
 		ResourceFinder resourceFinder = new ResourceFinder();
 		resourceFinder.findProject(project.getName());
 		ISprintPlanDesc sprint = resourceFinder.findSprint(Long.parseLong(mCS.getSprintIDList().get(0)));
@@ -502,12 +512,13 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		
 		// Assert Account data
 		JSONArray accountJSONArray = jsonArrayResponse.getJSONArray(ExportEnum.ACCOUNTS);
-		assertEquals(5, accountJSONArray.length());
-		assertEquals(account1.getID(), accountJSONArray.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals(account2.getID(), accountJSONArray.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals(6, accountJSONArray.length());
+		assertEquals(account5.getID(), accountJSONArray.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals("admin", accountJSONArray.getJSONObject(1).getString(AccountEnum.USERNAME));
 		assertEquals(account3.getID(), accountJSONArray.getJSONObject(2).getString(AccountEnum.USERNAME));
 		assertEquals(account4.getID(), accountJSONArray.getJSONObject(3).getString(AccountEnum.USERNAME));
-		assertEquals(account5.getID(), accountJSONArray.getJSONObject(4).getString(AccountEnum.USERNAME));
+		assertEquals(account1.getID(), accountJSONArray.getJSONObject(4).getString(AccountEnum.USERNAME));
+		assertEquals(account2.getID(), accountJSONArray.getJSONObject(5).getString(AccountEnum.USERNAME));
 		// end
 		
 		// Assert project data
@@ -693,7 +704,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// end
 		
 		// Assert attach files in task4
-		JSONArray attachFileJSONArrayInTask4 = story2JSON.getJSONArray(StoryEnum.ATTACH_FILES);
+		JSONArray attachFileJSONArrayInTask4 = task4JSON.getJSONArray(StoryEnum.ATTACH_FILES);
 		assertEquals(1, attachFileJSONArrayInTask4.length());
 		assertEquals("task4.txt", attachFileJSONArrayInTask4.getJSONObject(0).getString(AttachFileEnum.NAME));
 		assertEquals(TEXT_FILE_TYPE, attachFileJSONArrayInTask4.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
@@ -727,22 +738,21 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// end
 		
 		// Assert unplans in sprint
-		List<IIssue> unplans = mCU.getIssueList();
 		JSONArray unplanJSONArrayInSprint = sprintJSON.getJSONArray(SprintEnum.UNPLANS);
 		assertEquals(2, unplanJSONArrayInSprint.length());
-		assertEquals(unplans.get(0).getSummary(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.NAME));
-		assertEquals(unplans.get(0).getAssignto(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.HANDLER));
-		assertEquals(unplans.get(0).getEstimated(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.ESTIMATE));
-		assertEquals(unplans.get(0).getActualHour(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.ACTUAL));
-		assertEquals(unplans.get(0).getNotes(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.NOTES));
-		assertEquals(unplans.get(0).getStatus(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.STATUS));
+		assertEquals(unplan1.getSummary(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.NAME));
+		assertEquals(unplan1.getAssignto(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.HANDLER));
+		assertEquals(unplan1.getEstimated(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.ESTIMATE));
+		assertEquals(unplan1.getActualHour(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.ACTUAL));
+		assertEquals(unplan1.getNotes(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.NOTES));
+		assertEquals(unplan1.getStatus(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanEnum.STATUS));
 		
-		assertEquals(unplans.get(1).getSummary(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.NAME));
-		assertEquals(unplans.get(1).getAssignto(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.HANDLER));
-		assertEquals(unplans.get(1).getEstimated(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.ESTIMATE));
-		assertEquals(unplans.get(1).getActualHour(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.ACTUAL));
-		assertEquals(unplans.get(1).getNotes(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.NOTES));
-		assertEquals(unplans.get(1).getStatus(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.STATUS));
+		assertEquals(unplan2.getSummary(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.NAME));
+		assertEquals(unplan2.getAssignto(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.HANDLER));
+		assertEquals(unplan2.getEstimated(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.ESTIMATE));
+		assertEquals(unplan2.getActualHour(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.ACTUAL));
+		assertEquals(unplan2.getNotes(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.NOTES));
+		assertEquals(unplan2.getStatus(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanEnum.STATUS));
 		// end
 		
 		// Assert partners in unplan1

@@ -70,6 +70,7 @@ public class AccountRESTfulApiTest extends JerseyTest {
 
 		// ============= release ==============
 		ini = null;
+		mCA = null;
 		mHttpServer = null;
 		mClient = null;
 	}
