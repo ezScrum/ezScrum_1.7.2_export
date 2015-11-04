@@ -46,6 +46,7 @@ import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
 import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
 import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
+import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
@@ -120,80 +121,40 @@ public class JSONEncoderTest {
 	}
 	
 	@Test
-	public void testToPartnerJSONArray() throws JSONException {
-		String partnersString1 = "";
-		String partnersString2 = "Jay";
-		String partnersString3 = "Jay;";
-		String partnersString4 = "Jay;Mike";
-		String partnersString5 = "Jay;Mike;";
-		String partnersString6 = "Jay;Henry;Mike;Jonathan;Tony";
+	public void testToUnplanJSONArray() throws JSONException {
+		List<IIssue> unplans = mCU.getIssueList();
+		JSONArray unplanJSONArray = JSONEncoder.toUnplanJSONArray(unplans);
 		
 		// Assert
-		JSONArray partnerJSONArray1 = JSONEncoder.toPartnerJSONArray(partnersString1);
-		assertEquals(0, partnerJSONArray1.length());
+		assertEquals(8, unplanJSONArray.length());
 		
-		JSONArray partnerJSONArray2 = JSONEncoder.toPartnerJSONArray(partnersString2);
-		assertEquals(1, partnerJSONArray2.length());
-		assertEquals("Jay", partnerJSONArray2.getJSONObject(0).getString(AccountEnum.USERNAME));
+		assertEquals(unplans.get(0).getSummary(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.NAME));
+		assertEquals(unplans.get(0).getAssignto(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.HANDLER));
+		assertEquals(unplans.get(0).getEstimated(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.ESTIMATE));
+		assertEquals(unplans.get(0).getActualHour(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.ACTUAL));
+		assertEquals(unplans.get(0).getNotes(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.NOTES));
+		assertEquals(unplans.get(0).getStatus(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.STATUS));
 		
-		JSONArray partnerJSONArray3 = JSONEncoder.toPartnerJSONArray(partnersString3);
-		assertEquals(1, partnerJSONArray3.length());
-		assertEquals("Jay", partnerJSONArray3.getJSONObject(0).getString(AccountEnum.USERNAME));
-		
-		JSONArray partnerJSONArray4 = JSONEncoder.toPartnerJSONArray(partnersString4);
-		assertEquals(2, partnerJSONArray4.length());
-		assertEquals("Jay", partnerJSONArray4.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals("Mike", partnerJSONArray4.getJSONObject(1).getString(AccountEnum.USERNAME));
-		
-		JSONArray partnerJSONArray5 = JSONEncoder.toPartnerJSONArray(partnersString5);
-		assertEquals(2, partnerJSONArray5.length());
-		assertEquals("Jay", partnerJSONArray5.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals("Mike", partnerJSONArray5.getJSONObject(1).getString(AccountEnum.USERNAME));
-		
-		JSONArray partnerJSONArray6 = JSONEncoder.toPartnerJSONArray(partnersString6);
-		assertEquals(5, partnerJSONArray6.length());
-		assertEquals("Jay", partnerJSONArray6.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals("Henry", partnerJSONArray6.getJSONObject(1).getString(AccountEnum.USERNAME));
-		assertEquals("Mike", partnerJSONArray6.getJSONObject(2).getString(AccountEnum.USERNAME));
-		assertEquals("Jonathan", partnerJSONArray6.getJSONObject(3).getString(AccountEnum.USERNAME));
-		assertEquals("Tony", partnerJSONArray6.getJSONObject(4).getString(AccountEnum.USERNAME));
-	}
-	
-	@Test
-	public void testToUnplanJSONArray() throws JSONException {
-//		List<IIssue> unplans = mCU.getIssueList();
-//		JSONArray unplanJSONArray = JSONEncoder.toUnplanJSONArray(unplans);
-//		
-//		// Assert
-//		assertEquals(8, unplanJSONArray.length());
-//		
-//		assertEquals(unplans.get(0).getSummary(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.NAME));
-//		assertEquals(unplans.get(0).getAssignto(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.HANDLER));
-//		assertEquals(unplans.get(0).getEstimated(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.ESTIMATE));
-//		assertEquals(unplans.get(0).getActualHour(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.ACTUAL));
-//		assertEquals(unplans.get(0).getNotes(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.NOTES));
-//		assertEquals(unplans.get(0).getStatus(), unplanJSONArray.getJSONObject(0).getString(UnplanEnum.STATUS));
-//		
-//		assertEquals(unplans.get(1).getSummary(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.NAME));
-//		assertEquals(unplans.get(1).getAssignto(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.HANDLER));
-//		assertEquals(unplans.get(1).getEstimated(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.ESTIMATE));
-//		assertEquals(unplans.get(1).getActualHour(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.ACTUAL));
-//		assertEquals(unplans.get(1).getNotes(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.NOTES));
-//		assertEquals(unplans.get(1).getStatus(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.STATUS));
+		assertEquals(unplans.get(1).getSummary(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.NAME));
+		assertEquals(unplans.get(1).getAssignto(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.HANDLER));
+		assertEquals(unplans.get(1).getEstimated(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.ESTIMATE));
+		assertEquals(unplans.get(1).getActualHour(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.ACTUAL));
+		assertEquals(unplans.get(1).getNotes(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.NOTES));
+		assertEquals(unplans.get(1).getStatus(), unplanJSONArray.getJSONObject(1).getString(UnplanEnum.STATUS));
 	}
 	
 	@Test
 	public void testToUnplanJSON() throws JSONException {
-//		IIssue unplan = mCU.getIssueList().get(0);
-//		JSONObject unplanJSON = JSONEncoder.toUnplanJSON(unplan);
-//		
-//		// Assert
-//		assertEquals(unplan.getSummary(), unplanJSON.getString(UnplanEnum.NAME));
-//		assertEquals(unplan.getAssignto(), unplanJSON.getString(UnplanEnum.HANDLER));
-//		assertEquals(unplan.getEstimated(), unplanJSON.getString(UnplanEnum.ESTIMATE));
-//		assertEquals(unplan.getActualHour(), unplanJSON.getString(UnplanEnum.ACTUAL));
-//		assertEquals(unplan.getNotes(), unplanJSON.getString(UnplanEnum.NOTES));
-//		assertEquals(unplan.getStatus(), unplanJSON.getString(UnplanEnum.STATUS));
+		IIssue unplan = mCU.getIssueList().get(0);
+		JSONObject unplanJSON = JSONEncoder.toUnplanJSON(unplan);
+		
+		// Assert
+		assertEquals(unplan.getSummary(), unplanJSON.getString(UnplanEnum.NAME));
+		assertEquals(unplan.getAssignto(), unplanJSON.getString(UnplanEnum.HANDLER));
+		assertEquals(unplan.getEstimated(), unplanJSON.getString(UnplanEnum.ESTIMATE));
+		assertEquals(unplan.getActualHour(), unplanJSON.getString(UnplanEnum.ACTUAL));
+		assertEquals(unplan.getNotes(), unplanJSON.getString(UnplanEnum.NOTES));
+		assertEquals(unplan.getStatus(), unplanJSON.getString(UnplanEnum.STATUS));
 	}
 	
 	@Test

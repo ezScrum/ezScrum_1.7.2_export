@@ -74,27 +74,4 @@ public class TaskRESTfulApi {
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
-
-	@GET
-	@Path("/{taskId}/partners")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPartners(@PathParam("projectName") String projectName,
-	        					@PathParam("sprintId") long sprintId,
-	        					@PathParam("storyId") long storyId,
-	        					@PathParam("taskId") long taskId) {
-		ResourceFinder resourceFinder = new ResourceFinder();
-		IProject project = resourceFinder.findProject(projectName);
-		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
-		IIssue story = resourceFinder.findStory(storyId);
-		IIssue task = resourceFinder.findTask(taskId);
-
-		if (project == null || sprint == null ||
-		        story == null || task == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-		@SuppressWarnings("deprecation")
-		String partnersString = task.getPartners();
-		String entity = JSONEncoder.toPartnerJSONArray(partnersString).toString();
-		return Response.status(Response.Status.OK).entity(entity).build();
-	}
 }

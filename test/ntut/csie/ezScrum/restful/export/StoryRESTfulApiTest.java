@@ -110,6 +110,17 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
 		IIssue story2 = mASTS.getIssueList().get(1);
+		String tagName1 = "Data Migration";
+		String tagName2 = "Thesis";
+		
+		// Add Tags to Story1
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
+		productBacklogHelper.addNewTag(tagName1);
+		productBacklogHelper.addNewTag(tagName2);
+		IIssueTag tag1 = productBacklogHelper.getTagByName(tagName1);
+		productBacklogHelper.addStoryTag(String.valueOf(story1.getIssueID()), String.valueOf(tag1.getTagId()));
+		IIssueTag tag2 = productBacklogHelper.getTagByName(tagName2);
+		productBacklogHelper.addStoryTag(String.valueOf(story1.getIssueID()), String.valueOf(tag2.getTagId()));
 
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories' API
 		Response response = mClient.target(mBaseUri)
@@ -129,6 +140,11 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(story1.getValue()), jsonResponse.getJSONObject(0).get(StoryEnum.VALUE));
 		assertEquals(story1.getNotes(), jsonResponse.getJSONObject(0).get(StoryEnum.NOTES));
 		assertEquals(story1.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryEnum.HOW_TO_DEMO));
+		
+		JSONArray tagsJSONArray = jsonResponse.getJSONObject(0).getJSONArray(StoryEnum.TAGS);
+		assertEquals(2, tagsJSONArray.length());
+		assertEquals(tagName1, tagsJSONArray.getJSONObject(0).getString(TagEnum.NAME));
+		assertEquals(tagName2, tagsJSONArray.getJSONObject(1).getString(TagEnum.NAME));
 
 		assertEquals(story2.getIssueID(), jsonResponse.getJSONObject(1).get(StoryEnum.ID));
 		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(1).get(StoryEnum.NAME));
@@ -207,37 +223,5 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
 		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
 		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
-	}
-	
-	@Test
-	public void testGetTagsInStory() throws JSONException {
-		String tagName1 = "Data Migration";
-		String tagName2 = "Thesis";
-		IProject project = mCP.getProjectList().get(0);
-		String sprintId = mCS.getSprintIDList().get(0);
-		IIssue story = mASTS.getIssueList().get(0);
-		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
-		productBacklogHelper.addNewTag(tagName1);
-		productBacklogHelper.addNewTag(tagName2);
-		IIssueTag tag1 = productBacklogHelper.getTagByName(tagName1);
-		productBacklogHelper.addStoryTag(String.valueOf(story.getIssueID()), String.valueOf(tag1.getTagId()));
-		IIssueTag tag2 = productBacklogHelper.getTagByName(tagName2);
-		productBacklogHelper.addStoryTag(String.valueOf(story.getIssueID()), String.valueOf(tag2.getTagId()));
-		
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tags' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/sprints/" + sprintId +
-		                "/stories/" + story.getIssueID()
-		                + "/tags")
-		        .request()
-		        .get();
-
-		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-		
-		// Assert
-		assertEquals(2, jsonResponse.length());
-		assertEquals(tagName1, jsonResponse.getJSONObject(0).getString(TagEnum.NAME));
-		assertEquals(tagName2, jsonResponse.getJSONObject(1).getString(TagEnum.NAME));
 	}
 }

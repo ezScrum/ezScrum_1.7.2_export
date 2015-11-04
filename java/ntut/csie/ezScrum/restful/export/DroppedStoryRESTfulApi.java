@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
@@ -76,23 +75,6 @@ public class DroppedStoryRESTfulApi {
 	}
 	
 	@GET
-	@Path("/{storyId}/tags")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTagsInDroppedStory(@PathParam("projectName") String projectName, @PathParam("storyId") long storyId) {
-		ResourceFinder resourceFinder = new ResourceFinder();
-		IProject project = resourceFinder.findProject(projectName);
-		IIssue story = resourceFinder.findDroppedStory(storyId);
-		
-		if (project == null || story == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-		
-		List<IIssueTag> tags = story.getTag();
-		String entity = JSONEncoder.toTagJSONArray(tags).toString();;
-		return Response.status(Response.Status.OK).entity(entity).build();
-	}
-
-	@GET
 	@Path("/{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTasksInDroppedStory(@PathParam("projectName") String projectName,
@@ -135,25 +117,6 @@ public class DroppedStoryRESTfulApi {
 			sourceFiles.add(srouceFile);
 		}
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
-		return Response.status(Response.Status.OK).entity(entity).build();
-	}
-	
-	@GET
-	@Path("/{storyId}/tasks/{taskId}/partners")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPartnersInTask(@PathParam("projectName") String projectName,
-	                    			  @PathParam("storyId") long storyId, 
-	                    			  @PathParam("taskId") long taskId) {
-		ResourceFinder resourceFinder = new ResourceFinder();
-		IProject project = resourceFinder.findProject(projectName);
-		IIssue story = resourceFinder.findDroppedStory(storyId);
-		IIssue task = resourceFinder.findTaskInDroppedStory(taskId);
-		if (project == null || story == null || task == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-		@SuppressWarnings("deprecation")
-		String partnersString = task.getPartners();
-		String entity = JSONEncoder.toPartnerJSONArray(partnersString).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

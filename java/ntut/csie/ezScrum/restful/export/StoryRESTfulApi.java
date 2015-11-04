@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
@@ -63,25 +62,6 @@ public class StoryRESTfulApi {
 			sourceFiles.add(srouceFile);
 		}
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
-		return Response.status(Response.Status.OK).entity(entity).build();
-	}
-	
-	@GET
-	@Path("/{storyId}/tags")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTagsInStory(@PathParam("projectName") String projectName,
-			@PathParam("sprintId") long sprintId, @PathParam("storyId") long storyId) {
-		ResourceFinder resourceFinder = new ResourceFinder();
-		IProject project = resourceFinder.findProject(projectName);
-		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
-		IIssue story = resourceFinder.findStory(storyId);
-
-		if (project == null || sprint == null || story == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-		
-		List<IIssueTag> tags = story.getTag();
-		String entity = JSONEncoder.toTagJSONArray(tags).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

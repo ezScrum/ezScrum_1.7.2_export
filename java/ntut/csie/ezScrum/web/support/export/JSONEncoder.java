@@ -144,6 +144,21 @@ public class JSONEncoder {
 			unplanJSON.put(UnplanEnum.ACTUAL, unplan.getActualHour());
 			unplanJSON.put(UnplanEnum.NOTES, unplan.getNotes());
 			unplanJSON.put(UnplanEnum.STATUS, unplan.getStatus());
+			// Process Partners
+			JSONArray partnerJSONArray = new JSONArray();
+			String delimiters = ";";
+			// analyzing the string 
+			@SuppressWarnings("deprecation")
+			String[] partnerStringArray = unplan.getPartners().split(delimiters);
+			for (String partnerString : partnerStringArray) {
+				if (partnerString.equals("")) {
+					continue;
+				}
+				JSONObject partnerJSON = new JSONObject();
+				partnerJSON.put(AccountEnum.USERNAME, partnerString);
+				partnerJSONArray.put(partnerJSON);
+			}
+			unplanJSON.put(UnplanEnum.PARTNERS, partnerJSONArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -171,28 +186,6 @@ public class JSONEncoder {
 			e.printStackTrace();
 		}
 		return attachFileJson;
-	}
-
-	// Translate multiple partner to JSONArray
-	public static JSONArray toPartnerJSONArray(String partnersString) {
-		JSONArray partnerJSONArray = new JSONArray();
-		String delimiters = ";";
-
-		// analyzing the string 
-		String[] partnerStringArray = partnersString.split(delimiters);
-		for (String partnerString : partnerStringArray) {
-			if (partnerString.equals("")) {
-				continue;
-			}
-			JSONObject partnerJSON = new JSONObject();
-			try {
-				partnerJSON.put(AccountEnum.USERNAME, partnerString);
-				partnerJSONArray.put(partnerJSON);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		return partnerJSONArray;
 	}
 
 	// Translate multiple account to JSONArray
@@ -316,6 +309,13 @@ public class JSONEncoder {
 			        .put(StoryEnum.VALUE, Integer.parseInt(story.getValue()))
 			        .put(StoryEnum.NOTES, story.getNotes())
 			        .put(StoryEnum.HOW_TO_DEMO, story.getHowToDemo());
+			JSONArray tagJSONArray = new JSONArray();
+			for (IIssueTag tag : story.getTag()) {
+				JSONObject tagJSON = new JSONObject();
+				tagJSON.put(TagEnum.NAME, tag.getTagName());
+				tagJSONArray.put(tagJSON);
+			}
+			storyJson.put(StoryEnum.TAGS, tagJSONArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -342,6 +342,21 @@ public class JSONEncoder {
 			        .put(TaskEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
 			        .put(TaskEnum.NOTES, task.getNotes())
 			        .put(TaskEnum.STATUS, task.getStatus());
+			// Process Partners
+			JSONArray partnerJSONArray = new JSONArray();
+			String delimiters = ";";
+			// analyzing the string 
+			@SuppressWarnings("deprecation")
+			String[] partnerStringArray = task.getPartners().split(delimiters);
+			for (String partnerString : partnerStringArray) {
+				if (partnerString.equals("")) {
+					continue;
+				}
+				JSONObject partnerJSON = new JSONObject();
+				partnerJSON.put(AccountEnum.USERNAME, partnerString);
+				partnerJSONArray.put(partnerJSON);
+			}
+			taskJson.put(TaskEnum.PARTNERS, partnerJSONArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

@@ -127,6 +127,15 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		// Get Tasks
 		IIssue[] tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(story.getIssueID()));
 		
+		// Create Account
+		IAccount account1 = mCA.getAccountList().get(0);
+		IAccount account2 = mCA.getAccountList().get(1);
+		// Add Partners to Task1
+		String partners = account1.getName() + ";" + account2.getName();
+		sprintBacklogHelper.checkOutTask(tasks[0].getIssueID(), tasks[0].getSummary(), tasks[0].getAssignto(), partners, "", null);
+		// Refresh tasks
+		tasks = sprintBacklogHelper.getTaskInStory(String.valueOf(story.getIssueID()));
+		
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}' API
 		Response response = mClient.target(mBaseUri)
 								   .path("projects/" + project.getName() +
@@ -210,38 +219,5 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
 		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
 		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
-	}
-
-	@Test
-	public void testGetPartners() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		String sprintId = mCS.getSprintIDList().get(0);
-		IIssue story = mASTS.getIssueList().get(0);
-		IIssue task = mATTS.getTaskList().get(0);
-
-		IAccount account1 = mCA.getAccountList().get(0);
-		IAccount account2 = mCA.getAccountList().get(1);
-		
-		// Add Partners to Task
-		String partners = account1.getName() + ";" + account2.getName();
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
-		sprintBacklogHelper.checkOutTask(task.getIssueID(), task.getSummary(), task.getAssignto(), partners, "", null);
-		
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/partners' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/sprints/" + sprintId +
-		                "/stories/" + story.getIssueID() +
-		                "/tasks/" + task.getIssueID() +
-		                "/partners")
-		        .request()
-		        .get();
-		
-		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(2, jsonResponse.length());
-		assertEquals(account1.getName(), jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals(account2.getName(), jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
 	}
 }
