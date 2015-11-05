@@ -59,22 +59,4 @@ public class DroppedTaskRESTfulApi {
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
-	
-	@GET
-	@Path("/{taskId}/partners")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPartners(@PathParam("projectName") String projectName,
-			                    @PathParam("taskId") long taskId) {
-		ResourceFinder resourceFinder = new ResourceFinder();
-		IProject project = resourceFinder.findProject(projectName);
-		IIssue droppedTask = resourceFinder.findDroppedTask(taskId);
-
-		if (project == null || droppedTask == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		}
-		@SuppressWarnings("deprecation")
-		String partnersString = droppedTask.getPartners();
-		String entity = JSONEncoder.toPartnerJSONArray(partnersString).toString();
-		return Response.status(Response.Status.OK).entity(entity).build();
-	}
 }

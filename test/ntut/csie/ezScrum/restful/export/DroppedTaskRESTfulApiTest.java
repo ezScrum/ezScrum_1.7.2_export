@@ -32,7 +32,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
 import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -125,9 +124,13 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task1 = mATTS.getTaskList().get(0);
 		IIssue task2 = mATTS.getTaskList().get(1);
+		
+		// Add Partners to Task1
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		sprintBacklogHelper.checkOutTask(task1.getIssueID(), task1.getSummary(), task1.getAssignto(), "account1;account2", "", null);
+		task1 = sprintBacklogHelper.getIssue(task1.getIssueID());
 
 		// Remove task from story
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
 		sprintBacklogHelper.removeTask(task1.getIssueID(), story.getIssueID());
 		sprintBacklogHelper.removeTask(task2.getIssueID(), story.getIssueID());
 
@@ -146,36 +149,6 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(2, jsonResponse.length());
 		assertEquals(JSONEncoder.toTaskJSONArray(droppedTasks).toString(), jsonResponse.toString());
-	}
-
-	@Test
-	public void testGetDroppedTaskPartners() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		IIssue story = mASTS.getIssueList().get(0);
-		IIssue task1 = mATTS.getTaskList().get(0);
-
-		// Add Partners to Task
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
-		sprintBacklogHelper.checkOutTask(task1.getIssueID(), task1.getSummary(), task1.getAssignto(), "account1;account2", "", null);
-
-		// Remove task from story
-		sprintBacklogHelper.removeTask(task1.getIssueID(), story.getIssueID());
-
-		// Call '/projects/{projectName}/tasks/{taskId}/partners' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/tasks/" + task1.getIssueID() +
-		                "/partners")
-		        .request()
-		        .get();
-
-		// Assert
-		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-
-		// Assert
-		assertEquals(2, jsonResponse.length());
-		assertEquals("account1", jsonResponse.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals("account2", jsonResponse.getJSONObject(1).getString(AccountEnum.USERNAME));
 	}
 
 	@Test

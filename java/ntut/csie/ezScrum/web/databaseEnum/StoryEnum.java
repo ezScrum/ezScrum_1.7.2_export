@@ -9,4 +9,6 @@ public class StoryEnum {
 	public static final String VALUE = "value";
 	public static final String NOTES = "notes";
 	public static final String HOW_TO_DEMO = "how_to_demo";
+	public static final String TAGS = "tags";
+	public static final String ATTACH_FILES = "attach_files";
 }
