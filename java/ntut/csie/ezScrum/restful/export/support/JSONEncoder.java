@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.support.export;
+package ntut.csie.ezScrum.restful.export.support;
 
 import java.io.File;
 import java.util.List;
@@ -14,17 +14,17 @@ import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.databaseEnum.ProjectEnum;
-import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
-import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
-import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
-import ntut.csie.ezScrum.web.databaseEnum.SprintEnum;
-import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
-import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
-import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
-import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.ReleaseJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.RetrospectiveJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.ScrumRoleJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.SprintJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.StoryJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.UnplanJSONEnum;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.resource.core.IProject;
@@ -43,8 +43,8 @@ public class JSONEncoder {
 	public static JSONObject toProjectRoleJSON(String projectName, IAccount projectRole) {
 		JSONObject projectRoleJSON = new JSONObject();
 		try {
-			projectRoleJSON.put(AccountEnum.USERNAME, projectRole.getID());
-			projectRoleJSON.put(ScrumRoleEnum.ROLE, splitRole(projectName, projectRole.getRoles()));
+			projectRoleJSON.put(AccountJSONEnum.USERNAME, projectRole.getID());
+			projectRoleJSON.put(ScrumRoleJSONEnum.ROLE, splitRole(projectName, projectRole.getRoles()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -90,15 +90,15 @@ public class JSONEncoder {
 		JSONObject scrumRoleJSON = new JSONObject();
 		try {
 			// set scrum role's access
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_PRODUCT_BACKLOG, scrumRole.getAccessProductBacklog());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_SPRINT_PLAN, scrumRole.getAccessSprintPlan());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_TASKBOARD, scrumRole.getAccessTaskBoard());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_SPRINT_BACKLOG, scrumRole.getAccessSprintBacklog());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_RELEASE_PLAN, scrumRole.getAccessReleasePlan());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_RETROSPECTIVE, scrumRole.getAccessRetrospective());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_UNPLANNED, scrumRole.getAccessUnplannedItem());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_REPORT, scrumRole.getReadReport());
-			scrumRoleJSON.put(ScrumRoleEnum.ACCESS_EDIT_PROJECT, scrumRole.getEditProject());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG, scrumRole.getAccessProductBacklog());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN, scrumRole.getAccessSprintPlan());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_TASKBOARD, scrumRole.getAccessTaskBoard());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG, scrumRole.getAccessSprintBacklog());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN, scrumRole.getAccessReleasePlan());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE, scrumRole.getAccessRetrospective());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLANNED, scrumRole.getAccessUnplannedItem());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, scrumRole.getReadReport());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, scrumRole.getEditProject());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -118,7 +118,7 @@ public class JSONEncoder {
 	public static JSONObject toTagJSON(IIssueTag tag) {
 		JSONObject tagJSON = new JSONObject();
 		try {
-			tagJSON.put(TagEnum.NAME, tag.getTagName());
+			tagJSON.put(TagJSONEnum.NAME, tag.getTagName());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -138,12 +138,12 @@ public class JSONEncoder {
 	public static JSONObject toUnplanJSON(IIssue unplan) {
 		JSONObject unplanJSON = new JSONObject();
 		try {
-			unplanJSON.put(UnplanEnum.NAME, unplan.getSummary());
-			unplanJSON.put(UnplanEnum.HANDLER, unplan.getAssignto());
-			unplanJSON.put(UnplanEnum.ESTIMATE, unplan.getEstimated());
-			unplanJSON.put(UnplanEnum.ACTUAL, unplan.getActualHour());
-			unplanJSON.put(UnplanEnum.NOTES, unplan.getNotes());
-			unplanJSON.put(UnplanEnum.STATUS, unplan.getStatus());
+			unplanJSON.put(UnplanJSONEnum.NAME, unplan.getSummary());
+			unplanJSON.put(UnplanJSONEnum.HANDLER, unplan.getAssignto());
+			unplanJSON.put(UnplanJSONEnum.ESTIMATE, unplan.getEstimated());
+			unplanJSON.put(UnplanJSONEnum.ACTUAL, unplan.getActualHour());
+			unplanJSON.put(UnplanJSONEnum.NOTES, unplan.getNotes());
+			unplanJSON.put(UnplanJSONEnum.STATUS, unplan.getStatus());
 			// Process Partners
 			JSONArray partnerJSONArray = new JSONArray();
 			String delimiters = ";";
@@ -155,10 +155,10 @@ public class JSONEncoder {
 					continue;
 				}
 				JSONObject partnerJSON = new JSONObject();
-				partnerJSON.put(AccountEnum.USERNAME, partnerString);
+				partnerJSON.put(AccountJSONEnum.USERNAME, partnerString);
 				partnerJSONArray.put(partnerJSON);
 			}
-			unplanJSON.put(UnplanEnum.PARTNERS, partnerJSONArray);
+			unplanJSON.put(UnplanJSONEnum.PARTNERS, partnerJSONArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -178,10 +178,10 @@ public class JSONEncoder {
 	public static JSONObject toAttachFileJSON(IssueAttachFile attachFile, File sourceFile) {
 		JSONObject attachFileJson = new JSONObject();
 		try {
-			attachFileJson.put(AttachFileEnum.NAME, attachFile.getFilename());
-			attachFileJson.put(AttachFileEnum.CONTENT_TYPE, attachFile.getFileType());
+			attachFileJson.put(AttachFileJSONEnum.NAME, attachFile.getFilename());
+			attachFileJson.put(AttachFileJSONEnum.CONTENT_TYPE, attachFile.getFileType());
 			String base64BinaryString = FileEncoder.toBase64BinaryString(sourceFile);
-			attachFileJson.put(AttachFileEnum.BINARY, base64BinaryString);
+			attachFileJson.put(AttachFileJSONEnum.BINARY, base64BinaryString);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -201,11 +201,11 @@ public class JSONEncoder {
 	public static JSONObject toAccountJSON(IAccount account) {
 		JSONObject accountJson = new JSONObject();
 		try {
-			accountJson.put(AccountEnum.USERNAME, account.getID());
-			accountJson.put(AccountEnum.NICK_NAME, account.getName());
-			accountJson.put(AccountEnum.PASSWORD, account.getPassword());
-			accountJson.put(AccountEnum.EMAIL, account.getEmail());
-			accountJson.put(AccountEnum.ENABLE, account.getEnable().equalsIgnoreCase("true") ? 1 : 0);
+			accountJson.put(AccountJSONEnum.USERNAME, account.getID());
+			accountJson.put(AccountJSONEnum.NICK_NAME, account.getName());
+			accountJson.put(AccountJSONEnum.PASSWORD, account.getPassword());
+			accountJson.put(AccountJSONEnum.EMAIL, account.getEmail());
+			accountJson.put(AccountJSONEnum.ENABLE, account.getEnable().equalsIgnoreCase("true") ? 1 : 0);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -225,10 +225,10 @@ public class JSONEncoder {
 	public static JSONObject toRetrospectiveJSON(IScrumIssue retrospective) {
 		JSONObject retrospectiveJson = new JSONObject();
 		try {
-			retrospectiveJson.put(RetrospectiveEnum.NAME, retrospective.getName());
-			retrospectiveJson.put(RetrospectiveEnum.DESCRIPTION, retrospective.getDescription());
-			retrospectiveJson.put(RetrospectiveEnum.TYPE, retrospective.getCategory());
-			retrospectiveJson.put(RetrospectiveEnum.STATUS, retrospective.getStatus());
+			retrospectiveJson.put(RetrospectiveJSONEnum.NAME, retrospective.getName());
+			retrospectiveJson.put(RetrospectiveJSONEnum.DESCRIPTION, retrospective.getDescription());
+			retrospectiveJson.put(RetrospectiveJSONEnum.TYPE, retrospective.getCategory());
+			retrospectiveJson.put(RetrospectiveJSONEnum.STATUS, retrospective.getStatus());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -248,17 +248,17 @@ public class JSONEncoder {
 	public static JSONObject toSprintJSON(ISprintPlanDesc sprint) {
 		JSONObject sprintJson = new JSONObject();
 		try {
-			sprintJson.put(SprintEnum.ID, Long.parseLong(sprint.getID()))
-			        .put(SprintEnum.GOAL, sprint.getGoal())
-			        .put(SprintEnum.INTERVAL, Integer.parseInt(sprint.getInterval()))
-			        .put(SprintEnum.TEAM_SIZE, Integer.parseInt(sprint.getMemberNumber()))
-			        .put(SprintEnum.AVAILABLE_HOURS, Integer.parseInt(sprint.getAvailableDays()))
-			        .put(SprintEnum.FOCUS_FACTOR, Integer.parseInt(sprint.getFocusFactor()))
-			        .put(SprintEnum.START_DATE, sprint.getStartDate())
-			        .put(SprintEnum.DUE_DATE, sprint.getEndDate())
-			        .put(SprintEnum.DEMO_DATE, sprint.getDemoDate())
-			        .put(SprintEnum.DEMO_PLACE, sprint.getDemoPlace())
-			        .put(SprintEnum.DAILY_INFO, sprint.getNotes());
+			sprintJson.put(SprintJSONEnum.ID, Long.parseLong(sprint.getID()))
+			        .put(SprintJSONEnum.GOAL, sprint.getGoal())
+			        .put(SprintJSONEnum.INTERVAL, Integer.parseInt(sprint.getInterval()))
+			        .put(SprintJSONEnum.TEAM_SIZE, Integer.parseInt(sprint.getMemberNumber()))
+			        .put(SprintJSONEnum.AVAILABLE_HOURS, Integer.parseInt(sprint.getAvailableDays()))
+			        .put(SprintJSONEnum.FOCUS_FACTOR, Integer.parseInt(sprint.getFocusFactor()))
+			        .put(SprintJSONEnum.START_DATE, sprint.getStartDate())
+			        .put(SprintJSONEnum.DUE_DATE, sprint.getEndDate())
+			        .put(SprintJSONEnum.DEMO_DATE, sprint.getDemoDate())
+			        .put(SprintJSONEnum.DEMO_PLACE, sprint.getDemoPlace())
+			        .put(SprintJSONEnum.DAILY_INFO, sprint.getNotes());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -277,11 +277,11 @@ public class JSONEncoder {
 	public static JSONObject toProjectJSON(IProject project) {
 		JSONObject projectJson = new JSONObject();
 		try {
-			projectJson.put(ProjectEnum.NAME, project.getName())
-			        .put(ProjectEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
-			        .put(ProjectEnum.COMMENT, project.getProjectDesc().getComment())
-			        .put(ProjectEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
-			        .put(ProjectEnum.ATTATCH_MAX_SIZE, Long.parseLong(project.getProjectDesc().getAttachFileSize()));
+			projectJson.put(ProjectJSONEnum.NAME, project.getName())
+			        .put(ProjectJSONEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
+			        .put(ProjectJSONEnum.COMMENT, project.getProjectDesc().getComment())
+			        .put(ProjectJSONEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
+			        .put(ProjectJSONEnum.ATTATCH_MAX_SIZE, Long.parseLong(project.getProjectDesc().getAttachFileSize()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -301,21 +301,21 @@ public class JSONEncoder {
 	public static JSONObject toStoryJSON(IIssue story) {
 		JSONObject storyJson = new JSONObject();
 		try {
-			storyJson.put(StoryEnum.ID, story.getIssueID())
-			        .put(StoryEnum.NAME, story.getSummary())
-			        .put(StoryEnum.STATUS, story.getStatus())
-			        .put(StoryEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
-			        .put(StoryEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
-			        .put(StoryEnum.VALUE, Integer.parseInt(story.getValue()))
-			        .put(StoryEnum.NOTES, story.getNotes())
-			        .put(StoryEnum.HOW_TO_DEMO, story.getHowToDemo());
+			storyJson.put(StoryJSONEnum.ID, story.getIssueID())
+			        .put(StoryJSONEnum.NAME, story.getSummary())
+			        .put(StoryJSONEnum.STATUS, story.getStatus())
+			        .put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
+			        .put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
+			        .put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
+			        .put(StoryJSONEnum.NOTES, story.getNotes())
+			        .put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
 			JSONArray tagJSONArray = new JSONArray();
 			for (IIssueTag tag : story.getTag()) {
 				JSONObject tagJSON = new JSONObject();
-				tagJSON.put(TagEnum.NAME, tag.getTagName());
+				tagJSON.put(TagJSONEnum.NAME, tag.getTagName());
 				tagJSONArray.put(tagJSON);
 			}
-			storyJson.put(StoryEnum.TAGS, tagJSONArray);
+			storyJson.put(StoryJSONEnum.TAGS, tagJSONArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -335,14 +335,14 @@ public class JSONEncoder {
 	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
-			taskJson.put(TaskEnum.ID, task.getIssueID())
-			        .put(TaskEnum.NAME, task.getSummary())
-			        .put(TaskEnum.HANDLER, task.getAssignto())
-			        .put(TaskEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
-			        .put(TaskEnum.REMAIN, Integer.parseInt(task.getRemains()))
-			        .put(TaskEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
-			        .put(TaskEnum.NOTES, task.getNotes())
-			        .put(TaskEnum.STATUS, task.getStatus());
+			taskJson.put(TaskJSONEnum.ID, task.getIssueID())
+			        .put(TaskJSONEnum.NAME, task.getSummary())
+			        .put(TaskJSONEnum.HANDLER, task.getAssignto())
+			        .put(TaskJSONEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
+			        .put(TaskJSONEnum.REMAIN, Integer.parseInt(task.getRemains()))
+			        .put(TaskJSONEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
+			        .put(TaskJSONEnum.NOTES, task.getNotes())
+			        .put(TaskJSONEnum.STATUS, task.getStatus());
 			// Process Partners
 			JSONArray partnerJSONArray = new JSONArray();
 			String delimiters = ";";
@@ -354,10 +354,10 @@ public class JSONEncoder {
 					continue;
 				}
 				JSONObject partnerJSON = new JSONObject();
-				partnerJSON.put(AccountEnum.USERNAME, partnerString);
+				partnerJSON.put(AccountJSONEnum.USERNAME, partnerString);
 				partnerJSONArray.put(partnerJSON);
 			}
-			taskJson.put(TaskEnum.PARTNERS, partnerJSONArray);
+			taskJson.put(TaskJSONEnum.PARTNERS, partnerJSONArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -377,10 +377,10 @@ public class JSONEncoder {
 	public static JSONObject toReleaseJSON(IReleasePlanDesc release) {
 		JSONObject releaseJson = new JSONObject();
 		try {
-			releaseJson.put(ReleaseEnum.NAME, release.getName())
-			        .put(ReleaseEnum.DESCRIPTION, release.getDescription())
-			        .put(ReleaseEnum.START_DATE, release.getStartDate())
-			        .put(ReleaseEnum.DUE_DATE, release.getEndDate());
+			releaseJson.put(ReleaseJSONEnum.NAME, release.getName())
+			        .put(ReleaseJSONEnum.DESCRIPTION, release.getDescription())
+			        .put(ReleaseJSONEnum.START_DATE, release.getStartDate())
+			        .put(ReleaseJSONEnum.DUE_DATE, release.getEndDate());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

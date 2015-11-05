@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public class HistoryEnum {
+public class HistoryJSONEnum {
 	public static final String ISSUE_TYPE = "issue_type";
 	public static final String HISTORY_TYPE = "type";
 	public static final String OLD_VALUE = "old_value";

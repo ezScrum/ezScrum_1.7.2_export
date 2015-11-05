@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.support.export;
+package ntut.csie.ezScrum.restful.export.support;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.restful.export.support.ResourceFinder;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;

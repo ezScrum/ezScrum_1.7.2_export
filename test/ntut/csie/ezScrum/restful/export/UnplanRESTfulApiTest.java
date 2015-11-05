@@ -23,14 +23,14 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.UnplanJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databaseEnum.UnplanEnum;
 import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -131,23 +131,23 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(2, jsonResponse.length());
 		
-		assertEquals(unplans.get(0).getSummary(), jsonResponse.getJSONObject(0).getString(UnplanEnum.NAME));
-		assertEquals(unplans.get(0).getAssignto(), jsonResponse.getJSONObject(0).getString(UnplanEnum.HANDLER));
-		assertEquals(unplans.get(0).getEstimated(), jsonResponse.getJSONObject(0).getString(UnplanEnum.ESTIMATE));
-		assertEquals(unplans.get(0).getActualHour(), jsonResponse.getJSONObject(0).getString(UnplanEnum.ACTUAL));
-		assertEquals(unplans.get(0).getNotes(), jsonResponse.getJSONObject(0).getString(UnplanEnum.NOTES));
-		assertEquals(unplans.get(0).getStatus(), jsonResponse.getJSONObject(0).getString(UnplanEnum.STATUS));
-		JSONArray unplan1PartnersJSONArray = jsonResponse.getJSONObject(0).getJSONArray(UnplanEnum.PARTNERS);
-		assertEquals("Henry", unplan1PartnersJSONArray.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals("Mike", unplan1PartnersJSONArray.getJSONObject(1).getString(AccountEnum.USERNAME));
-		assertEquals("Jonathan", unplan1PartnersJSONArray.getJSONObject(2).getString(AccountEnum.USERNAME));
-		assertEquals("Tony", unplan1PartnersJSONArray.getJSONObject(3).getString(AccountEnum.USERNAME));
+		assertEquals(unplans.get(0).getSummary(), jsonResponse.getJSONObject(0).getString(UnplanJSONEnum.NAME));
+		assertEquals(unplans.get(0).getAssignto(), jsonResponse.getJSONObject(0).getString(UnplanJSONEnum.HANDLER));
+		assertEquals(unplans.get(0).getEstimated(), jsonResponse.getJSONObject(0).getString(UnplanJSONEnum.ESTIMATE));
+		assertEquals(unplans.get(0).getActualHour(), jsonResponse.getJSONObject(0).getString(UnplanJSONEnum.ACTUAL));
+		assertEquals(unplans.get(0).getNotes(), jsonResponse.getJSONObject(0).getString(UnplanJSONEnum.NOTES));
+		assertEquals(unplans.get(0).getStatus(), jsonResponse.getJSONObject(0).getString(UnplanJSONEnum.STATUS));
+		JSONArray unplan1PartnersJSONArray = jsonResponse.getJSONObject(0).getJSONArray(UnplanJSONEnum.PARTNERS);
+		assertEquals("Henry", unplan1PartnersJSONArray.getJSONObject(0).getString(AccountJSONEnum.USERNAME));
+		assertEquals("Mike", unplan1PartnersJSONArray.getJSONObject(1).getString(AccountJSONEnum.USERNAME));
+		assertEquals("Jonathan", unplan1PartnersJSONArray.getJSONObject(2).getString(AccountJSONEnum.USERNAME));
+		assertEquals("Tony", unplan1PartnersJSONArray.getJSONObject(3).getString(AccountJSONEnum.USERNAME));
 		
-		assertEquals(unplans.get(1).getSummary(), jsonResponse.getJSONObject(1).getString(UnplanEnum.NAME));
-		assertEquals(unplans.get(1).getAssignto(), jsonResponse.getJSONObject(1).getString(UnplanEnum.HANDLER));
-		assertEquals(unplans.get(1).getEstimated(), jsonResponse.getJSONObject(1).getString(UnplanEnum.ESTIMATE));
-		assertEquals(unplans.get(1).getActualHour(), jsonResponse.getJSONObject(1).getString(UnplanEnum.ACTUAL));
-		assertEquals(unplans.get(1).getNotes(), jsonResponse.getJSONObject(1).getString(UnplanEnum.NOTES));
-		assertEquals(unplans.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(UnplanEnum.STATUS));
+		assertEquals(unplans.get(1).getSummary(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.NAME));
+		assertEquals(unplans.get(1).getAssignto(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.HANDLER));
+		assertEquals(unplans.get(1).getEstimated(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.ESTIMATE));
+		assertEquals(unplans.get(1).getActualHour(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.ACTUAL));
+		assertEquals(unplans.get(1).getNotes(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.NOTES));
+		assertEquals(unplans.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.STATUS));
 	}
 }

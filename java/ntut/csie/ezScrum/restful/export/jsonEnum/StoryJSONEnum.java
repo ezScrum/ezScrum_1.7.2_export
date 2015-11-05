@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public class StoryEnum {
+public class StoryJSONEnum {
 	public static final String ID = "id";
 	public static final String NAME = "name";
 	public static final String STATUS = "status";
@@ -11,4 +11,5 @@ public class StoryEnum {
 	public static final String HOW_TO_DEMO = "how_to_demo";
 	public static final String TAGS = "tags";
 	public static final String ATTACH_FILES = "attach_files";
+	public static final String TASKS = "tasks";
 }

@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public class ScrumRoleEnum {
+public class ScrumRoleJSONEnum {
 	public static final String ROLE = "role";
     public static final String ACCESS_PRODUCT_BACKLOG = "access_productBacklog";
     public static final String ACCESS_SPRINT_PLAN = "access_sprintPlan";

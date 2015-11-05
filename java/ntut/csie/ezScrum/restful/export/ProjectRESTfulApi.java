@@ -12,12 +12,12 @@ import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
-import ntut.csie.ezScrum.web.databaseEnum.ScrumRoleEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.ScrumRoleJSONEnum;
+import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
+import ntut.csie.ezScrum.restful.export.support.ResourceFinder;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.ProjectMapper;
 import ntut.csie.ezScrum.web.mapper.ScrumRoleMapper;
-import ntut.csie.ezScrum.web.support.export.JSONEncoder;
-import ntut.csie.ezScrum.web.support.export.ResourceFinder;
 import ntut.csie.jcis.account.core.IAccount;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -63,11 +63,11 @@ public class ProjectRESTfulApi {
 		}
 		
 		ScrumRoleMapper scrumRoleMapper = new ScrumRoleMapper();
-		ScrumRole productOwner = scrumRoleMapper.getPermission(projectName, ScrumRoleEnum.PRODUCT_OWNER);
-		ScrumRole scrumMaster = scrumRoleMapper.getPermission(projectName, ScrumRoleEnum.SCRUM_MASTER);
-		ScrumRole scrumTeam = scrumRoleMapper.getPermission(projectName, ScrumRoleEnum.SCRUM_TEAM);
-		ScrumRole stakeholder = scrumRoleMapper.getPermission(projectName, ScrumRoleEnum.STAKEHOLDER);
-		ScrumRole guest = scrumRoleMapper.getPermission(projectName, ScrumRoleEnum.GUEST);
+		ScrumRole productOwner = scrumRoleMapper.getPermission(projectName, ScrumRoleJSONEnum.PRODUCT_OWNER);
+		ScrumRole scrumMaster = scrumRoleMapper.getPermission(projectName, ScrumRoleJSONEnum.SCRUM_MASTER);
+		ScrumRole scrumTeam = scrumRoleMapper.getPermission(projectName, ScrumRoleJSONEnum.SCRUM_TEAM);
+		ScrumRole stakeholder = scrumRoleMapper.getPermission(projectName, ScrumRoleJSONEnum.STAKEHOLDER);
+		ScrumRole guest = scrumRoleMapper.getPermission(projectName, ScrumRoleJSONEnum.GUEST);
 		
 		String entity = JSONEncoder.toScrumRolesJSON(productOwner, scrumMaster, scrumTeam, stakeholder, guest).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();

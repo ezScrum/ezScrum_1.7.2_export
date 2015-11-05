@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public interface AccountEnum {
+public interface AccountJSONEnum {
     public static final String USERNAME = "username";
     public static final String NICK_NAME = "nick_name";
     public static final String PASSWORD = "password";

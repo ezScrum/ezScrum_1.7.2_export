@@ -22,12 +22,12 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
+import ntut.csie.ezScrum.restful.export.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRelease;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.ReleaseEnum;
 import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -112,16 +112,16 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		assertEquals(2, jsonResponse.length());
 
 		JSONObject releaseJson1 = jsonResponse.getJSONObject(0);
-		assertEquals(release1.getName(), releaseJson1.getString(ReleaseEnum.NAME));
-		assertEquals(release1.getDescription(), releaseJson1.getString(ReleaseEnum.DESCRIPTION));
-		assertEquals(release1.getStartDate(), releaseJson1.getString(ReleaseEnum.START_DATE));
-		assertEquals(release1.getEndDate(), releaseJson1.getString(ReleaseEnum.DUE_DATE));
+		assertEquals(release1.getName(), releaseJson1.getString(ReleaseJSONEnum.NAME));
+		assertEquals(release1.getDescription(), releaseJson1.getString(ReleaseJSONEnum.DESCRIPTION));
+		assertEquals(release1.getStartDate(), releaseJson1.getString(ReleaseJSONEnum.START_DATE));
+		assertEquals(release1.getEndDate(), releaseJson1.getString(ReleaseJSONEnum.DUE_DATE));
 		
 		JSONObject releaseJson2 = jsonResponse.getJSONObject(1);
-		assertEquals(release2.getName(), releaseJson2.getString(ReleaseEnum.NAME));
-		assertEquals(release2.getDescription(), releaseJson2.getString(ReleaseEnum.DESCRIPTION));
-		assertEquals(release2.getStartDate(), releaseJson2.getString(ReleaseEnum.START_DATE));
-		assertEquals(release2.getEndDate(), releaseJson2.getString(ReleaseEnum.DUE_DATE));
+		assertEquals(release2.getName(), releaseJson2.getString(ReleaseJSONEnum.NAME));
+		assertEquals(release2.getDescription(), releaseJson2.getString(ReleaseJSONEnum.DESCRIPTION));
+		assertEquals(release2.getStartDate(), releaseJson2.getString(ReleaseJSONEnum.START_DATE));
+		assertEquals(release2.getEndDate(), releaseJson2.getString(ReleaseJSONEnum.DUE_DATE));
 	}
 	
 	@Test

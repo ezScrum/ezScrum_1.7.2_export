@@ -24,6 +24,12 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.StoryJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.TagJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.export.support.FileEncoder;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -33,17 +39,11 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.AccountEnum;
-import ntut.csie.ezScrum.web.databaseEnum.AttachFileEnum;
-import ntut.csie.ezScrum.web.databaseEnum.StoryEnum;
-import ntut.csie.ezScrum.web.databaseEnum.TagEnum;
-import ntut.csie.ezScrum.web.databaseEnum.TaskEnum;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
-import ntut.csie.ezScrum.web.support.export.FileEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class DroppedStoryRESTfulApiTest extends JerseyTest {
@@ -159,19 +159,19 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(1, jsonResponse.length());
 
-		assertEquals(story2.getIssueID(), jsonResponse.getJSONObject(0).get(StoryEnum.ID));
-		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(0).get(StoryEnum.NAME));
-		assertEquals(story2.getStatus(), jsonResponse.getJSONObject(0).get(StoryEnum.STATUS));
-		assertEquals(Integer.parseInt(story2.getEstimated()), jsonResponse.getJSONObject(0).get(StoryEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story2.getImportance()), jsonResponse.getJSONObject(0).get(StoryEnum.IMPORTANCE));
-		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(0).get(StoryEnum.VALUE));
-		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(0).get(StoryEnum.NOTES));
-		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryEnum.HOW_TO_DEMO));
+		assertEquals(story2.getIssueID(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.ID));
+		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.NAME));
+		assertEquals(story2.getStatus(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.STATUS));
+		assertEquals(Integer.parseInt(story2.getEstimated()), jsonResponse.getJSONObject(0).get(StoryJSONEnum.ESTIMATE));
+		assertEquals(Integer.parseInt(story2.getImportance()), jsonResponse.getJSONObject(0).get(StoryJSONEnum.IMPORTANCE));
+		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(0).get(StoryJSONEnum.VALUE));
+		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.NOTES));
+		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.HOW_TO_DEMO));
 		
-		JSONArray tagsJSONArray = jsonResponse.getJSONObject(0).getJSONArray(StoryEnum.TAGS);
+		JSONArray tagsJSONArray = jsonResponse.getJSONObject(0).getJSONArray(StoryJSONEnum.TAGS);
 		assertEquals(2, tagsJSONArray.length());
-		assertEquals(tagName1, tagsJSONArray.getJSONObject(0).getString(TagEnum.NAME));
-		assertEquals(tagName2, tagsJSONArray.getJSONObject(1).getString(TagEnum.NAME));
+		assertEquals(tagName1, tagsJSONArray.getJSONObject(0).getString(TagJSONEnum.NAME));
+		assertEquals(tagName2, tagsJSONArray.getJSONObject(1).getString(TagJSONEnum.NAME));
 		
 	}
 	
@@ -206,16 +206,16 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		assertEquals(2, jsonResponse.length());
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		JSONObject task1JSON = jsonResponse.getJSONObject(0);
-		assertEquals(task1.getSummary(), task1JSON.getString(TaskEnum.NAME));
-		assertEquals(task1.getAssignto(), task1JSON.getString(TaskEnum.HANDLER));
-		assertEquals(Integer.parseInt(task1.getEstimated()), task1JSON.getInt(TaskEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(task1.getRemains()), task1JSON.getInt(TaskEnum.REMAIN));
-		assertEquals(Integer.parseInt(task1.getActualHour()), task1JSON.getInt(TaskEnum.ACTUAL));
-		assertEquals(task1.getNotes(), task1JSON.getString(TaskEnum.NOTES));
-		assertEquals(task1.getStatus(), task1JSON.getString(TaskEnum.STATUS));
-		JSONArray task1PartnersJSONArray = task1JSON.getJSONArray(TaskEnum.PARTNERS);
-		assertEquals(mCA.getAccountList().get(0).getName(), task1PartnersJSONArray.getJSONObject(0).getString(AccountEnum.USERNAME));
-		assertEquals(mCA.getAccountList().get(1).getName(), task1PartnersJSONArray.getJSONObject(1).getString(AccountEnum.USERNAME));
+		assertEquals(task1.getSummary(), task1JSON.getString(TaskJSONEnum.NAME));
+		assertEquals(task1.getAssignto(), task1JSON.getString(TaskJSONEnum.HANDLER));
+		assertEquals(Integer.parseInt(task1.getEstimated()), task1JSON.getInt(TaskJSONEnum.ESTIMATE));
+		assertEquals(Integer.parseInt(task1.getRemains()), task1JSON.getInt(TaskJSONEnum.REMAIN));
+		assertEquals(Integer.parseInt(task1.getActualHour()), task1JSON.getInt(TaskJSONEnum.ACTUAL));
+		assertEquals(task1.getNotes(), task1JSON.getString(TaskJSONEnum.NOTES));
+		assertEquals(task1.getStatus(), task1JSON.getString(TaskJSONEnum.STATUS));
+		JSONArray task1PartnersJSONArray = task1JSON.getJSONArray(TaskJSONEnum.PARTNERS);
+		assertEquals(mCA.getAccountList().get(0).getName(), task1PartnersJSONArray.getJSONObject(0).getString(AccountJSONEnum.USERNAME));
+		assertEquals(mCA.getAccountList().get(1).getName(), task1PartnersJSONArray.getJSONObject(1).getString(AccountJSONEnum.USERNAME));
 		
 		// Call '/projects/{projectName}/stories/{storyId}/tasks' API
 		IIssue story2 = mASTS.getIssueList().get(1);
@@ -261,13 +261,13 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 
 		// Assert
 		assertEquals(2, jsonResponse.length());
-		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.NAME));
-		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
-		assertEquals(expectedXmlBinary1, jsonResponse.getJSONObject(0).getString(AttachFileEnum.BINARY));
+		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary1, jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 
-		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
-		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
-		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
+		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.BINARY));
 	}
 	
 	@Test
@@ -307,12 +307,12 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 
 		// Assert
 		assertEquals(2, jsonResponse.length());
-		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.NAME));
-		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileEnum.CONTENT_TYPE));
-		assertEquals(expectedXmlBinary1, jsonResponse.getJSONObject(0).getString(AttachFileEnum.BINARY));
+		assertEquals("RoleBase.xml", jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary1, jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 
-		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.NAME));
-		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileEnum.CONTENT_TYPE));
-		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileEnum.BINARY));
+		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.NAME));
+		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.CONTENT_TYPE));
+		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.BINARY));
 	}
 }
