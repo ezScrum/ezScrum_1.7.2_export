@@ -22,13 +22,13 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
+import ntut.csie.ezScrum.restful.export.jsonEnum.RetrospectiveJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.ezScrum.web.databaseEnum.RetrospectiveEnum;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class RetrospectiveRESTfulApiTest extends JerseyTest {
@@ -115,24 +115,24 @@ public class RetrospectiveRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(4, jsonResponse.length());
 		
-		assertEquals(goods.get(0).getName(), jsonResponse.getJSONObject(0).getString(RetrospectiveEnum.NAME));
-		assertEquals(goods.get(0).getDescription(), jsonResponse.getJSONObject(0).getString(RetrospectiveEnum.DESCRIPTION));
-		assertEquals(goods.get(0).getCategory(), jsonResponse.getJSONObject(0).getString(RetrospectiveEnum.TYPE));
-		assertEquals(goods.get(0).getStatus(), jsonResponse.getJSONObject(0).getString(RetrospectiveEnum.STATUS));
+		assertEquals(goods.get(0).getName(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.NAME));
+		assertEquals(goods.get(0).getDescription(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.DESCRIPTION));
+		assertEquals(goods.get(0).getCategory(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.TYPE));
+		assertEquals(goods.get(0).getStatus(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.STATUS));
 		
-		assertEquals(goods.get(1).getName(), jsonResponse.getJSONObject(1).getString(RetrospectiveEnum.NAME));
-		assertEquals(goods.get(1).getDescription(), jsonResponse.getJSONObject(1).getString(RetrospectiveEnum.DESCRIPTION));
-		assertEquals(goods.get(1).getCategory(), jsonResponse.getJSONObject(1).getString(RetrospectiveEnum.TYPE));
-		assertEquals(goods.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(RetrospectiveEnum.STATUS));
+		assertEquals(goods.get(1).getName(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.NAME));
+		assertEquals(goods.get(1).getDescription(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.DESCRIPTION));
+		assertEquals(goods.get(1).getCategory(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.TYPE));
+		assertEquals(goods.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.STATUS));
 		
-		assertEquals(improvements.get(0).getName(), jsonResponse.getJSONObject(2).getString(RetrospectiveEnum.NAME));
-		assertEquals(improvements.get(0).getDescription(), jsonResponse.getJSONObject(2).getString(RetrospectiveEnum.DESCRIPTION));
-		assertEquals(improvements.get(0).getCategory(), jsonResponse.getJSONObject(2).getString(RetrospectiveEnum.TYPE));
-		assertEquals(improvements.get(0).getStatus(), jsonResponse.getJSONObject(2).getString(RetrospectiveEnum.STATUS));
+		assertEquals(improvements.get(0).getName(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.NAME));
+		assertEquals(improvements.get(0).getDescription(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.DESCRIPTION));
+		assertEquals(improvements.get(0).getCategory(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.TYPE));
+		assertEquals(improvements.get(0).getStatus(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.STATUS));
 		
-		assertEquals(improvements.get(1).getName(), jsonResponse.getJSONObject(3).getString(RetrospectiveEnum.NAME));
-		assertEquals(improvements.get(1).getDescription(), jsonResponse.getJSONObject(3).getString(RetrospectiveEnum.DESCRIPTION));
-		assertEquals(improvements.get(1).getCategory(), jsonResponse.getJSONObject(3).getString(RetrospectiveEnum.TYPE));
-		assertEquals(improvements.get(1).getStatus(), jsonResponse.getJSONObject(3).getString(RetrospectiveEnum.STATUS));
+		assertEquals(improvements.get(1).getName(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.NAME));
+		assertEquals(improvements.get(1).getDescription(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.DESCRIPTION));
+		assertEquals(improvements.get(1).getCategory(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.TYPE));
+		assertEquals(improvements.get(1).getStatus(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.STATUS));
 	}
 }

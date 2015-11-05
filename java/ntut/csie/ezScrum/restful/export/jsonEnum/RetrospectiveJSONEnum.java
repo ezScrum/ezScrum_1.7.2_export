@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public class RetrospectiveEnum {
+public class RetrospectiveJSONEnum {
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
     public static final String TYPE = "type";

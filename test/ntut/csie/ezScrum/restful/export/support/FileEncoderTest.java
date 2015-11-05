@@ -1,4 +1,4 @@
-package ntut.csie.ezScrum.web.support.export;
+package ntut.csie.ezScrum.restful.export.support;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.syndication.io.impl.Base64;
+
+import ntut.csie.ezScrum.restful.export.support.FileEncoder;
 
 public class FileEncoderTest {
 	private final String SOURCE_CONTENT = "TEST_TO_BASE64_BINARY";

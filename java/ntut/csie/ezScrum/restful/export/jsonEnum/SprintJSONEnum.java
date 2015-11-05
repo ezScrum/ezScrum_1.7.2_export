@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public class SprintEnum {
+public class SprintJSONEnum {
 	public static final String ID = "id";
 	public static final String GOAL = "goal";
 	public static final String INTERVAL = "interval";
@@ -14,4 +14,5 @@ public class SprintEnum {
 	public static final String DAILY_INFO = "daily_info";
 	public static final String RETROSPECTIVES = "retrospectives";
 	public static final String UNPLANS = "unplans";
+	public static final String STORIES = "stories";
 }

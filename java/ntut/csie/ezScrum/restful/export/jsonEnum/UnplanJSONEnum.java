@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public class UnplanEnum {
+public class UnplanJSONEnum {
     public static final String NAME = "name";
 	public static final String HANDLER = "handler";
 	public static final String PARTNERS = "partners";

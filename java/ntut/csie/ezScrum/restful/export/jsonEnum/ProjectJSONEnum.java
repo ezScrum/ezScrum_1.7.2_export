@@ -1,6 +1,6 @@
-package ntut.csie.ezScrum.web.databaseEnum;
+package ntut.csie.ezScrum.restful.export.jsonEnum;
 
-public class ProjectEnum {
+public class ProjectJSONEnum {
     public static final String TABLE_NAME = "project";
     public static final String NAME = "name";
     public static final String DISPLAY_NAME = "display_name";
@@ -11,4 +11,5 @@ public class ProjectEnum {
     public static final String PROJECT_ROLES = "project_roles";
     public static final String TAGS = "tags";
     public static final String RELEASES = "releases";
+    public static final String SPRINTS = "sprints";
 }
