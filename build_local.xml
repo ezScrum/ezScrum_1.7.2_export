@@ -90,6 +90,9 @@
 		<fileset dir="${Local.Library.Dir}/test/jersey" casesensitive="yes">
 			<filename name="*.jar" />
 		</fileset>
+		<fileset dir="${Local.Library.Dir}/aspectj" casesensitive="yes">
+			<filename name="*.jar" />
+		</fileset>
 		<!-- Web LIB -->
 		<fileset dir="${Web.Library.Dir}" casesensitive="yes">
 			<include name="JCIS_*.jar" /><!-- 待移除 -->
