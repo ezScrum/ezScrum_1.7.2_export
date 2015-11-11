@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
@@ -25,6 +26,7 @@ import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.RetrospectiveJSONEnum;
@@ -34,8 +36,6 @@ import ntut.csie.ezScrum.restful.export.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.UnplanJSONEnum;
-import ntut.csie.ezScrum.restful.export.support.FileEncoder;
-import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -811,5 +811,35 @@ public class JSONEncoderTest {
 		// Assert
 		assertEquals(userName, projectRoleJSON.getString(AccountJSONEnum.USERNAME));
 		assertEquals(ScrumRoleJSONEnum.PRODUCT_OWNER, projectRoleJSON.getString(ScrumRoleJSONEnum.ROLE));
+	}
+	
+	@Test
+	public void testToHistoryJSON() throws JSONException {
+		IIssue story = mASTS.getIssueList().get(0);
+		List<IIssueHistory> histories = story.getIssueHistories();
+		for (IIssueHistory history : histories) {
+			JSONObject historyJSON = new JSONObject();
+			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, history.getType());
+			historyJSON.put(HistoryJSONEnum.OLD_VALUE, history.getOldValue());
+			historyJSON.put(HistoryJSONEnum.NEW_VALUE, history.getNewValue());
+			historyJSON.put(HistoryJSONEnum.CREATE_TIME, history.getModifyDate());
+			assertEquals(historyJSON.toString(), JSONEncoder.toHistoryJSON(history).toString());
+		}
+	}
+	
+	@Test
+	public void testToHistoryJSONArray() throws JSONException {
+		IIssue story = mASTS.getIssueList().get(0);
+		List<IIssueHistory> histories = story.getIssueHistories();
+		JSONArray historyJSONArray = new JSONArray();
+		for (IIssueHistory history : histories) {
+			JSONObject historyJSON = new JSONObject();
+			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, history.getType());
+			historyJSON.put(HistoryJSONEnum.OLD_VALUE, history.getOldValue());
+			historyJSON.put(HistoryJSONEnum.NEW_VALUE, history.getNewValue());
+			historyJSON.put(HistoryJSONEnum.CREATE_TIME, history.getModifyDate());
+			historyJSONArray.put(historyJSON);
+		}
+		assertEquals(historyJSONArray.toString(), JSONEncoder.toHistoryJSONArray(histories).toString());
 	}
 }

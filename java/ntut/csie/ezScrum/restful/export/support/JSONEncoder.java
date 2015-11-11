@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
@@ -16,6 +17,7 @@ import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.RetrospectiveJSONEnum;
@@ -30,6 +32,29 @@ import ntut.csie.jcis.account.core.IRole;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
+	// Translate multiple history to JSONArray
+	public static JSONArray toHistoryJSONArray(List<IIssueHistory> histories) {
+		JSONArray historyJSONArray = new JSONArray();
+		for (IIssueHistory history : histories) {
+			historyJSONArray.put(toHistoryJSON(history));
+		}
+		return historyJSONArray;
+	}
+		
+	// Translate history to JSON
+	public static JSONObject toHistoryJSON(IIssueHistory history) {
+		JSONObject historyJSON = new JSONObject();
+		try {
+			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, history.getType());
+			historyJSON.put(HistoryJSONEnum.OLD_VALUE, history.getOldValue());
+			historyJSON.put(HistoryJSONEnum.NEW_VALUE, history.getNewValue());
+			historyJSON.put(HistoryJSONEnum.CREATE_TIME, history.getModifyDate());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return historyJSON;
+	}
+	
 	// Translate multiple project role to JSONArray
 	public static JSONArray toProjectRoleJSONArray(String projectName, List<IAccount> projectRoles) {
 		JSONArray projectRoleJSONArray = new JSONArray();
