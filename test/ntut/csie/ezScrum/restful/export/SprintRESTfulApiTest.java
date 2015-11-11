@@ -22,13 +22,13 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
-import ntut.csie.ezScrum.web.support.export.JSONEncoder;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class SprintRESTfulApiTest extends JerseyTest {

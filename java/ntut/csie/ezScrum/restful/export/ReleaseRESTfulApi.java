@@ -9,29 +9,26 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.restful.export.support.ResourceFinder;
-import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.helper.ReleasePlanHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
-@Path("projects/{projectName}/sprints")
-public class SprintRESTfulApi {
+@Path("projects/{projectName}/releases")
+public class ReleaseRESTfulApi {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getSprints(@PathParam("projectName") String projectName) {
-		// Create ResourceFinder
+	public Response getReleases(@PathParam("projectName") String projectName) {
 		ResourceFinder resourceFinder = new ResourceFinder();
-		// Get project By name
 		IProject project = resourceFinder.findProject(projectName);
+		
 		if (project == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		// Get sprints
-		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(project);
-		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
-		// Get Sprints JSONString
-		String entity = JSONEncoder.toSprintJSONArray(sprints).toString();
+		ReleasePlanHelper releasePlanHelper = new ReleasePlanHelper(project);
+		List<IReleasePlanDesc> releases = releasePlanHelper.loadReleasePlansList();
+		String entity = JSONEncoder.toReleaseJSONArray(releases).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
