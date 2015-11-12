@@ -33,22 +33,23 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
 	// Translate multiple history to JSONArray
-	public static JSONArray toHistoryJSONArray(List<IIssueHistory> histories) {
+	public static JSONArray toHistoryJSONArray(List<IIssueHistory> histories, String projectName) {
 		JSONArray historyJSONArray = new JSONArray();
 		for (IIssueHistory history : histories) {
-			historyJSONArray.put(toHistoryJSON(history));
+			historyJSONArray.put(toHistoryJSON(history, projectName));
 		}
 		return historyJSONArray;
 	}
 		
 	// Translate history to JSON
-	public static JSONObject toHistoryJSON(IIssueHistory history) {
+	public static JSONObject toHistoryJSON(IIssueHistory oldHistory, String projectName) {
 		JSONObject historyJSON = new JSONObject();
 		try {
-			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, history.getType());
-			historyJSON.put(HistoryJSONEnum.OLD_VALUE, history.getOldValue());
-			historyJSON.put(HistoryJSONEnum.NEW_VALUE, history.getNewValue());
-			historyJSON.put(HistoryJSONEnum.CREATE_TIME, history.getModifyDate());
+			IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, projectName);
+			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, newHistory.getType());
+			historyJSON.put(HistoryJSONEnum.OLD_VALUE, newHistory.getOldValue());
+			historyJSON.put(HistoryJSONEnum.NEW_VALUE, newHistory.getNewValue());
+			historyJSON.put(HistoryJSONEnum.CREATE_TIME, newHistory.getModifyDate());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

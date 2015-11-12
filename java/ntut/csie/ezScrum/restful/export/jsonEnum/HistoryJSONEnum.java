@@ -28,4 +28,19 @@ public class HistoryJSONEnum {
 	public final static int TYPE_HOWTODEMO = 20;
 	public final static int TYPE_PARTNERS = 21;
 	public final static int TYPE_SPRINTID = 22; 
+	
+	// Task, Unplan status in new version
+	public final static String TASK_STATUS_UNCHECK = "1";
+	public final static String TASK_STATUS_CHECK = "2";
+	public final static String TASK_STATUS_DONE = "3";
+	
+	// Story status in new version
+	public final static String STORY_STATUS_UNCHECK = "1";
+	public final static String STORY_STATUS_DONE = "2";
+	
+	// Retrospective status in new version
+	public final static String RETROSPECTIVE_STATUS_NEW = "new";
+	public final static String RETROSPECTIVE_STATUS_CLOSED = "closed";
+	public final static String RETROSPECTIVE_STATUS_RESOLVED = "resolved";
+	public final static String RETROSPECTIVE_STATUS_ASSIGNED = "assigned";
 }
