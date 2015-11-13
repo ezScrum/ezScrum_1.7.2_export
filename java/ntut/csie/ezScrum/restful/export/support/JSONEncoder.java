@@ -33,19 +33,19 @@ import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoder {
 	// Translate multiple history to JSONArray
-	public static JSONArray toHistoryJSONArray(List<IIssueHistory> histories, String projectName) {
+	public static JSONArray toHistoryJSONArray(List<IIssueHistory> histories, String issueType) {
 		JSONArray historyJSONArray = new JSONArray();
 		for (IIssueHistory history : histories) {
-			historyJSONArray.put(toHistoryJSON(history, projectName));
+			historyJSONArray.put(toHistoryJSON(history, issueType));
 		}
 		return historyJSONArray;
 	}
 		
 	// Translate history to JSON
-	public static JSONObject toHistoryJSON(IIssueHistory oldHistory, String projectName) {
+	public static JSONObject toHistoryJSON(IIssueHistory oldHistory, String issueType) {
 		JSONObject historyJSON = new JSONObject();
 		try {
-			IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, projectName);
+			IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, issueType);
 			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, newHistory.getType());
 			historyJSON.put(HistoryJSONEnum.OLD_VALUE, newHistory.getOldValue());
 			historyJSON.put(HistoryJSONEnum.NEW_VALUE, newHistory.getNewValue());

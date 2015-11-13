@@ -831,7 +831,6 @@ public class JSONEncoderTest {
 	
 	@Test
 	public void testToHistoryJSONArray() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		@SuppressWarnings("deprecation")
 		List<IIssueHistory> histories = story.getIssueHistories();
@@ -844,6 +843,6 @@ public class JSONEncoderTest {
 			historyJSON.put(HistoryJSONEnum.CREATE_TIME, history.getModifyDate());
 			historyJSONArray.put(historyJSON);
 		}
-		assertEquals(historyJSONArray.toString(), JSONEncoder.toHistoryJSONArray(histories, project.getName()).toString());
+		assertEquals(historyJSONArray.toString(), JSONEncoder.toHistoryJSONArray(histories, story.getCategory()).toString());
 	}
 }

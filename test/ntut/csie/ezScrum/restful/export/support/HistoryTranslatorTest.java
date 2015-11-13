@@ -10,6 +10,7 @@ import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueHistory;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
@@ -22,7 +23,6 @@ import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class HistoryTranslatorTest {
 	private ezScrumInfoConfig mConfig = new ezScrumInfoConfig();
@@ -92,7 +92,6 @@ public class HistoryTranslatorTest {
 	
 	@Test
 	public void testToNewHistory_CreateStoryInSprint() {
-		IProject project = mCP.getProjectList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
@@ -101,7 +100,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setNewValue("1");
 		oldHistory.setModifyDate(modifyDate);
 		
-		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, project.getName());
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
 		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("1", newHistory.getNewValue());
@@ -110,16 +109,15 @@ public class HistoryTranslatorTest {
 	
 	@Test
 	public void testToNewHistory_ModifyName() {
-		IProject project = mCP.getProjectList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
-		oldHistory.setFieldName("summary");
+		oldHistory.setFieldName(IIssueHistory.SUMMARY);
 		oldHistory.setOldValue("Old Story Name");
 		oldHistory.setNewValue("New Story Name");
 		oldHistory.setModifyDate(modifyDate);
 		
-		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, project.getName());
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
 		assertEquals(HistoryJSONEnum.TYPE_NAME, newHistory.getType());
 		assertEquals("Old Story Name", newHistory.getOldValue());
 		assertEquals("New Story Name", newHistory.getNewValue());
@@ -128,18 +126,17 @@ public class HistoryTranslatorTest {
 	
 	@Test
 	public void testToNewHistory_ModifyTaskStatus_NewToAssigned() {
-		IProject project = mCP.getProjectList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setIssueID(task.getIssueID());
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
-		oldHistory.setFieldName("status");
+		oldHistory.setFieldName(IssueHistory.STATUS_FIELD_NAME);
 		oldHistory.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
 		oldHistory.setNewValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
 		oldHistory.setModifyDate(modifyDate);
 		
-		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, project.getName());
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
 		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_UNCHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getNewValue());
@@ -148,18 +145,17 @@ public class HistoryTranslatorTest {
 	
 	@Test
 	public void testToNewHistory_ModifyTaskStatus_AssignedToClosed() {
-		IProject project = mCP.getProjectList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setIssueID(task.getIssueID());
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
-		oldHistory.setFieldName("status");
+		oldHistory.setFieldName(IssueHistory.STATUS_FIELD_NAME);
 		oldHistory.setOldValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
 		oldHistory.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
 		oldHistory.setModifyDate(modifyDate);
 		
-		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, project.getName());
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
 		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_DONE, newHistory.getNewValue());
@@ -168,18 +164,17 @@ public class HistoryTranslatorTest {
 	
 	@Test
 	public void testToNewHistory_ModifyUnplanStatus_NewToAssigned() {
-		IProject project = mCP.getProjectList().get(0);
 		IIssue unplan = mCU.getIssueList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setIssueID(unplan.getIssueID());
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
-		oldHistory.setFieldName("status");
+		oldHistory.setFieldName(IssueHistory.STATUS_FIELD_NAME);
 		oldHistory.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
 		oldHistory.setNewValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
 		oldHistory.setModifyDate(modifyDate);
 		
-		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, project.getName());
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, unplan.getCategory());
 		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_UNCHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getNewValue());
@@ -188,18 +183,17 @@ public class HistoryTranslatorTest {
 	
 	@Test
 	public void testToNewHistory_ModifyUnplanStatus_AssignedToClosed() {
-		IProject project = mCP.getProjectList().get(0);
 		IIssue unplan = mCU.getIssueList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setIssueID(unplan.getIssueID());
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
-		oldHistory.setFieldName("status");
+		oldHistory.setFieldName(IssueHistory.STATUS_FIELD_NAME);
 		oldHistory.setOldValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
 		oldHistory.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
 		oldHistory.setModifyDate(modifyDate);
 		
-		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, project.getName());
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, unplan.getCategory());
 		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_DONE, newHistory.getNewValue());
@@ -216,7 +210,6 @@ public class HistoryTranslatorTest {
 	
 	@Test
 	public void testToNewHistory_ModifyStoryStatus_NewToClosed() {
-		IProject project = mCP.getProjectList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
@@ -227,7 +220,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
 		oldHistory.setModifyDate(modifyDate);
 		
-		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, project.getName());
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
 		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
 		assertEquals(HistoryJSONEnum.STORY_STATUS_UNCHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.STORY_STATUS_DONE, newHistory.getNewValue());

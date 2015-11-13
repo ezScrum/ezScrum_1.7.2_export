@@ -1,33 +1,24 @@
 package ntut.csie.ezScrum.restful.export.support;
 
-import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueHistory;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
-import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
-import ntut.csie.ezScrum.web.mapper.ProjectMapper;
-import ntut.csie.jcis.resource.core.IProject;
 
 public class HistoryTranslator {
-	public static IIssueHistory toNewHistory(IIssueHistory oldHistory, String projectName) {
+	public static IIssueHistory toNewHistory(IIssueHistory oldHistory, String issueType) {
 		IssueHistory newHistory = new IssueHistory();
 		if (oldHistory.getType() == IIssueHistory.OTHER_TYPE) {
 			if (oldHistory.getFieldName().equals("Sprint")) {
 				newHistory.setType(HistoryJSONEnum.TYPE_APPEND);
 				newHistory.setOldValue("");
 				newHistory.setNewValue(oldHistory.getNewValue());
-			} else if (oldHistory.getFieldName().equals("summary")) {
+			} else if (oldHistory.getFieldName().equals(IIssueHistory.SUMMARY)) {
 				newHistory.setType(HistoryJSONEnum.TYPE_NAME);
 				newHistory.setOldValue(oldHistory.getOldValue());
 				newHistory.setNewValue(oldHistory.getNewValue());
-			} else if (oldHistory.getFieldName().equals("status")) {
-				ProjectMapper projectMapper = new ProjectMapper();
-				IProject project = projectMapper.getProjectByID(projectName);
-				ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
-				IIssue issue = productBacklogMapper.getIssue(oldHistory.getIssueID());
-				String issueType = issue.getCategory();
+			} else if (oldHistory.getFieldName().equals(IIssueHistory.STATUS_FIELD_NAME)) {
 				String translatedOldValue = getStatusByIssueTypeAndValue(issueType, Integer.parseInt(oldHistory.getOldValue()));
 				String translatedNewValue = getStatusByIssueTypeAndValue(issueType, Integer.parseInt(oldHistory.getNewValue()));
 				newHistory.setType(HistoryJSONEnum.TYPE_STATUS);
