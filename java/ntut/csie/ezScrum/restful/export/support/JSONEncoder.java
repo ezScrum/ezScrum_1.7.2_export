@@ -56,6 +56,8 @@ public class JSONEncoder {
 				isValid &= !(newValue == ITSEnum.CONFIRMED_STATUS);
 			} else if (history.getFieldName().equals(IssueHistory.HANDLER_FIELD_NAME)) {
 				isValid = false;
+			} else if (history.getFieldName().equals("resolution")) {
+				isValid = false;
 			}
 		}
 		return isValid;

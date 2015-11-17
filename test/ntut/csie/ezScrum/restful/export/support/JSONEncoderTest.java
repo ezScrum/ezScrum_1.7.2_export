@@ -873,10 +873,18 @@ public class JSONEncoderTest {
 		history3.setOldValue("1");
 		history3.setNewValue("2");
 		history3.setModifyDate(modifyDate);
+		IssueHistory history4 = new IssueHistory();
+		history4.setIssueID(story.getIssueID());
+		history4.setType(IIssueHistory.OTHER_TYPE);
+		history4.setFieldName("resolution");
+		history4.setOldValue("1");
+		history4.setNewValue("2");
+		history4.setModifyDate(modifyDate);
 		List<IIssueHistory> histories = new ArrayList<IIssueHistory>();
 		histories.add(history1);
 		histories.add(history2);
 		histories.add(history3);
+		histories.add(history4);
 		assertEquals(0, JSONEncoder.toHistoryJSONArray(histories, story.getCategory()).length());
 	}
 }
