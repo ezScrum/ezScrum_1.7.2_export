@@ -16,8 +16,10 @@ import org.junit.Test;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
+import ntut.csie.ezScrum.issue.internal.IssueHistory;
 import ntut.csie.ezScrum.issue.internal.IssueTag;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
@@ -844,5 +846,37 @@ public class JSONEncoderTest {
 			historyJSONArray.put(historyJSON);
 		}
 		assertEquals(historyJSONArray.toString(), JSONEncoder.toHistoryJSONArray(histories, story.getCategory()).toString());
+	}
+	
+	@Test
+	public void testToHistoryJSONArray_fillterUselessHistories() {
+		IIssue story = mASTS.getIssueList().get(0);
+		long modifyDate = System.currentTimeMillis();
+		IssueHistory history1 = new IssueHistory();
+		history1.setIssueID(story.getIssueID());
+		history1.setType(IIssueHistory.OTHER_TYPE);
+		history1.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		history1.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
+		history1.setNewValue(String.valueOf(ITSEnum.CONFIRMED_STATUS));
+		history1.setModifyDate(modifyDate);
+		IssueHistory history2 = new IssueHistory();
+		history2.setIssueID(story.getIssueID());
+		history2.setType(IIssueHistory.OTHER_TYPE);
+		history2.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		history2.setOldValue(String.valueOf(ITSEnum.CONFIRMED_STATUS));
+		history2.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
+		history2.setModifyDate(modifyDate);
+		IssueHistory history3 = new IssueHistory();
+		history3.setIssueID(story.getIssueID());
+		history3.setType(IIssueHistory.OTHER_TYPE);
+		history3.setFieldName(IssueHistory.HANDLER_FIELD_NAME);
+		history3.setOldValue("1");
+		history3.setNewValue("2");
+		history3.setModifyDate(modifyDate);
+		List<IIssueHistory> histories = new ArrayList<IIssueHistory>();
+		histories.add(history1);
+		histories.add(history2);
+		histories.add(history3);
+		assertEquals(0, JSONEncoder.toHistoryJSONArray(histories, story.getCategory()).length());
 	}
 }

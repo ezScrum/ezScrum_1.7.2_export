@@ -10,7 +10,9 @@ import org.codehaus.jettison.json.JSONObject;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
+import ntut.csie.ezScrum.issue.internal.IssueHistory;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -36,9 +38,27 @@ public class JSONEncoder {
 	public static JSONArray toHistoryJSONArray(List<IIssueHistory> histories, String issueType) {
 		JSONArray historyJSONArray = new JSONArray();
 		for (IIssueHistory history : histories) {
-			historyJSONArray.put(toHistoryJSON(history, issueType));
+			if (isHistoryValid(history)) {
+				historyJSONArray.put(toHistoryJSON(history, issueType));
+			}
 		}
 		return historyJSONArray;
+	}
+	
+	private static boolean isHistoryValid(IIssueHistory history) {
+		boolean isValid = true;
+		// filter useless histories
+		if (history.getType() == IIssueHistory.OTHER_TYPE) {
+			if (history.getFieldName().equals(IssueHistory.STATUS_FIELD_NAME)) {
+				int oldValue = Integer.parseInt(history.getOldValue());
+				int newValue = Integer.parseInt(history.getNewValue());
+				isValid &= !(oldValue == ITSEnum.CONFIRMED_STATUS);
+				isValid &= !(newValue == ITSEnum.CONFIRMED_STATUS);
+			} else if (history.getFieldName().equals(IssueHistory.HANDLER_FIELD_NAME)) {
+				isValid = false;
+			}
+		}
+		return isValid;
 	}
 		
 	// Translate history to JSON

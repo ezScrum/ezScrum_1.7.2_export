@@ -207,7 +207,7 @@ public class HistoryTranslatorTest {
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setIssueID(story.getIssueID());
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
-		oldHistory.setFieldName("status");
+		oldHistory.setFieldName(IssueHistory.STATUS_FIELD_NAME);
 		oldHistory.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
 		oldHistory.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
 		oldHistory.setModifyDate(modifyDate);
