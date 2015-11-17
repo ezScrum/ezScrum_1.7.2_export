@@ -201,14 +201,6 @@ public class HistoryTranslatorTest {
 	}
 	
 	@Test
-	public void testToNewHistory_ModifyRetrospectiveStatus_NewToClosed() {
-	}
-	
-	@Test
-	public void testToNewHistory_ModifyRetrospectiveStatus_AssignedToResolved() { 
-	}
-	
-	@Test
 	public void testToNewHistory_ModifyStoryStatus_NewToClosed() {
 		IIssue story = mASTS.getIssueList().get(0);
 		IssueHistory oldHistory = new IssueHistory();
