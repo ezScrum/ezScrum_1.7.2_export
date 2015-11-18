@@ -313,4 +313,14 @@ public class HistoryTranslatorTest {
 		assertEquals("3", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
 	}
+	
+	@Test
+	public void testToNewHistory_DropTask() {
+		
+	}
+	
+	@Test
+	public void testToNewHistory_RemoveFromStory() {
+		
+	}
 }
