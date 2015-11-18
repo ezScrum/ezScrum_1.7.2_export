@@ -10,7 +10,7 @@ public class HistoryTranslator {
 	public static IIssueHistory toNewHistory(IIssueHistory oldHistory, String issueType) {
 		IssueHistory newHistory = new IssueHistory();
 		if (oldHistory.getType() == IIssueHistory.OTHER_TYPE) {
-			if (oldHistory.getFieldName().equals("Sprint")) {
+			if (oldHistory.getFieldName().equals(ScrumEnum.SPRINT_TAG)) {
 				newHistory.setType(HistoryJSONEnum.TYPE_APPEND);
 				newHistory.setOldValue("");
 				newHistory.setNewValue(oldHistory.getNewValue());
@@ -24,6 +24,26 @@ public class HistoryTranslator {
 				newHistory.setType(HistoryJSONEnum.TYPE_STATUS);
 				newHistory.setOldValue(translatedOldValue);
 				newHistory.setNewValue(translatedNewValue);
+			} else if (oldHistory.getFieldName().equals(ScrumEnum.VALUE)) {
+				newHistory.setType(HistoryJSONEnum.TYPE_VALUE);
+				newHistory.setOldValue(oldHistory.getOldValue());
+				newHistory.setNewValue(oldHistory.getNewValue());
+			} else if (oldHistory.getFieldName().equals(ScrumEnum.ESTIMATION)) {
+				newHistory.setType(HistoryJSONEnum.TYPE_ESTIMATE);
+				newHistory.setOldValue(oldHistory.getOldValue());
+				newHistory.setNewValue(oldHistory.getNewValue());
+			} else if (oldHistory.getFieldName().equals(ScrumEnum.IMPORTANCE)) {
+				newHistory.setType(HistoryJSONEnum.TYPE_IMPORTANCE);
+				newHistory.setOldValue(oldHistory.getOldValue());
+				newHistory.setNewValue(oldHistory.getNewValue());
+			} else if (oldHistory.getFieldName().equals(ScrumEnum.ACTUALHOUR)) {
+				newHistory.setType(HistoryJSONEnum.TYPE_ACTUAL);
+				newHistory.setOldValue(oldHistory.getOldValue());
+				newHistory.setNewValue(oldHistory.getNewValue());
+			} else if (oldHistory.getFieldName().equals(ScrumEnum.REMAINS)) {
+				newHistory.setType(HistoryJSONEnum.TYPE_REMAIMS);
+				newHistory.setOldValue(oldHistory.getOldValue());
+				newHistory.setNewValue(oldHistory.getNewValue());
 			}
 		} else if (oldHistory.getType() == IIssueHistory.ISSUE_NEW_TYPE) {
 			newHistory.setType(HistoryJSONEnum.TYPE_CREATE);

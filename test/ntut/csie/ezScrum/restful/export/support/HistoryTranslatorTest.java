@@ -218,4 +218,99 @@ public class HistoryTranslatorTest {
 		assertEquals(HistoryJSONEnum.STORY_STATUS_DONE, newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
 	}
+	
+	@Test
+	public void testToNewHistory_ModifyValue() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.VALUE);
+		oldHistory.setOldValue("0");
+		oldHistory.setNewValue("5");
+		oldHistory.setModifyDate(modifyDate);
+		
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_VALUE, newHistory.getType());
+		assertEquals("0", newHistory.getOldValue());
+		assertEquals("5", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyEstimate() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.ESTIMATION);
+		oldHistory.setOldValue("0");
+		oldHistory.setNewValue("20");
+		oldHistory.setModifyDate(modifyDate);
+		
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_ESTIMATE, newHistory.getType());
+		assertEquals("0", newHistory.getOldValue());
+		assertEquals("20", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyImportance() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.IMPORTANCE);
+		oldHistory.setOldValue("0");
+		oldHistory.setNewValue("100");
+		oldHistory.setModifyDate(modifyDate);
+		
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_IMPORTANCE, newHistory.getType());
+		assertEquals("0", newHistory.getOldValue());
+		assertEquals("100", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyActualHour() {
+		IIssue task = mATTS.getTaskList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(task.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.ACTUALHOUR);
+		oldHistory.setOldValue("10");
+		oldHistory.setNewValue("5");
+		oldHistory.setModifyDate(modifyDate);
+		
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_ACTUAL, newHistory.getType());
+		assertEquals("10", newHistory.getOldValue());
+		assertEquals("5", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyRemains() {
+		IIssue task = mATTS.getTaskList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(task.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.REMAINS);
+		oldHistory.setOldValue("8");
+		oldHistory.setNewValue("3");
+		oldHistory.setModifyDate(modifyDate);
+		
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_REMAIMS, newHistory.getType());
+		assertEquals("8", newHistory.getOldValue());
+		assertEquals("3", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
 }
