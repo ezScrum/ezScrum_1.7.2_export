@@ -315,12 +315,78 @@ public class HistoryTranslatorTest {
 	}
 	
 	@Test
-	public void testToNewHistory_DropTask() {
-		
+	public void testToNewHistory_AddTask() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.RELEATIONSHIP_ADD_TYPE);
+		oldHistory.setFieldName("null");
+		oldHistory.setOldValue(IIssueHistory.PARENT_OLD_VALUE);
+		oldHistory.setNewValue("5");
+		oldHistory.setModifyDate(modifyDate);
+
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_ADD, newHistory.getType());
+		assertEquals("", newHistory.getOldValue());
+		assertEquals("5", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
 	}
-	
+
 	@Test
-	public void testToNewHistory_RemoveFromStory() {
-		
+	public void testToNewHistory_AppendToStory() {
+		IIssue task = mATTS.getTaskList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(task.getIssueID());
+		oldHistory.setType(IIssueHistory.RELEATIONSHIP_ADD_TYPE);
+		oldHistory.setFieldName("null");
+		oldHistory.setOldValue(IIssueHistory.CHILD_OLD_VALUE);
+		oldHistory.setNewValue("4");
+		oldHistory.setModifyDate(modifyDate);
+
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
+		assertEquals("", newHistory.getOldValue());
+		assertEquals("4", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+
+	@Test
+	public void testToNewHistory_RemoveTask() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.RELEATIONSHIP_DELETE_TYPE);
+		oldHistory.setFieldName("null");
+		oldHistory.setOldValue(IIssueHistory.PARENT_OLD_VALUE);
+		oldHistory.setNewValue("7");
+		oldHistory.setModifyDate(modifyDate);
+
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_REMOVE, newHistory.getType());
+		assertEquals("", newHistory.getOldValue());
+		assertEquals("7", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+
+	@Test
+	public void testToNewHistory_DropFromStory() {
+		IIssue task = mATTS.getTaskList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(task.getIssueID());
+		oldHistory.setType(IIssueHistory.RELEATIONSHIP_DELETE_TYPE);
+		oldHistory.setFieldName("null");
+		oldHistory.setOldValue(IIssueHistory.CHILD_OLD_VALUE);
+		oldHistory.setNewValue("8");
+		oldHistory.setModifyDate(modifyDate);
+
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_DROP, newHistory.getType());
+		assertEquals("", newHistory.getOldValue());
+		assertEquals("8", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
 	}
 }

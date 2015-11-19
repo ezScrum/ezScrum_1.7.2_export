@@ -49,6 +49,26 @@ public class HistoryTranslator {
 			newHistory.setType(HistoryJSONEnum.TYPE_CREATE);
 			newHistory.setOldValue("");
 			newHistory.setNewValue("");
+		} else if (oldHistory.getType() == IIssueHistory.RELEATIONSHIP_ADD_TYPE) {
+			if (oldHistory.getOldValue().equals(IIssueHistory.PARENT_OLD_VALUE)){
+				newHistory.setType(HistoryJSONEnum.TYPE_ADD);
+				newHistory.setOldValue("");
+				newHistory.setNewValue(oldHistory.getNewValue());
+			} else if (oldHistory.getOldValue().equals(IIssueHistory.CHILD_OLD_VALUE)){
+				newHistory.setType(HistoryJSONEnum.TYPE_APPEND);
+				newHistory.setOldValue("");
+				newHistory.setNewValue(oldHistory.getNewValue());
+			}
+		} else if(oldHistory.getType() == IIssueHistory.RELEATIONSHIP_DELETE_TYPE){
+			if (oldHistory.getOldValue().equals(IIssueHistory.PARENT_OLD_VALUE)){
+				newHistory.setType(HistoryJSONEnum.TYPE_REMOVE);
+				newHistory.setOldValue("");
+				newHistory.setNewValue(oldHistory.getNewValue());
+			} else if (oldHistory.getOldValue().equals(IIssueHistory.CHILD_OLD_VALUE)){
+				newHistory.setType(HistoryJSONEnum.TYPE_DROP);
+				newHistory.setOldValue("");
+				newHistory.setNewValue(oldHistory.getNewValue());
+			}
 		}
 		newHistory.setModifyDate(oldHistory.getModifyDate());
 		return newHistory;
