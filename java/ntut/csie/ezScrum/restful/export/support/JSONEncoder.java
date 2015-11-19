@@ -16,6 +16,7 @@ import ntut.csie.ezScrum.issue.internal.IssueHistory;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.core.RelationEnum;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
@@ -59,6 +60,20 @@ public class JSONEncoder {
 			} else if (history.getFieldName().equals("resolution")) {
 				isValid = false;
 			}
+		} else if (history.getType() == IIssueHistory.RELEATIONSHIP_ADD_TYPE) {
+			if (history.getOldValue().equals(RelationEnum.IMPLICATIONOF_OLD_VALUE)) {
+				isValid = false;
+			} else if (history.getOldValue().equals(RelationEnum.TRANSFORMTO_OLD_VALUE)) {
+				isValid = false;
+			} else if (history.getOldValue().equals(RelationEnum.TRANSFORMBY_OLD_VALUE)) {
+				isValid = false;
+			}
+		} else if (history.getType() == IIssueHistory.TASK_DELETE_TYPE) {
+			isValid = false;
+		} else if (history.getType() == IIssueHistory.DESCRIPTION_UPDATE_VALUE) {
+			isValid = false;
+		} else if (history.getType() == IIssueHistory.NOTES_UPDATE_VALUE) {
+			isValid = false;
 		}
 		return isValid;
 	}
