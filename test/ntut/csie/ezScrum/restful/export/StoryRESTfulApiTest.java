@@ -37,9 +37,11 @@ import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
+import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
+import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
@@ -248,6 +250,76 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 		assertEquals(6, jsonResponse.length());
 		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_VALUE, HistoryJSONEnum.TYPE_IMPORTANCE, HistoryJSONEnum.TYPE_ESTIMATE};
+		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
+		for (int i = 0; i < jsonResponse.length(); i++) {
+			JSONObject json = jsonResponse.getJSONObject(i);
+			assertTrue(expectedTypes.contains(json.getInt(HistoryJSONEnum.HISTORY_TYPE)));
+		}
+	}
+	
+	@Test
+	public void testGetHistoriesInStory_ModifyStoryInformation() throws JSONException, InterruptedException {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		
+		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
+		String Name = "Edited Name";
+		String Value = "33";
+		String Importance = "44";
+		String Estimated = "55";
+		productBacklogHelper.editStory(story.getIssueID(), Name, story.getValue(), story.getImportance(), story.getEstimated(), story.getHowToDemo(), story.getNotes());
+		Thread.sleep(1000);
+		productBacklogHelper.editStory(story.getIssueID(), Name, Value, story.getImportance(), story.getEstimated(), story.getHowToDemo(), story.getNotes());
+		Thread.sleep(1000);
+		productBacklogHelper.editStory(story.getIssueID(), Name, Value, Importance, story.getEstimated(), story.getHowToDemo(), story.getNotes());
+		Thread.sleep(1000);
+		productBacklogHelper.editStory(story.getIssueID(), Name, Value, Importance, Estimated, story.getHowToDemo(), story.getNotes());
+
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId +
+		                "/stories/" + story.getIssueID()
+		                + "/histories")
+		        .request()
+		        .get();
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert histories
+		assertEquals(HistoryJSONEnum.TYPE_NAME, jsonResponse.getJSONObject(6).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(HistoryJSONEnum.TYPE_VALUE, jsonResponse.getJSONObject(7).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(HistoryJSONEnum.TYPE_IMPORTANCE, jsonResponse.getJSONObject(8).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(HistoryJSONEnum.TYPE_ESTIMATE, jsonResponse.getJSONObject(9).getInt(HistoryJSONEnum.HISTORY_TYPE));
+	}
+	
+	@Test
+	public void testGetHistoriesInStory_ModifyRelation() throws Exception {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		CreateTask CT = new CreateTask(1, mCP);
+		CT.exe();
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprintId);
+		String taskId = String.valueOf(CT.getTaskIDList().get(0));
+		sprintBacklogHelper.addExistedTask(String.valueOf(story.getIssueID()), new String[] {taskId});
+		Thread.sleep(1000);
+		sprintBacklogHelper.removeTask(CT.getTaskIDList().get(0), story.getIssueID());
+		Thread.sleep(1000);
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId +
+		                "/stories/" + story.getIssueID()
+		                + "/histories")
+		        .request()
+		        .get();
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert histories
+		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_VALUE, HistoryJSONEnum.TYPE_IMPORTANCE, HistoryJSONEnum.TYPE_ESTIMATE, HistoryJSONEnum.TYPE_ADD, HistoryJSONEnum.TYPE_REMOVE};
 		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
 		for (int i = 0; i < jsonResponse.length(); i++) {
 			JSONObject json = jsonResponse.getJSONObject(i);
