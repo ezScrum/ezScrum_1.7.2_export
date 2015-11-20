@@ -24,10 +24,12 @@ import ntut.csie.ezScrum.issue.internal.IssueTag;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.RetrospectiveJSONEnum;
@@ -860,7 +862,35 @@ public class JSONEncoderTest {
 	}
 	
 	@Test
-	public void testToHistoryJSON() {
-		
+	public void testToHistoryJSON() throws JSONException {
+		// Create Story In Sprint
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.SPRINT_ID);
+		oldHistory.setOldValue("-1");
+		oldHistory.setNewValue("1");
+		oldHistory.setModifyDate(modifyDate);
+
+		JSONObject newHistoryJSON = JSONEncoder.toHistoryJSON(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
+		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistoryJSON.getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals("", newHistoryJSON.getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals("1", newHistoryJSON.getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(modifyDate, newHistoryJSON.getLong(HistoryJSONEnum.CREATE_TIME));
+
+		// Modify Story Name
+		oldHistory = new IssueHistory();
+		modifyDate = System.currentTimeMillis();
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(IIssueHistory.SUMMARY);
+		oldHistory.setOldValue("Old Story Name");
+		oldHistory.setNewValue("New Story Name");
+		oldHistory.setModifyDate(modifyDate);
+
+		newHistoryJSON = JSONEncoder.toHistoryJSON(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
+		assertEquals(HistoryJSONEnum.TYPE_NAME, newHistoryJSON.getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals("Old Story Name", newHistoryJSON.getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals("New Story Name", newHistoryJSON.getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(modifyDate, newHistoryJSON.getLong(HistoryJSONEnum.CREATE_TIME));
 	}
 }
