@@ -12,7 +12,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONArray;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
@@ -134,6 +137,29 @@ public class DroppedStoryRESTfulApi {
 			sourceFiles.add(srouceFile);
 		}
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{storyId}/tasks/{taskId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistoriesInTask(@PathParam("projectName") String projectName,
+	                    				 @PathParam("storyId") long storyId, 
+	                    				 @PathParam("taskId") long taskId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		IIssue story = resourceFinder.findDroppedStory(storyId);
+		IIssue task = resourceFinder.findTaskInDroppedStory(taskId);
+		
+		if (project == null || story == null || task == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
+		@SuppressWarnings("deprecation")
+		List<IIssueHistory> histories1 = task.getHistory();
+		List<IIssueHistory> histories = task.getIssueHistories();
+		JSONArray jsonArray = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory());
+		String entity = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory()).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

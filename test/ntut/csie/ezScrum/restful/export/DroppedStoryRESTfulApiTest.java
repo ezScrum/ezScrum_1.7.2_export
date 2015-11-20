@@ -44,9 +44,11 @@ import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
+import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -439,5 +441,51 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.NAME));
 		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.BINARY));
+	}
+	
+	@Test
+	public void testGetHistoriesInTask_CreateTask() throws InterruptedException, JSONException {
+		// Test Data
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		TaskObject taskObject = new TaskObject();
+		taskObject.name = "new name";
+		taskObject.actual = "11";
+		taskObject.estimation = "22";
+		taskObject.remains = "33";
+		taskObject.id = String.valueOf(task.getIssueID());
+		sprintBacklogHelper.editTask(taskObject);
+		Thread.sleep(1000);
+		
+		// Remove story from Sprint
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story.getIssueID() +
+		                "/tasks/" + task.getIssueID() +
+		                "/histories")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
+		// Assert
+		assertEquals(8, jsonResponse.length());
+		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_ESTIMATE, HistoryJSONEnum.TYPE_REMAIMS, HistoryJSONEnum.TYPE_ACTUAL, HistoryJSONEnum.TYPE_NAME};
+		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
+		for (int i = 0; i < jsonResponse.length(); i++) {
+			JSONObject json = jsonResponse.getJSONObject(i);
+			assertTrue(expectedTypes.contains(json.getInt(HistoryJSONEnum.HISTORY_TYPE)));
+		}
 	}
 }
