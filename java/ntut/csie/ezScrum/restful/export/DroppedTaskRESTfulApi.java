@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.restful.export.support.ResourceFinder;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
@@ -57,6 +58,23 @@ public class DroppedTaskRESTfulApi {
 			sourceFiles.add(srouceFile);
 		}
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{taskId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistories(@PathParam("projectName") String projectName,
+	                             @PathParam("taskId") long taskId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		IIssue droppedTask = resourceFinder.findDroppedTask(taskId);
+
+		if (project == null || droppedTask == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		@SuppressWarnings("deprecation")
+		String entity = JSONEncoder.toHistoryJSONArray(droppedTask.getIssueHistories(), ScrumEnum.TASK_ISSUE_TYPE).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
