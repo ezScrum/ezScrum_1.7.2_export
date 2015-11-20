@@ -288,10 +288,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 		
 		// Assert histories
-		assertEquals(HistoryJSONEnum.TYPE_NAME, jsonResponse.getJSONObject(6).getInt(HistoryJSONEnum.HISTORY_TYPE));
-		assertEquals(HistoryJSONEnum.TYPE_VALUE, jsonResponse.getJSONObject(7).getInt(HistoryJSONEnum.HISTORY_TYPE));
-		assertEquals(HistoryJSONEnum.TYPE_IMPORTANCE, jsonResponse.getJSONObject(8).getInt(HistoryJSONEnum.HISTORY_TYPE));
-		assertEquals(HistoryJSONEnum.TYPE_ESTIMATE, jsonResponse.getJSONObject(9).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(10, jsonResponse.length());
+		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_VALUE, HistoryJSONEnum.TYPE_IMPORTANCE, HistoryJSONEnum.TYPE_ESTIMATE, HistoryJSONEnum.TYPE_NAME};
+		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
+		for (int i = 0; i < jsonResponse.length(); i++) {
+			JSONObject json = jsonResponse.getJSONObject(i);
+			assertTrue(expectedTypes.contains(json.getInt(HistoryJSONEnum.HISTORY_TYPE)));
+		}
 	}
 	
 	@Test

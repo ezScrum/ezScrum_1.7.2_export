@@ -75,6 +75,23 @@ public class DroppedStoryRESTfulApi {
 	}
 	
 	@GET
+	@Path("/{storyId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistoriesInDroppedStory(@PathParam("projectName") String projectName, @PathParam("storyId") long storyId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		IIssue story = resourceFinder.findDroppedStory(storyId);
+		
+		if (project == null || story == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
+		@SuppressWarnings("deprecation")
+		String entity = JSONEncoder.toHistoryJSONArray(story.getIssueHistories(), story.getCategory()).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
 	@Path("/{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTasksInDroppedStory(@PathParam("projectName") String projectName,
