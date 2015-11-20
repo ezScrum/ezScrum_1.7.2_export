@@ -28,7 +28,6 @@ import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
-import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.RetrospectiveJSONEnum;
@@ -813,39 +812,6 @@ public class JSONEncoderTest {
 		// Assert
 		assertEquals(userName, projectRoleJSON.getString(AccountJSONEnum.USERNAME));
 		assertEquals(ScrumRoleJSONEnum.PRODUCT_OWNER, projectRoleJSON.getString(ScrumRoleJSONEnum.ROLE));
-	}
-	
-	@Test
-	public void testToHistoryJSON() throws JSONException {
-		IProject project = mCP.getProjectList().get(0);
-		IIssue story = mASTS.getIssueList().get(0);
-		@SuppressWarnings("deprecation")
-		List<IIssueHistory> histories = story.getIssueHistories();
-		for (IIssueHistory history : histories) {
-			JSONObject historyJSON = new JSONObject();
-			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, history.getType());
-			historyJSON.put(HistoryJSONEnum.OLD_VALUE, history.getOldValue());
-			historyJSON.put(HistoryJSONEnum.NEW_VALUE, history.getNewValue());
-			historyJSON.put(HistoryJSONEnum.CREATE_TIME, history.getModifyDate());
-			assertEquals(historyJSON.toString(), JSONEncoder.toHistoryJSON(history, project.getName()).toString());
-		}
-	}
-	
-	@Test
-	public void testToHistoryJSONArray() throws JSONException {
-		IIssue story = mASTS.getIssueList().get(0);
-		@SuppressWarnings("deprecation")
-		List<IIssueHistory> histories = story.getIssueHistories();
-		JSONArray historyJSONArray = new JSONArray();
-		for (IIssueHistory history : histories) {
-			JSONObject historyJSON = new JSONObject();
-			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, history.getType());
-			historyJSON.put(HistoryJSONEnum.OLD_VALUE, history.getOldValue());
-			historyJSON.put(HistoryJSONEnum.NEW_VALUE, history.getNewValue());
-			historyJSON.put(HistoryJSONEnum.CREATE_TIME, history.getModifyDate());
-			historyJSONArray.put(historyJSON);
-		}
-		assertEquals(historyJSONArray.toString(), JSONEncoder.toHistoryJSONArray(histories, story.getCategory()).toString());
 	}
 	
 	@Test

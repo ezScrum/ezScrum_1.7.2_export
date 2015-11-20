@@ -1,6 +1,7 @@
 package ntut.csie.ezScrum.restful.export.support;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -12,11 +13,10 @@ import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
 import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
-import ntut.csie.ezScrum.issue.internal.IssueHistory;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
-import ntut.csie.ezScrum.iteration.core.RelationEnum;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
@@ -45,39 +45,39 @@ public class JSONEncoder {
 		}
 		return historyJSONArray;
 	}
-	
+
 	private static boolean isHistoryValid(IIssueHistory history) {
-		boolean isValid = true;
-		// filter useless histories
-		if (history.getType() == IIssueHistory.OTHER_TYPE) {
-			if (history.getFieldName().equals(IssueHistory.STATUS_FIELD_NAME)) {
+		boolean isValid = false;
+		int type = history.getType();
+		String filedName = history.getFieldName();
+		if (type == IIssueHistory.OTHER_TYPE) {
+			String[] validFieldNameArrayInOtherType = new String[] { ScrumEnum.SPRINT_ID, IIssueHistory.SUMMARY,
+					IIssueHistory.STATUS_FIELD_NAME, ScrumEnum.VALUE, ScrumEnum.ESTIMATION, ScrumEnum.IMPORTANCE,
+					ScrumEnum.ACTUALHOUR, ScrumEnum.REMAINS};
+			List<String> validFieldNamesInOtherType = Arrays.asList(validFieldNameArrayInOtherType);
+			isValid = validFieldNamesInOtherType.contains(filedName);
+			if (filedName != null && filedName.equals(IIssueHistory.STATUS_FIELD_NAME)) {
 				int oldValue = Integer.parseInt(history.getOldValue());
 				int newValue = Integer.parseInt(history.getNewValue());
 				isValid &= !(oldValue == ITSEnum.CONFIRMED_STATUS);
 				isValid &= !(newValue == ITSEnum.CONFIRMED_STATUS);
-			} else if (history.getFieldName().equals(IssueHistory.HANDLER_FIELD_NAME)) {
-				isValid = false;
-			} else if (history.getFieldName().equals("resolution")) {
-				isValid = false;
 			}
-		} else if (history.getType() == IIssueHistory.RELEATIONSHIP_ADD_TYPE) {
-			if (history.getOldValue().equals(RelationEnum.IMPLICATIONOF_OLD_VALUE)) {
-				isValid = false;
-			} else if (history.getOldValue().equals(RelationEnum.TRANSFORMTO_OLD_VALUE)) {
-				isValid = false;
-			} else if (history.getOldValue().equals(RelationEnum.TRANSFORMBY_OLD_VALUE)) {
-				isValid = false;
-			}
-		} else if (history.getType() == IIssueHistory.TASK_DELETE_TYPE) {
-			isValid = false;
-		} else if (history.getType() == IIssueHistory.DESCRIPTION_UPDATE_VALUE) {
-			isValid = false;
-		} else if (history.getType() == IIssueHistory.NOTES_UPDATE_VALUE) {
-			isValid = false;
+		} else if (type == IIssueHistory.ISSUE_NEW_TYPE) {
+			isValid = true;
+		} else if (type == IIssueHistory.RELEATIONSHIP_ADD_TYPE) {
+			String oldValue = history.getOldValue();
+			String[] validOldValueArrayInAddType = new String[] {IIssueHistory.PARENT_OLD_VALUE, IIssueHistory.CHILD_OLD_VALUE};
+			List<String> validOldValuesInAddType = Arrays.asList(validOldValueArrayInAddType);
+			isValid = validOldValuesInAddType.contains(oldValue);
+		} else if (type == IIssueHistory.RELEATIONSHIP_DELETE_TYPE) {
+			String oldValue = history.getOldValue();
+			String[] validOldValueArrayInDeleteType = new String[] {IIssueHistory.PARENT_OLD_VALUE, IIssueHistory.CHILD_OLD_VALUE};
+			List<String> validOldValuesInDeleteType = Arrays.asList(validOldValueArrayInDeleteType);
+			isValid = validOldValuesInDeleteType.contains(oldValue);
 		}
 		return isValid;
 	}
-		
+
 	// Translate history to JSON
 	public static JSONObject toHistoryJSON(IIssueHistory oldHistory, String issueType) {
 		JSONObject historyJSON = new JSONObject();
@@ -92,7 +92,7 @@ public class JSONEncoder {
 		}
 		return historyJSON;
 	}
-	
+
 	// Translate multiple project role to JSONArray
 	public static JSONArray toProjectRoleJSONArray(String projectName, List<IAccount> projectRoles) {
 		JSONArray projectRoleJSONArray = new JSONArray();
@@ -101,7 +101,7 @@ public class JSONEncoder {
 		}
 		return projectRoleJSONArray;
 	}
-	
+
 	// Translate project role to JSON
 	public static JSONObject toProjectRoleJSON(String projectName, IAccount projectRole) {
 		JSONObject projectRoleJSON = new JSONObject();
@@ -113,8 +113,9 @@ public class JSONEncoder {
 		}
 		return projectRoleJSON;
 	}
-	
-	// refer to GetProjectMembersAction splitRole(IProject project, IRole[] roles)
+
+	// refer to GetProjectMembersAction splitRole(IProject project, IRole[]
+	// roles)
 	private static String splitRole(String projectName, IRole[] roles) {
 		String split_role = "";
 
@@ -131,9 +132,10 @@ public class JSONEncoder {
 		}
 		return split_role;
 	}
-	
+
 	// Translate multiple scrum role to JSON
-	public static JSONObject toScrumRolesJSON(ScrumRole productOwner, ScrumRole scrumMaster, ScrumRole scrumTeam, ScrumRole stakeholder, ScrumRole guest) {
+	public static JSONObject toScrumRolesJSON(ScrumRole productOwner, ScrumRole scrumMaster, ScrumRole scrumTeam,
+			ScrumRole stakeholder, ScrumRole guest) {
 		JSONObject scrumRolesJSON = new JSONObject();
 		try {
 			// set scrum role to scrum roles JSON
@@ -147,7 +149,7 @@ public class JSONEncoder {
 		}
 		return scrumRolesJSON;
 	}
-	
+
 	// Translate scrum role to JSON
 	public static JSONObject toScrumRoleJSON(ScrumRole scrumRole) {
 		JSONObject scrumRoleJSON = new JSONObject();
@@ -167,7 +169,7 @@ public class JSONEncoder {
 		}
 		return scrumRoleJSON;
 	}
-	
+
 	// Translate multiple tag to JSONArray
 	public static JSONArray toTagJSONArray(List<IIssueTag> tags) {
 		JSONArray tagJSONArray = new JSONArray();
@@ -176,7 +178,7 @@ public class JSONEncoder {
 		}
 		return tagJSONArray;
 	}
-	
+
 	// Translate tag to JSON
 	public static JSONObject toTagJSON(IIssueTag tag) {
 		JSONObject tagJSON = new JSONObject();
@@ -187,7 +189,7 @@ public class JSONEncoder {
 		}
 		return tagJSON;
 	}
-	
+
 	// Translate multiple unplan to JSONArray
 	public static JSONArray toUnplanJSONArray(List<IIssue> unplans) {
 		JSONArray unplanJSONArray = new JSONArray();
@@ -210,7 +212,7 @@ public class JSONEncoder {
 			// Process Partners
 			JSONArray partnerJSONArray = new JSONArray();
 			String delimiters = ";";
-			// analyzing the string 
+			// analyzing the string
 			@SuppressWarnings("deprecation")
 			String[] partnerStringArray = unplan.getPartners().split(delimiters);
 			for (String partnerString : partnerStringArray) {
@@ -311,17 +313,16 @@ public class JSONEncoder {
 	public static JSONObject toSprintJSON(ISprintPlanDesc sprint) {
 		JSONObject sprintJson = new JSONObject();
 		try {
-			sprintJson.put(SprintJSONEnum.ID, Long.parseLong(sprint.getID()))
-			        .put(SprintJSONEnum.GOAL, sprint.getGoal())
-			        .put(SprintJSONEnum.INTERVAL, Integer.parseInt(sprint.getInterval()))
-			        .put(SprintJSONEnum.TEAM_SIZE, Integer.parseInt(sprint.getMemberNumber()))
-			        .put(SprintJSONEnum.AVAILABLE_HOURS, Integer.parseInt(sprint.getAvailableDays()))
-			        .put(SprintJSONEnum.FOCUS_FACTOR, Integer.parseInt(sprint.getFocusFactor()))
-			        .put(SprintJSONEnum.START_DATE, sprint.getStartDate())
-			        .put(SprintJSONEnum.DUE_DATE, sprint.getEndDate())
-			        .put(SprintJSONEnum.DEMO_DATE, sprint.getDemoDate())
-			        .put(SprintJSONEnum.DEMO_PLACE, sprint.getDemoPlace())
-			        .put(SprintJSONEnum.DAILY_INFO, sprint.getNotes());
+			sprintJson.put(SprintJSONEnum.ID, Long.parseLong(sprint.getID())).put(SprintJSONEnum.GOAL, sprint.getGoal())
+					.put(SprintJSONEnum.INTERVAL, Integer.parseInt(sprint.getInterval()))
+					.put(SprintJSONEnum.TEAM_SIZE, Integer.parseInt(sprint.getMemberNumber()))
+					.put(SprintJSONEnum.AVAILABLE_HOURS, Integer.parseInt(sprint.getAvailableDays()))
+					.put(SprintJSONEnum.FOCUS_FACTOR, Integer.parseInt(sprint.getFocusFactor()))
+					.put(SprintJSONEnum.START_DATE, sprint.getStartDate())
+					.put(SprintJSONEnum.DUE_DATE, sprint.getEndDate())
+					.put(SprintJSONEnum.DEMO_DATE, sprint.getDemoDate())
+					.put(SprintJSONEnum.DEMO_PLACE, sprint.getDemoPlace())
+					.put(SprintJSONEnum.DAILY_INFO, sprint.getNotes());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -341,10 +342,11 @@ public class JSONEncoder {
 		JSONObject projectJson = new JSONObject();
 		try {
 			projectJson.put(ProjectJSONEnum.NAME, project.getName())
-			        .put(ProjectJSONEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
-			        .put(ProjectJSONEnum.COMMENT, project.getProjectDesc().getComment())
-			        .put(ProjectJSONEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
-			        .put(ProjectJSONEnum.ATTATCH_MAX_SIZE, Long.parseLong(project.getProjectDesc().getAttachFileSize()));
+					.put(ProjectJSONEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
+					.put(ProjectJSONEnum.COMMENT, project.getProjectDesc().getComment())
+					.put(ProjectJSONEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
+					.put(ProjectJSONEnum.ATTATCH_MAX_SIZE,
+							Long.parseLong(project.getProjectDesc().getAttachFileSize()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -364,14 +366,12 @@ public class JSONEncoder {
 	public static JSONObject toStoryJSON(IIssue story) {
 		JSONObject storyJson = new JSONObject();
 		try {
-			storyJson.put(StoryJSONEnum.ID, story.getIssueID())
-			        .put(StoryJSONEnum.NAME, story.getSummary())
-			        .put(StoryJSONEnum.STATUS, story.getStatus())
-			        .put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
-			        .put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
-			        .put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
-			        .put(StoryJSONEnum.NOTES, story.getNotes())
-			        .put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
+			storyJson.put(StoryJSONEnum.ID, story.getIssueID()).put(StoryJSONEnum.NAME, story.getSummary())
+					.put(StoryJSONEnum.STATUS, story.getStatus())
+					.put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
+					.put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
+					.put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
+					.put(StoryJSONEnum.NOTES, story.getNotes()).put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
 			JSONArray tagJSONArray = new JSONArray();
 			for (IIssueTag tag : story.getTag()) {
 				JSONObject tagJSON = new JSONObject();
@@ -398,18 +398,16 @@ public class JSONEncoder {
 	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
-			taskJson.put(TaskJSONEnum.ID, task.getIssueID())
-			        .put(TaskJSONEnum.NAME, task.getSummary())
-			        .put(TaskJSONEnum.HANDLER, task.getAssignto())
-			        .put(TaskJSONEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
-			        .put(TaskJSONEnum.REMAIN, Integer.parseInt(task.getRemains()))
-			        .put(TaskJSONEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
-			        .put(TaskJSONEnum.NOTES, task.getNotes())
-			        .put(TaskJSONEnum.STATUS, task.getStatus());
+			taskJson.put(TaskJSONEnum.ID, task.getIssueID()).put(TaskJSONEnum.NAME, task.getSummary())
+					.put(TaskJSONEnum.HANDLER, task.getAssignto())
+					.put(TaskJSONEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
+					.put(TaskJSONEnum.REMAIN, Integer.parseInt(task.getRemains()))
+					.put(TaskJSONEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
+					.put(TaskJSONEnum.NOTES, task.getNotes()).put(TaskJSONEnum.STATUS, task.getStatus());
 			// Process Partners
 			JSONArray partnerJSONArray = new JSONArray();
 			String delimiters = ";";
-			// analyzing the string 
+			// analyzing the string
 			@SuppressWarnings("deprecation")
 			String[] partnerStringArray = task.getPartners().split(delimiters);
 			for (String partnerString : partnerStringArray) {
@@ -441,9 +439,9 @@ public class JSONEncoder {
 		JSONObject releaseJson = new JSONObject();
 		try {
 			releaseJson.put(ReleaseJSONEnum.NAME, release.getName())
-			        .put(ReleaseJSONEnum.DESCRIPTION, release.getDescription())
-			        .put(ReleaseJSONEnum.START_DATE, release.getStartDate())
-			        .put(ReleaseJSONEnum.DUE_DATE, release.getEndDate());
+					.put(ReleaseJSONEnum.DESCRIPTION, release.getDescription())
+					.put(ReleaseJSONEnum.START_DATE, release.getStartDate())
+					.put(ReleaseJSONEnum.DUE_DATE, release.getEndDate());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
