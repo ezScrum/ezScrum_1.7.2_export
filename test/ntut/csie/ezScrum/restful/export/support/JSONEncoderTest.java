@@ -853,4 +853,14 @@ public class JSONEncoderTest {
 		histories.add(history4);
 		assertEquals(0, JSONEncoder.toHistoryJSONArray(histories, story.getCategory()).length());
 	}
+	
+	@Test
+	public void testIsHistoryValid() {
+		
+	}
+	
+	@Test
+	public void testToHistoryJSON() {
+		
+	}
 }
