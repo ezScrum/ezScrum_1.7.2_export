@@ -51,7 +51,7 @@ public class JSONEncoder {
 		int type = history.getType();
 		String filedName = history.getFieldName();
 		if (type == IIssueHistory.OTHER_TYPE) {
-			String[] validFieldNameArrayInOtherType = new String[] { ScrumEnum.SPRINT_ID, IIssueHistory.SUMMARY,
+			String[] validFieldNameArrayInOtherType = new String[] {ScrumEnum.SPRINT_TAG, ScrumEnum.SPRINT_ID, IIssueHistory.SUMMARY,
 					IIssueHistory.STATUS_FIELD_NAME, ScrumEnum.VALUE, ScrumEnum.ESTIMATION, ScrumEnum.IMPORTANCE,
 					ScrumEnum.ACTUALHOUR, ScrumEnum.REMAINS};
 			List<String> validFieldNamesInOtherType = Arrays.asList(validFieldNameArrayInOtherType);

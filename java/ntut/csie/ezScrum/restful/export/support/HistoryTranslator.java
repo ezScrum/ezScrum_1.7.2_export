@@ -10,7 +10,7 @@ public class HistoryTranslator {
 	public static IIssueHistory toNewHistory(IIssueHistory oldHistory, String issueType) {
 		IssueHistory newHistory = new IssueHistory();
 		if (oldHistory.getType() == IIssueHistory.OTHER_TYPE) {
-			if (oldHistory.getFieldName().equals(ScrumEnum.SPRINT_ID)) {
+			if (oldHistory.getFieldName().equals(ScrumEnum.SPRINT_ID) || oldHistory.getFieldName().equals(ScrumEnum.SPRINT_TAG)) {
 				if (issueType.equals(ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE)) {
 					newHistory.setType(HistoryJSONEnum.TYPE_SPRINTID);
 					newHistory.setOldValue(oldHistory.getOldValue());
