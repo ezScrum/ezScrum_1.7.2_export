@@ -46,7 +46,7 @@ public class JSONEncoder {
 		return historyJSONArray;
 	}
 
-	private static boolean isHistoryValid(IIssueHistory history) {
+	public static boolean isHistoryValid(IIssueHistory history) {
 		boolean isValid = false;
 		int type = history.getType();
 		String filedName = history.getFieldName();
