@@ -10,10 +10,24 @@ public class HistoryTranslator {
 	public static IIssueHistory toNewHistory(IIssueHistory oldHistory, String issueType) {
 		IssueHistory newHistory = new IssueHistory();
 		if (oldHistory.getType() == IIssueHistory.OTHER_TYPE) {
-			if (oldHistory.getFieldName().equals(ScrumEnum.SPRINT_TAG)) {
-				newHistory.setType(HistoryJSONEnum.TYPE_APPEND);
-				newHistory.setOldValue("");
-				newHistory.setNewValue(oldHistory.getNewValue());
+			if (oldHistory.getFieldName().equals(ScrumEnum.SPRINT_ID)) {
+				if (issueType.equals(ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE)) {
+					newHistory.setType(HistoryJSONEnum.TYPE_SPRINTID);
+					newHistory.setOldValue(oldHistory.getOldValue());
+					newHistory.setNewValue(oldHistory.getNewValue());
+				} else {
+					int oldSprintId = Integer.parseInt(oldHistory.getOldValue());
+					int newSprintId = Integer.parseInt(oldHistory.getNewValue());
+					if (oldSprintId <= 0) { // Append to sprint
+						newHistory.setType(HistoryJSONEnum.TYPE_APPEND);
+						newHistory.setOldValue("");
+						newHistory.setNewValue(oldHistory.getNewValue());
+					} else if (newSprintId <= 0) { // Remove from sprint
+						newHistory.setType(HistoryJSONEnum.TYPE_REMOVE);
+						newHistory.setOldValue("");
+						newHistory.setNewValue(oldHistory.getOldValue());
+					}
+				}
 			} else if (oldHistory.getFieldName().equals(IIssueHistory.SUMMARY)) {
 				newHistory.setType(HistoryJSONEnum.TYPE_NAME);
 				newHistory.setOldValue(oldHistory.getOldValue());

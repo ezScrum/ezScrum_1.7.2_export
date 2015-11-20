@@ -95,7 +95,7 @@ public class HistoryTranslatorTest {
 		IssueHistory oldHistory = new IssueHistory();
 		long modifyDate = System.currentTimeMillis();
 		oldHistory.setType(IIssueHistory.OTHER_TYPE);
-		oldHistory.setFieldName("Sprint");
+		oldHistory.setFieldName(ScrumEnum.SPRINT_ID);
 		oldHistory.setOldValue("-1");
 		oldHistory.setNewValue("1");
 		oldHistory.setModifyDate(modifyDate);
@@ -387,6 +387,82 @@ public class HistoryTranslatorTest {
 		assertEquals(HistoryJSONEnum.TYPE_DROP, newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("8", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyUnplanSprintId() {
+		IIssue unplan = mCU.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(unplan.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.SPRINT_ID);
+		oldHistory.setOldValue("0");
+		oldHistory.setNewValue("150");
+		oldHistory.setModifyDate(modifyDate);
+		
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, unplan.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_SPRINTID, newHistory.getType());
+		assertEquals("0", newHistory.getOldValue());
+		assertEquals("150", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyStorySprintId_AppendToSprint_1() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.SPRINT_ID);
+		oldHistory.setOldValue("0");
+		oldHistory.setNewValue("150");
+		oldHistory.setModifyDate(modifyDate);
+
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
+		assertEquals("", newHistory.getOldValue());
+		assertEquals("150", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyStorySprintId_AppendToSprint_2() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.SPRINT_ID);
+		oldHistory.setOldValue("-1");
+		oldHistory.setNewValue("170");
+		oldHistory.setModifyDate(modifyDate);
+
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
+		assertEquals("", newHistory.getOldValue());
+		assertEquals("170", newHistory.getNewValue());
+		assertEquals(modifyDate, newHistory.getModifyDate());
+	}
+	
+	@Test
+	public void testToNewHistory_ModifyStorySprintId_RemoveFromSprint() {
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setIssueID(story.getIssueID());
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.SPRINT_ID);
+		oldHistory.setOldValue("120");
+		oldHistory.setNewValue("0");
+		oldHistory.setModifyDate(modifyDate);
+		
+		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
+		assertEquals(HistoryJSONEnum.TYPE_REMOVE, newHistory.getType());
+		assertEquals("", newHistory.getOldValue());
+		assertEquals("120", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
 	}
 }
