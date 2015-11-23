@@ -12,10 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONArray;
-
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
@@ -156,9 +153,6 @@ public class DroppedStoryRESTfulApi {
 		}
 		
 		@SuppressWarnings("deprecation")
-		List<IIssueHistory> histories1 = task.getHistory();
-		List<IIssueHistory> histories = task.getIssueHistories();
-		JSONArray jsonArray = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory());
 		String entity = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory()).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
