@@ -23,8 +23,13 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
+import ntut.csie.ezScrum.issue.core.ITSEnum;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.UnplanJSONEnum;
+import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
@@ -149,5 +154,82 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 		assertEquals(unplans.get(1).getActualHour(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.ACTUAL));
 		assertEquals(unplans.get(1).getNotes(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.NOTES));
 		assertEquals(unplans.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(UnplanJSONEnum.STATUS));
+	}
+	
+	@Test
+	public void testGetHistoriesInUnplan_CreateUnplan() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue unplan = mCU.getIssueList().get(0);
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/unplans/" + unplan.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
+		
+		@SuppressWarnings("deprecation")
+		List<IIssueHistory> histories = unplan.getIssueHistories();
+		JSONArray expectedJSONArray = JSONEncoder.toHistoryJSONArray(histories, ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE);
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		// Assert
+		assertEquals(expectedJSONArray.length(), jsonResponse.length());
+		// First History
+		assertEquals(expectedJSONArray.getJSONObject(0).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(0).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(0).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(0).getLong(HistoryJSONEnum.CREATE_TIME));
+		// Second History
+		assertEquals(expectedJSONArray.getJSONObject(1).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(1).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(1).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(1).getLong(HistoryJSONEnum.CREATE_TIME));
+		// Third History
+		assertEquals(expectedJSONArray.getJSONObject(2).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(2).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(2).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(2).getLong(HistoryJSONEnum.CREATE_TIME));
+	}
+	
+	@Test
+	public void testGetHistoriesInUnplan_ModifyUnplanInformation() throws JSONException, Exception {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue unplan = mCU.getIssueList().get(0);
+		
+		// Edit Unplan
+		Thread.sleep(1000);
+		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, null);
+		unplannedItemHelper.modifyUnplannedItemIssue(unplan.getIssueID(), unplan.getSummary(), unplan.getAssignto(), ITSEnum.ASSIGNED,
+		                                             "", "20", "20", "newNotes", "100", null);
+		unplan = unplannedItemHelper.getIssue(unplan.getIssueID());
+		Thread.sleep(1000);
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/unplans/" + unplan.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
+		
+		@SuppressWarnings("deprecation")
+		List<IIssueHistory> histories = unplan.getIssueHistories();
+		JSONArray expectedJSONArray = JSONEncoder.toHistoryJSONArray(histories, ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE);
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		// Assert
+		assertEquals(expectedJSONArray.length(), jsonResponse.length());
+		for (int i = 0; i < expectedJSONArray.length(); i++) {
+			assertEquals(expectedJSONArray.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+		}
 	}
 }

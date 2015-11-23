@@ -51,7 +51,7 @@ public class JSONEncoder {
 		int type = history.getType();
 		String filedName = history.getFieldName();
 		if (type == IIssueHistory.OTHER_TYPE) {
-			String[] validFieldNameArrayInOtherType = new String[] { ScrumEnum.SPRINT_ID, IIssueHistory.SUMMARY,
+			String[] validFieldNameArrayInOtherType = new String[] {ScrumEnum.SPRINT_TAG, ScrumEnum.SPRINT_ID, IIssueHistory.SUMMARY,
 					IIssueHistory.STATUS_FIELD_NAME, ScrumEnum.VALUE, ScrumEnum.ESTIMATION, ScrumEnum.IMPORTANCE,
 					ScrumEnum.ACTUALHOUR, ScrumEnum.REMAINS};
 			List<String> validFieldNamesInOtherType = Arrays.asList(validFieldNameArrayInOtherType);
@@ -203,6 +203,7 @@ public class JSONEncoder {
 	public static JSONObject toUnplanJSON(IIssue unplan) {
 		JSONObject unplanJSON = new JSONObject();
 		try {
+			unplanJSON.put(UnplanJSONEnum.ID, unplan.getIssueID());
 			unplanJSON.put(UnplanJSONEnum.NAME, unplan.getSummary());
 			unplanJSON.put(UnplanJSONEnum.HANDLER, unplan.getAssignto());
 			unplanJSON.put(UnplanJSONEnum.ESTIMATE, unplan.getEstimated());
@@ -366,12 +367,14 @@ public class JSONEncoder {
 	public static JSONObject toStoryJSON(IIssue story) {
 		JSONObject storyJson = new JSONObject();
 		try {
-			storyJson.put(StoryJSONEnum.ID, story.getIssueID()).put(StoryJSONEnum.NAME, story.getSummary())
-					.put(StoryJSONEnum.STATUS, story.getStatus())
-					.put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
-					.put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
-					.put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
-					.put(StoryJSONEnum.NOTES, story.getNotes()).put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
+			storyJson.put(StoryJSONEnum.ID, story.getIssueID())
+			  		 .put(StoryJSONEnum.NAME, story.getSummary())
+					 .put(StoryJSONEnum.STATUS, story.getStatus())
+					 .put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
+					 .put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
+					 .put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
+					 .put(StoryJSONEnum.NOTES, story.getNotes())
+					 .put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
 			JSONArray tagJSONArray = new JSONArray();
 			for (IIssueTag tag : story.getTag()) {
 				JSONObject tagJSON = new JSONObject();
@@ -398,12 +401,14 @@ public class JSONEncoder {
 	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
-			taskJson.put(TaskJSONEnum.ID, task.getIssueID()).put(TaskJSONEnum.NAME, task.getSummary())
+			taskJson.put(TaskJSONEnum.ID, task.getIssueID())
+			        .put(TaskJSONEnum.NAME, task.getSummary())
 					.put(TaskJSONEnum.HANDLER, task.getAssignto())
 					.put(TaskJSONEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
 					.put(TaskJSONEnum.REMAIN, Integer.parseInt(task.getRemains()))
 					.put(TaskJSONEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
-					.put(TaskJSONEnum.NOTES, task.getNotes()).put(TaskJSONEnum.STATUS, task.getStatus());
+					.put(TaskJSONEnum.NOTES, task.getNotes())
+					.put(TaskJSONEnum.STATUS, task.getStatus());
 			// Process Partners
 			JSONArray partnerJSONArray = new JSONArray();
 			String delimiters = ";";

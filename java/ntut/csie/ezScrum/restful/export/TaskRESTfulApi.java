@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.restful.export.support.ResourceFinder;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
@@ -72,6 +73,28 @@ public class TaskRESTfulApi {
 			sourceFiles.add(srouceFile);
 		}
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{taskId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistoriesInTask(@PathParam("projectName") String projectName,
+	                             	   @PathParam("sprintId") long sprintId,
+	                             	   @PathParam("storyId") long storyId,
+	                             	   @PathParam("taskId") long taskId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
+		IIssue story = resourceFinder.findStory(storyId);
+		IIssue task = resourceFinder.findTask(taskId);
+
+		if (project == null || sprint == null ||
+		        story == null || task == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		@SuppressWarnings("deprecation")
+		String entity = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), ScrumEnum.TASK_ISSUE_TYPE).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }
