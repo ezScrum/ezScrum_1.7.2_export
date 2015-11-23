@@ -79,10 +79,10 @@ public class TaskRESTfulApi {
 	@GET
 	@Path("/{taskId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getHistories(@PathParam("projectName") String projectName,
-	                             @PathParam("sprintId") long sprintId,
-	                             @PathParam("storyId") long storyId,
-	                             @PathParam("taskId") long taskId) {
+	public Response getHistoriesInTask(@PathParam("projectName") String projectName,
+	                             	   @PathParam("sprintId") long sprintId,
+	                             	   @PathParam("storyId") long storyId,
+	                             	   @PathParam("taskId") long taskId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);

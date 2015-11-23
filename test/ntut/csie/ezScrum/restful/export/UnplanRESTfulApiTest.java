@@ -157,7 +157,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetHistoriesInTask_CreateTask() throws JSONException {
+	public void testGetHistoriesInUnplan_CreateUnplan() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue unplan = mCU.getIssueList().get(0);
@@ -196,7 +196,7 @@ public class UnplanRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetHistoriesInTask_ModifyUnplanInformation() throws JSONException, Exception {
+	public void testGetHistoriesInUnplan_ModifyUnplanInformation() throws JSONException, Exception {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue unplan = mCU.getIssueList().get(0);

@@ -128,7 +128,11 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories' API
 		Response response = mClient.target(mBaseUri)
-				.path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/").request().get();
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/")
+		        .request()
+		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
@@ -177,8 +181,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Call
 		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles'
 		// API
-		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
-				+ "/stories/" + story.getIssueID() + "/attachfiles").request().get();
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/attachfiles")
+		        .request()
+		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 		String expectedXmlBinary = FileEncoder.toBase64BinaryString(new File(testFile));
@@ -207,8 +216,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Call
 		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles'
 		// API
-		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
-				+ "/stories/" + story.getIssueID() + "/attachfiles").request().get();
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/attachfiles")
+		        .request()
+		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 		String expectedXmlBinary1 = FileEncoder.toBase64BinaryString(new File(testFile1));
@@ -234,8 +248,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Call
 		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
 		// API
-		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
-				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
@@ -276,8 +295,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Call
 		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
 		// API
-		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
-				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
@@ -318,8 +342,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Call
 		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
 		// API
-		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
-				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
@@ -357,8 +386,13 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		// Call
 		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
 		// API
-		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
-				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 

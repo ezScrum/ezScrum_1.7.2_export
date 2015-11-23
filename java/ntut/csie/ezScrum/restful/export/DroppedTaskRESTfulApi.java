@@ -64,8 +64,8 @@ public class DroppedTaskRESTfulApi {
 	@GET
 	@Path("/{taskId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getHistories(@PathParam("projectName") String projectName,
-	                             @PathParam("taskId") long taskId) {
+	public Response getHistoriesInDroppedTask(@PathParam("projectName") String projectName,
+	                                          @PathParam("taskId") long taskId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 		IIssue droppedTask = resourceFinder.findDroppedTask(taskId);

@@ -39,9 +39,9 @@ public class UnplanRESTfulApi {
 	@GET
 	@Path("/{unplanId}/histories")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getHistories(@PathParam("projectName") String projectName,
-	                             @PathParam("sprintId") long sprintId,
-	                             @PathParam("unplanId") long unplanId) {
+	public Response getHistoriesInUnplan(@PathParam("projectName") String projectName,
+	                                     @PathParam("sprintId") long sprintId,
+	                                     @PathParam("unplanId") long unplanId) {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
