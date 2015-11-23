@@ -22,6 +22,7 @@ import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.UnplanJSONEnum;
 
 @Path("export")
 public class IntegratedRESTfulApi {
@@ -37,7 +38,7 @@ public class IntegratedRESTfulApi {
 		// Response JSONObject
 		JSONObject exportJSON = new JSONObject();
 		// Projects JSONArray
-		JSONArray projects = null;
+		JSONArray projectJSONArray = null;
 		// Sprints In Project
 		Map<String, JSONArray> sprintsMap = new HashMap<String, JSONArray>();
 
@@ -46,8 +47,8 @@ public class IntegratedRESTfulApi {
 		        .path("accounts")
 		        .request()
 		        .get();
-		JSONArray accounts = new JSONArray(response.readEntity(String.class));
-		exportJSON.put(ExportJSONEnum.ACCOUNTS, accounts);
+		JSONArray accountJSONArray = new JSONArray(response.readEntity(String.class));
+		exportJSON.put(ExportJSONEnum.ACCOUNTS, accountJSONArray);
 
 		//// Get Projects ////
 		// Get Projects
@@ -55,91 +56,106 @@ public class IntegratedRESTfulApi {
 		        .path("projects")
 		        .request()
 		        .get();
-		projects = new JSONArray(response.readEntity(String.class));
-		exportJSON.put(ExportJSONEnum.PROJECTS, projects);
+		projectJSONArray = new JSONArray(response.readEntity(String.class));
+		exportJSON.put(ExportJSONEnum.PROJECTS, projectJSONArray);
 
-		for (int i = 0; i < projects.length(); i++) {
-			JSONObject project = projects.getJSONObject(i);
-			String projectName = project.getString(ProjectJSONEnum.NAME);
+		for (int i = 0; i < projectJSONArray.length(); i++) {
+			JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+			String projectName = projectJSON.getString(ProjectJSONEnum.NAME);
 			/** Get scrum_roles in Project */
 			response = mClient.target(BASE_URL)
 			        .path("projects/" + projectName + "/scrumroles")
 			        .request()
 			        .get();
-			JSONObject scrumRoles = new JSONObject(response.readEntity(String.class));
-			project.put(ProjectJSONEnum.SCRUM_ROLES, scrumRoles);
+			JSONObject scrumRoleJSON = new JSONObject(response.readEntity(String.class));
+			projectJSON.put(ProjectJSONEnum.SCRUM_ROLES, scrumRoleJSON);
 
 			/** Get project_roles in Project */
 			response = mClient.target(BASE_URL)
 			        .path("projects/" + projectName + "/projectroles")
 			        .request()
 			        .get();
-			JSONArray projectRoles = new JSONArray(response.readEntity(String.class));
-			project.put(ProjectJSONEnum.PROJECT_ROLES, projectRoles);
+			JSONArray projectRoleJSONArray = new JSONArray(response.readEntity(String.class));
+			projectJSON.put(ProjectJSONEnum.PROJECT_ROLES, projectRoleJSONArray);
 
 			/** Get tags in Project */
 			response = mClient.target(BASE_URL)
 			        .path("projects/" + projectName + "/tags")
 			        .request()
 			        .get();
-			JSONArray tags = new JSONArray(response.readEntity(String.class));
-			project.put(ProjectJSONEnum.TAGS, tags);
+			JSONArray tagJSONArray = new JSONArray(response.readEntity(String.class));
+			projectJSON.put(ProjectJSONEnum.TAGS, tagJSONArray);
 		}
 
 		//// Get Release ////
-		for (int i = 0; i < projects.length(); i++) {
-			JSONObject project = projects.getJSONObject(i);
-			String projectName = project.getString(ProjectJSONEnum.NAME);
+		for (int i = 0; i < projectJSONArray.length(); i++) {
+			JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+			String projectName = projectJSON.getString(ProjectJSONEnum.NAME);
 			// Get Sprints
 			response = mClient.target(BASE_URL)
 			        .path("projects/" + projectName + "/releases")
 			        .request()
 			        .get();
-			JSONArray releases = new JSONArray(response.readEntity(String.class));
-			project.put(ProjectJSONEnum.RELEASES, releases);
+			JSONArray releaseJSONArray = new JSONArray(response.readEntity(String.class));
+			projectJSON.put(ProjectJSONEnum.RELEASES, releaseJSONArray);
 		}
 
 		//// Get Sprints ////
-		for (int i = 0; i < projects.length(); i++) {
-			JSONObject project = projects.getJSONObject(i);
-			String projectName = project.getString(ProjectJSONEnum.NAME);
+		for (int i = 0; i < projectJSONArray.length(); i++) {
+			JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+			String projectName = projectJSON.getString(ProjectJSONEnum.NAME);
 			// Get Sprints
 			response = mClient.target(BASE_URL)
 			        .path("projects/" + projectName + "/sprints")
 			        .request()
 			        .get();
-			JSONArray sprints = new JSONArray(response.readEntity(String.class));
-			sprintsMap.put(projectName, sprints);
+			JSONArray sprintJSONArray = new JSONArray(response.readEntity(String.class));
+			sprintsMap.put(projectName, sprintJSONArray);
 		}
 		// Add Sprints to Project
-		for (int i = 0; i < projects.length(); i++) {
-			JSONObject project = projects.getJSONObject(i);
-			String projectName = project.getString(ProjectJSONEnum.NAME);
-			JSONArray sprintsInProject = sprintsMap.get(projectName);
-			project.put(ProjectJSONEnum.SPRINTS, sprintsInProject);
+		for (int i = 0; i < projectJSONArray.length(); i++) {
+			JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+			String projectName = projectJSON.getString(ProjectJSONEnum.NAME);
+			JSONArray sprintInProjectJSONArray = sprintsMap.get(projectName);
+			projectJSON.put(ProjectJSONEnum.SPRINTS, sprintInProjectJSONArray);
 		}
 
 		//// Get Stories In Sprint ////
 		for (Map.Entry<String, JSONArray> sprintMap : sprintsMap.entrySet()) {
 			String projectName = sprintMap.getKey();
-			JSONArray sprintArray = sprintMap.getValue();
+			JSONArray sprintJSONArray = sprintMap.getValue();
 
 			// Get Stories from Sprint and add to Sprint
-			for (int i = 0; i < sprintArray.length(); i++) {
-				JSONObject sprintJSON = sprintArray.getJSONObject(i);
+			for (int i = 0; i < sprintJSONArray.length(); i++) {
+				JSONObject sprintJSON = sprintJSONArray.getJSONObject(i);
 				long sprintId = sprintJSON.getLong(SprintJSONEnum.ID);
 				response = mClient.target(BASE_URL)
 				        .path("projects/" + projectName +
 				                "/sprints/" + sprintId + "/stories")
 				        .request()
 				        .get();
-				JSONArray storiesArray = new JSONArray(response.readEntity(String.class));
-				sprintJSON.put(SprintJSONEnum.STORIES, storiesArray);
+				JSONArray storyJSONArray = new JSONArray(response.readEntity(String.class));
+				sprintJSON.put(SprintJSONEnum.STORIES, storyJSONArray);
+
+				//// Get histories in Story ////
+				for (int j = 0; j < storyJSONArray.length(); j++) {
+					JSONObject storyJSON = storyJSONArray.getJSONObject(j);
+					long storyId = storyJSON.getLong(StoryJSONEnum.ID);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectName +
+					                "/sprints/" + sprintId +
+					                "/stories/" + storyId +
+					                "/histories")
+					        .request()
+					        .get();
+					JSONArray historyJSONArray = new JSONArray(response.readEntity(String.class));
+					storyJSON.put(StoryJSONEnum.HISTORIES, historyJSONArray);
+				}
 
 				//// Get attach_files in Story ////
-				for (int j = 0; j < storiesArray.length(); j++) {
-					JSONObject story = storiesArray.getJSONObject(j);
-					long storyId = story.getLong(StoryJSONEnum.ID);
+				for (int j = 0; j < storyJSONArray.length(); j++) {
+					JSONObject storyJSON = storyJSONArray.getJSONObject(j);
+					long storyId = storyJSON.getLong(StoryJSONEnum.ID);
 					response = mClient.target(BASE_URL)
 					        .path("projects/" + projectName +
 					                "/sprints/" + sprintId +
@@ -147,14 +163,14 @@ public class IntegratedRESTfulApi {
 					                "/attachfiles")
 					        .request()
 					        .get();
-					JSONArray atachfilesArray = new JSONArray(response.readEntity(String.class));
-					story.put(StoryJSONEnum.ATTACH_FILES, atachfilesArray);
+					JSONArray atachfileJSONArray = new JSONArray(response.readEntity(String.class));
+					storyJSON.put(StoryJSONEnum.ATTACH_FILES, atachfileJSONArray);
 				}
 
 				//// Get Tasks ////
-				for (int j = 0; j < storiesArray.length(); j++) {
-					JSONObject story = storiesArray.getJSONObject(j);
-					long storyId = story.getLong(StoryJSONEnum.ID);
+				for (int j = 0; j < storyJSONArray.length(); j++) {
+					JSONObject storyJSON = storyJSONArray.getJSONObject(j);
+					long storyId = storyJSON.getLong(StoryJSONEnum.ID);
 					response = mClient.target(BASE_URL)
 					        .path("projects/" + projectName +
 					                "/sprints/" + sprintId +
@@ -162,13 +178,29 @@ public class IntegratedRESTfulApi {
 					                "/tasks")
 					        .request()
 					        .get();
-					JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
-					story.put(StoryJSONEnum.TASKS, tasksArray);
+					JSONArray taskJSONArray = new JSONArray(response.readEntity(String.class));
+					storyJSON.put(StoryJSONEnum.TASKS, taskJSONArray);
+					
+					// Get histories in Task
+					for (int k = 0; k < taskJSONArray.length(); k++) {
+						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
+						long taskId = taskJSON.getLong(TaskJSONEnum.ID);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectName +
+						                "/sprints/" + sprintId +
+						                "/stories/" + storyId +
+						                "/tasks/" + taskId +
+						                "/histories")
+						        .request()
+						        .get();
+						JSONArray historyJSONArray = new JSONArray(response.readEntity(String.class));
+						taskJSON.put(TaskJSONEnum.HISTORIES, historyJSONArray);
+					}
 
 					// Get attach_files in Task
-					for (int k = 0; k < tasksArray.length(); k++) {
-						JSONObject task = tasksArray.getJSONObject(k);
-						long taskId = task.getLong(TaskJSONEnum.ID);
+					for (int k = 0; k < taskJSONArray.length(); k++) {
+						JSONObject taskJSON = taskJSONArray.getJSONObject(k);
+						long taskId = taskJSON.getLong(TaskJSONEnum.ID);
 						response = mClient.target(BASE_URL)
 						        .path("projects/" + projectName +
 						                "/sprints/" + sprintId +
@@ -177,8 +209,8 @@ public class IntegratedRESTfulApi {
 						                "/attachfiles")
 						        .request()
 						        .get();
-						JSONArray atachfilesArray = new JSONArray(response.readEntity(String.class));
-						task.put(TaskJSONEnum.ATTACH_FILES, atachfilesArray);
+						JSONArray atachfileJSONArray = new JSONArray(response.readEntity(String.class));
+						taskJSON.put(TaskJSONEnum.ATTACH_FILES, atachfileJSONArray);
 					}
 				}
 			}
@@ -199,8 +231,8 @@ public class IntegratedRESTfulApi {
 				                "/retrospectives")
 				        .request()
 				        .get();
-				JSONArray retrospectivesArray = new JSONArray(response.readEntity(String.class));
-				sprintJSON.put(SprintJSONEnum.RETROSPECTIVES, retrospectivesArray);
+				JSONArray retrospectiveJSONArray = new JSONArray(response.readEntity(String.class));
+				sprintJSON.put(SprintJSONEnum.RETROSPECTIVES, retrospectiveJSONArray);
 
 				// Get Unplans from Sprint and add to Sprint
 				response = mClient.target(BASE_URL)
@@ -209,27 +241,52 @@ public class IntegratedRESTfulApi {
 				                "/unplans")
 				        .request()
 				        .get();
-				JSONArray unplansArray = new JSONArray(response.readEntity(String.class));
-				sprintJSON.put(SprintJSONEnum.UNPLANS, unplansArray);
+				JSONArray unplanJSONArray = new JSONArray(response.readEntity(String.class));
+				sprintJSON.put(SprintJSONEnum.UNPLANS, unplanJSONArray);
+				
+				// Get histories in Unplan
+				for (int j = 0; j < unplanJSONArray.length(); j++) {
+					JSONObject unplanJSON = unplanJSONArray.getJSONObject(j);
+					long unplanId = unplanJSON.getLong(TaskJSONEnum.ID);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectName +
+					                "/sprints/" + sprintId +
+					                "/unplans/" + unplanId +
+					                "/histories")
+					        .request()
+					        .get();
+					JSONArray historyJSONArray = new JSONArray(response.readEntity(String.class));
+					unplanJSON.put(UnplanJSONEnum.HISTORIES, historyJSONArray);
+				}
 			}
 		}
 
 		//// Get DroppedStories ////
-		for (int i = 0; i < projects.length(); i++) {
-			JSONObject project = projects.getJSONObject(i);
-			String projectName = project.getString(ProjectJSONEnum.NAME);
+		for (int i = 0; i < projectJSONArray.length(); i++) {
+			JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+			String projectName = projectJSON.getString(ProjectJSONEnum.NAME);
 			// Get stories
 			response = mClient.target(BASE_URL)
 			        .path("projects/" + projectName + "/stories")
 			        .request()
 			        .get();
-			JSONArray droppedStoriesArray = new JSONArray(response.readEntity(String.class));
-			project.put(ExportJSONEnum.DROPPED_STORIES, droppedStoriesArray);
+			JSONArray droppedStoryJSONArray = new JSONArray(response.readEntity(String.class));
+			projectJSON.put(ExportJSONEnum.DROPPED_STORIES, droppedStoryJSONArray);
 
 			// Get Story
-			for (int j = 0; j < droppedStoriesArray.length(); j++) {
-				JSONObject droppedStory = droppedStoriesArray.getJSONObject(j);
-				long droppedStoryId = droppedStory.getLong(StoryJSONEnum.ID);
+			for (int j = 0; j < droppedStoryJSONArray.length(); j++) {
+				JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
+				long droppedStoryId = droppedStoryJSON.getLong(StoryJSONEnum.ID);
+				// Get histories
+				response = mClient.target(BASE_URL)
+				        .path("projects/" + projectName +
+				                "/stories/" + droppedStoryId +
+				                "/histories")
+				        .request()
+				        .get();
+				JSONArray historyJSONArray = new JSONArray(response.readEntity(String.class));
+				droppedStoryJSON.put(StoryJSONEnum.HISTORIES, historyJSONArray);
+				
 				// Get attach_files
 				response = mClient.target(BASE_URL)
 				        .path("projects/" + projectName +
@@ -237,27 +294,38 @@ public class IntegratedRESTfulApi {
 				                "/attachfiles")
 				        .request()
 				        .get();
-				JSONArray attachfilesArray = new JSONArray(response.readEntity(String.class));
-				droppedStory.put(StoryJSONEnum.ATTACH_FILES, attachfilesArray);
+				JSONArray attachfileJSONArray = new JSONArray(response.readEntity(String.class));
+				droppedStoryJSON.put(StoryJSONEnum.ATTACH_FILES, attachfileJSONArray);
 			}
 
 			// Get Tasks in DroppedStory
-			for (int j = 0; j < droppedStoriesArray.length(); j++) {
-				JSONObject droppedStory = droppedStoriesArray.getJSONObject(j);
-				long droppedStoryId = droppedStory.getLong(StoryJSONEnum.ID);
+			for (int j = 0; j < droppedStoryJSONArray.length(); j++) {
+				JSONObject droppedStoryJSON = droppedStoryJSONArray.getJSONObject(j);
+				long droppedStoryId = droppedStoryJSON.getLong(StoryJSONEnum.ID);
 				response = mClient.target(BASE_URL)
 				        .path("projects/" + projectName +
 				                "/stories/" + droppedStoryId +
 				                "/tasks")
 				        .request()
 				        .get();
-				JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
-				droppedStory.put(StoryJSONEnum.TASKS, tasksArray);
+				JSONArray taskJSONArray = new JSONArray(response.readEntity(String.class));
+				droppedStoryJSON.put(StoryJSONEnum.TASKS, taskJSONArray);
 
 				// Get Task
-				for (int k = 0; k < tasksArray.length(); k++) {
-					JSONObject task = tasksArray.getJSONObject(k);
-					long taskId = task.getLong(TaskJSONEnum.ID);
+				for (int k = 0; k < taskJSONArray.length(); k++) {
+					JSONObject taskJSON = taskJSONArray.getJSONObject(k);
+					long taskId = taskJSON.getLong(TaskJSONEnum.ID);
+					// Get histories
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectName +
+					                "/stories/" + droppedStoryId +
+					                "/tasks/" + taskId +
+					                "/histories")
+					        .request()
+					        .get();
+					JSONArray historyJSONArray = new JSONArray(response.readEntity(String.class));
+					taskJSON.put(TaskJSONEnum.HISTORIES, historyJSONArray);
+					
 					// Get attach_files
 					response = mClient.target(BASE_URL)
 					        .path("projects/" + projectName +
@@ -266,28 +334,39 @@ public class IntegratedRESTfulApi {
 					                "/attachfiles")
 					        .request()
 					        .get();
-					JSONArray attachfilesArray = new JSONArray(response.readEntity(String.class));
-					task.put(TaskJSONEnum.ATTACH_FILES, attachfilesArray);
+					JSONArray attachfileJSONArray = new JSONArray(response.readEntity(String.class));
+					taskJSON.put(TaskJSONEnum.ATTACH_FILES, attachfileJSONArray);
 				}
 			}
 		}
 
 		//// Get DroppedTasks ////
-		for (int i = 0; i < projects.length(); i++) {
-			JSONObject project = projects.getJSONObject(i);
-			String projectName = project.getString(ProjectJSONEnum.NAME);
+		for (int i = 0; i < projectJSONArray.length(); i++) {
+			JSONObject projectJSON = projectJSONArray.getJSONObject(i);
+			String projectName = projectJSON.getString(ProjectJSONEnum.NAME);
 			// Get Sprints
 			response = mClient.target(BASE_URL)
-			        .path("projects/" + projectName + "/tasks")
+			        .path("projects/" + projectName + 
+			        	  "/tasks")
 			        .request()
 			        .get();
-			JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
-			project.put(ExportJSONEnum.DROPPED_TASKS, tasksArray);
+			JSONArray taskJSONArray = new JSONArray(response.readEntity(String.class));
+			projectJSON.put(ExportJSONEnum.DROPPED_TASKS, taskJSONArray);
 
 			// Get Task
-			for (int k = 0; k < tasksArray.length(); k++) {
-				JSONObject task = tasksArray.getJSONObject(k);
-				long taskId = task.getLong(TaskJSONEnum.ID);
+			for (int k = 0; k < taskJSONArray.length(); k++) {
+				JSONObject taskJSON = taskJSONArray.getJSONObject(k);
+				long taskId = taskJSON.getLong(TaskJSONEnum.ID);
+				// Get histories
+				response = mClient.target(BASE_URL)
+				        .path("projects/" + projectName +
+				                "/tasks/" + taskId +
+				                "/histories")
+				        .request()
+				        .get();
+				JSONArray historyJSONArray = new JSONArray(response.readEntity(String.class));
+				taskJSON.put(TaskJSONEnum.HISTORIES, historyJSONArray);
+				
 				// Get attach_files
 				response = mClient.target(BASE_URL)
 				        .path("projects/" + projectName +
@@ -295,8 +374,8 @@ public class IntegratedRESTfulApi {
 				                "/attachfiles")
 				        .request()
 				        .get();
-				JSONArray attachfilesArray = new JSONArray(response.readEntity(String.class));
-				task.put(TaskJSONEnum.ATTACH_FILES, attachfilesArray);
+				JSONArray attachfileJSONArray = new JSONArray(response.readEntity(String.class));
+				taskJSON.put(TaskJSONEnum.ATTACH_FILES, attachfileJSONArray);
 			}
 		}
 		return Response.status(Status.OK).entity(exportJSON.toString()).header("Content-Disposition", "attachment; filename=\"" + getFileName() + "\"").build();
