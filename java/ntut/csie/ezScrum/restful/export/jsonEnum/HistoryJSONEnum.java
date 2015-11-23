@@ -35,8 +35,8 @@ public class HistoryJSONEnum {
 	public final static String TASK_STATUS_DONE = "3";
 	
 	// Story status in new version
-	public final static String STORY_STATUS_UNCHECK = "1";
-	public final static String STORY_STATUS_DONE = "2";
+	public final static String STORY_STATUS_UNCHECK = "0";
+	public final static String STORY_STATUS_DONE = "1";
 	
 	// Retrospective status in new version
 	public final static String RETROSPECTIVE_STATUS_NEW = "new";

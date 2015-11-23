@@ -366,12 +366,14 @@ public class JSONEncoder {
 	public static JSONObject toStoryJSON(IIssue story) {
 		JSONObject storyJson = new JSONObject();
 		try {
-			storyJson.put(StoryJSONEnum.ID, story.getIssueID()).put(StoryJSONEnum.NAME, story.getSummary())
-					.put(StoryJSONEnum.STATUS, story.getStatus())
-					.put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
-					.put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
-					.put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
-					.put(StoryJSONEnum.NOTES, story.getNotes()).put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
+			storyJson.put(StoryJSONEnum.ID, story.getIssueID())
+			  		 .put(StoryJSONEnum.NAME, story.getSummary())
+					 .put(StoryJSONEnum.STATUS, story.getStatus())
+					 .put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
+					 .put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
+					 .put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
+					 .put(StoryJSONEnum.NOTES, story.getNotes())
+					 .put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
 			JSONArray tagJSONArray = new JSONArray();
 			for (IIssueTag tag : story.getTag()) {
 				JSONObject tagJSON = new JSONObject();
@@ -398,12 +400,14 @@ public class JSONEncoder {
 	public static JSONObject toTaskJSON(IIssue task) {
 		JSONObject taskJson = new JSONObject();
 		try {
-			taskJson.put(TaskJSONEnum.ID, task.getIssueID()).put(TaskJSONEnum.NAME, task.getSummary())
+			taskJson.put(TaskJSONEnum.ID, task.getIssueID())
+			        .put(TaskJSONEnum.NAME, task.getSummary())
 					.put(TaskJSONEnum.HANDLER, task.getAssignto())
 					.put(TaskJSONEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
 					.put(TaskJSONEnum.REMAIN, Integer.parseInt(task.getRemains()))
 					.put(TaskJSONEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
-					.put(TaskJSONEnum.NOTES, task.getNotes()).put(TaskJSONEnum.STATUS, task.getStatus());
+					.put(TaskJSONEnum.NOTES, task.getNotes())
+					.put(TaskJSONEnum.STATUS, task.getStatus());
 			// Process Partners
 			JSONArray partnerJSONArray = new JSONArray();
 			String delimiters = ";";

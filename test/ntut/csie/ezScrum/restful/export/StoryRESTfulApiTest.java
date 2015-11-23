@@ -1,12 +1,9 @@
 package ntut.csie.ezScrum.restful.export;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,7 +12,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -32,14 +28,15 @@ import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.export.support.FileEncoder;
+import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
 import ntut.csie.ezScrum.test.CreateData.CreateProductBacklog;
 import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
-import ntut.csie.ezScrum.test.CreateData.CreateTask;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.ProductBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
@@ -119,7 +116,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		IIssue story2 = mASTS.getIssueList().get(1);
 		String tagName1 = "Data Migration";
 		String tagName2 = "Thesis";
-		
+
 		// Add Tags to Story1
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
 		productBacklogHelper.addNewTag(tagName1);
@@ -131,9 +128,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories' API
 		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/")
-		        .request()
-		        .get();
+				.path("projects/" + project.getName() + "/sprints/" + sprintId + "/stories/").request().get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
@@ -142,12 +137,14 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(story1.getIssueID(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.ID));
 		assertEquals(story1.getSummary(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.NAME));
 		assertEquals(story1.getStatus(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.STATUS));
-		assertEquals(Integer.parseInt(story1.getEstimated()), jsonResponse.getJSONObject(0).get(StoryJSONEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story1.getImportance()), jsonResponse.getJSONObject(0).get(StoryJSONEnum.IMPORTANCE));
+		assertEquals(Integer.parseInt(story1.getEstimated()),
+				jsonResponse.getJSONObject(0).get(StoryJSONEnum.ESTIMATE));
+		assertEquals(Integer.parseInt(story1.getImportance()),
+				jsonResponse.getJSONObject(0).get(StoryJSONEnum.IMPORTANCE));
 		assertEquals(Integer.parseInt(story1.getValue()), jsonResponse.getJSONObject(0).get(StoryJSONEnum.VALUE));
 		assertEquals(story1.getNotes(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.NOTES));
 		assertEquals(story1.getHowToDemo(), jsonResponse.getJSONObject(0).get(StoryJSONEnum.HOW_TO_DEMO));
-		
+
 		JSONArray tagsJSONArray = jsonResponse.getJSONObject(0).getJSONArray(StoryJSONEnum.TAGS);
 		assertEquals(2, tagsJSONArray.length());
 		assertEquals(tagName1, tagsJSONArray.getJSONObject(0).getString(TagJSONEnum.NAME));
@@ -156,13 +153,15 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals(story2.getIssueID(), jsonResponse.getJSONObject(1).get(StoryJSONEnum.ID));
 		assertEquals(story2.getSummary(), jsonResponse.getJSONObject(1).get(StoryJSONEnum.NAME));
 		assertEquals(story2.getStatus(), jsonResponse.getJSONObject(1).get(StoryJSONEnum.STATUS));
-		assertEquals(Integer.parseInt(story2.getEstimated()), jsonResponse.getJSONObject(1).get(StoryJSONEnum.ESTIMATE));
-		assertEquals(Integer.parseInt(story2.getImportance()), jsonResponse.getJSONObject(1).get(StoryJSONEnum.IMPORTANCE));
+		assertEquals(Integer.parseInt(story2.getEstimated()),
+				jsonResponse.getJSONObject(1).get(StoryJSONEnum.ESTIMATE));
+		assertEquals(Integer.parseInt(story2.getImportance()),
+				jsonResponse.getJSONObject(1).get(StoryJSONEnum.IMPORTANCE));
 		assertEquals(Integer.parseInt(story2.getValue()), jsonResponse.getJSONObject(1).get(StoryJSONEnum.VALUE));
 		assertEquals(story2.getNotes(), jsonResponse.getJSONObject(1).get(StoryJSONEnum.NOTES));
 		assertEquals(story2.getHowToDemo(), jsonResponse.getJSONObject(1).get(StoryJSONEnum.HOW_TO_DEMO));
 	}
-	
+
 	@Test
 	public void testGetDroppedTaskAttachFiles() throws JSONException {
 		// Test Data
@@ -175,14 +174,11 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
 		sprintBacklogMapper.addAttachFile(story.getIssueID(), testFile);
 
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/sprints/" + sprintId +
-		                "/stories/" + story.getIssueID()
-		                + "/attachfiles")
-		        .request()
-		        .get();
+		// Call
+		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles'
+		// API
+		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
+				+ "/stories/" + story.getIssueID() + "/attachfiles").request().get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 		String expectedXmlBinary = FileEncoder.toBase64BinaryString(new File(testFile));
@@ -193,7 +189,7 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals("text/xml", jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(expectedXmlBinary, jsonResponse.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 	}
-	
+
 	@Test
 	public void testGetDroppedTaskAttachFiles_MultipleFiles() throws JSONException {
 		// Test Data
@@ -208,14 +204,11 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		sprintBacklogMapper.addAttachFile(story.getIssueID(), testFile1);
 		sprintBacklogMapper.addAttachFile(story.getIssueID(), testFile2);
 
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/sprints/" + sprintId +
-		                "/stories/" + story.getIssueID()
-		                + "/attachfiles")
-		        .request()
-		        .get();
+		// Call
+		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles'
+		// API
+		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
+				+ "/stories/" + story.getIssueID() + "/attachfiles").request().get();
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 		String expectedXmlBinary1 = FileEncoder.toBase64BinaryString(new File(testFile1));
@@ -231,102 +224,160 @@ public class StoryRESTfulApiTest extends JerseyTest {
 		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.BINARY));
 	}
-	
+
 	@Test
 	public void testGetHistoriesInStory_CreateStory() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/sprints/" + sprintId +
-		                "/stories/" + story.getIssueID()
-		                + "/histories")
-		        .request()
-		        .get();
-		
+		// Call
+		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
+		// API
+		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
+				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-		assertEquals(6, jsonResponse.length());
-		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_VALUE, HistoryJSONEnum.TYPE_IMPORTANCE, HistoryJSONEnum.TYPE_ESTIMATE};
-		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
-		for (int i = 0; i < jsonResponse.length(); i++) {
-			JSONObject json = jsonResponse.getJSONObject(i);
-			assertTrue(expectedTypes.contains(json.getInt(HistoryJSONEnum.HISTORY_TYPE)));
+
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		story = sprintBacklogMapper.getIssue(story.getIssueID());
+		@SuppressWarnings("deprecation")
+		JSONArray expectedResponse = JSONEncoder.toHistoryJSONArray(story.getIssueHistories(), story.getCategory());
+
+		// Assert histories
+		assertEquals(expectedResponse.length(), jsonResponse.length());
+		for (int i = 0; i < expectedResponse.length(); i++) {
+			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
+					jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 	}
-	
+
 	@Test
 	public void testGetHistoriesInStory_ModifyStoryInformation() throws JSONException, InterruptedException {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
-		
+
 		ProductBacklogHelper productBacklogHelper = new ProductBacklogHelper(null, project);
 		String Name = "Edited Name";
 		String Value = "33";
 		String Importance = "44";
 		String Estimated = "55";
-		productBacklogHelper.editStory(story.getIssueID(), Name, story.getValue(), story.getImportance(), story.getEstimated(), story.getHowToDemo(), story.getNotes());
 		Thread.sleep(1000);
-		productBacklogHelper.editStory(story.getIssueID(), Name, Value, story.getImportance(), story.getEstimated(), story.getHowToDemo(), story.getNotes());
-		Thread.sleep(1000);
-		productBacklogHelper.editStory(story.getIssueID(), Name, Value, Importance, story.getEstimated(), story.getHowToDemo(), story.getNotes());
-		Thread.sleep(1000);
-		productBacklogHelper.editStory(story.getIssueID(), Name, Value, Importance, Estimated, story.getHowToDemo(), story.getNotes());
+		productBacklogHelper.editStory(story.getIssueID(), Name, Value, Importance, Estimated, story.getHowToDemo(),
+				story.getNotes());
 
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/sprints/" + sprintId +
-		                "/stories/" + story.getIssueID()
-		                + "/histories")
-		        .request()
-		        .get();
-		
+		// Call
+		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
+		// API
+		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
+				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-		
+
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		story = sprintBacklogMapper.getIssue(story.getIssueID());
+		@SuppressWarnings("deprecation")
+		JSONArray expectedResponse = JSONEncoder.toHistoryJSONArray(story.getIssueHistories(), story.getCategory());
+
 		// Assert histories
-		assertEquals(10, jsonResponse.length());
-		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_VALUE, HistoryJSONEnum.TYPE_IMPORTANCE, HistoryJSONEnum.TYPE_ESTIMATE, HistoryJSONEnum.TYPE_NAME};
-		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
-		for (int i = 0; i < jsonResponse.length(); i++) {
-			JSONObject json = jsonResponse.getJSONObject(i);
-			assertTrue(expectedTypes.contains(json.getInt(HistoryJSONEnum.HISTORY_TYPE)));
+		assertEquals(expectedResponse.length(), jsonResponse.length());
+		for (int i = 0; i < expectedResponse.length(); i++) {
+			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
+					jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+		}
+	}
+
+	@Test
+	public void testGetHistoriesInStory_ModifyStoryAndTaskRelation() throws Exception {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprintId);
+		TaskObject taskInfomation = new TaskObject();
+		taskInfomation.name = "Task name";
+		taskInfomation.estimation = "1";
+		taskInfomation.notes = "task notes";
+		IIssue task = sprintBacklogHelper.createTaskInStory(String.valueOf(story.getIssueID()), taskInfomation);
+		Thread.sleep(1000);
+		sprintBacklogHelper.removeTask(task.getIssueID(), story.getIssueID());
+		Thread.sleep(1000);
+		// Call
+		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
+		// API
+		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
+				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		story = sprintBacklogMapper.getIssue(story.getIssueID());
+		@SuppressWarnings("deprecation")
+		JSONArray expectedResponse = JSONEncoder.toHistoryJSONArray(story.getIssueHistories(), story.getCategory());
+
+		// Assert histories
+		assertEquals(expectedResponse.length(), jsonResponse.length());
+		for (int i = 0; i < expectedResponse.length(); i++) {
+			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
+					jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 	}
 	
 	@Test
-	public void testGetHistoriesInStory_ModifyRelation() throws Exception {
+	public void testGetHistoriesInStory_ModifyStoryStatus() throws Exception {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
-		CreateTask CT = new CreateTask(1, mCP);
-		CT.exe();
+		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprintId);
-		String taskId = String.valueOf(CT.getTaskIDList().get(0));
-		sprintBacklogHelper.addExistedTask(String.valueOf(story.getIssueID()), new String[] {taskId});
+		sprintBacklogHelper.doneIssue(story.getIssueID(), story.getSummary(), story.getNotes(), "", "0");
 		Thread.sleep(1000);
-		sprintBacklogHelper.removeTask(CT.getTaskIDList().get(0), story.getIssueID());
+		sprintBacklogHelper.reopenIssue(story.getIssueID(), story.getSummary(), story.getNotes(), "");
 		Thread.sleep(1000);
-		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories' API
-		Response response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() +
-		                "/sprints/" + sprintId +
-		                "/stories/" + story.getIssueID()
-		                + "/histories")
-		        .request()
-		        .get();
 		
+		// Call
+		// '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories'
+		// API
+		Response response = mClient.target(mBaseUri).path("projects/" + project.getName() + "/sprints/" + sprintId
+				+ "/stories/" + story.getIssueID() + "/histories").request().get();
+
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
-		
+
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		story = sprintBacklogMapper.getIssue(story.getIssueID());
+		@SuppressWarnings("deprecation")
+		JSONArray expectedResponse = JSONEncoder.toHistoryJSONArray(story.getIssueHistories(), story.getCategory());
+
 		// Assert histories
-		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_VALUE, HistoryJSONEnum.TYPE_IMPORTANCE, HistoryJSONEnum.TYPE_ESTIMATE, HistoryJSONEnum.TYPE_ADD, HistoryJSONEnum.TYPE_REMOVE};
-		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
-		for (int i = 0; i < jsonResponse.length(); i++) {
-			JSONObject json = jsonResponse.getJSONObject(i);
-			assertTrue(expectedTypes.contains(json.getInt(HistoryJSONEnum.HISTORY_TYPE)));
+		assertEquals(expectedResponse.length(), jsonResponse.length());
+		for (int i = 0; i < expectedResponse.length(); i++) {
+			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
+					jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 	}
 }
