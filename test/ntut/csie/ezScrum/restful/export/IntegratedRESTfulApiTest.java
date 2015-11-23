@@ -28,6 +28,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
@@ -263,9 +264,9 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	
 		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, mConfig.getUserSession());
 		// assign account1 as handler for unplan1
-		unplannedItemHelper.modifyUnplannedItemIssue(unplan1.getIssueID(), unplan1.getSummary(), account1.getID(), unplan1.getStatus(), "", unplan1.getEstimated(), unplan1.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
+		unplannedItemHelper.modifyUnplannedItemIssue(unplan1.getIssueID(), unplan1.getSummary(), account1.getID(), ITSEnum.ASSIGNED, "", unplan1.getEstimated(), unplan1.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
 		// assign account1 as handler, and assign account2, account3 as partners for unplan2
-		unplannedItemHelper.modifyUnplannedItemIssue(unplan2.getIssueID(), unplan2.getSummary(), account1.getID(), unplan2.getStatus(), account2.getID() + ";" + account3.getID(), unplan2.getEstimated(), unplan2.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
+		unplannedItemHelper.modifyUnplannedItemIssue(unplan2.getIssueID(), unplan2.getSummary(), account1.getID(), ITSEnum.ASSIGNED, account2.getID() + ";" + account3.getID(), unplan2.getEstimated(), unplan2.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
 	}
 	
 	private void setUpAttachFiles() throws IOException {

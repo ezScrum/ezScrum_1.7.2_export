@@ -75,11 +75,11 @@ public class HistoryTranslator {
 			}
 		} else if(oldHistory.getType() == IIssueHistory.RELEATIONSHIP_DELETE_TYPE){
 			if (oldHistory.getOldValue().equals(IIssueHistory.PARENT_OLD_VALUE)){
-				newHistory.setType(HistoryJSONEnum.TYPE_REMOVE);
+				newHistory.setType(HistoryJSONEnum.TYPE_DROP);
 				newHistory.setOldValue("");
 				newHistory.setNewValue(oldHistory.getNewValue());
 			} else if (oldHistory.getOldValue().equals(IIssueHistory.CHILD_OLD_VALUE)){
-				newHistory.setType(HistoryJSONEnum.TYPE_DROP);
+				newHistory.setType(HistoryJSONEnum.TYPE_REMOVE);
 				newHistory.setOldValue("");
 				newHistory.setNewValue(oldHistory.getNewValue());
 			}
