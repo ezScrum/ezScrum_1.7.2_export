@@ -157,6 +157,7 @@ public class ResourceFinderTest {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		assertNull(resourceFinder.findUnplan(unplan.getIssueID()));
 		resourceFinder.findProject(project.getName());
+		resourceFinder.findSprint(Long.parseLong(unplan.getSprintID()));
 		assertNotNull(resourceFinder.findUnplan(unplan.getIssueID()));
 	}
 	

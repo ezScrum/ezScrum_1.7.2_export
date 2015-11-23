@@ -203,6 +203,7 @@ public class JSONEncoder {
 	public static JSONObject toUnplanJSON(IIssue unplan) {
 		JSONObject unplanJSON = new JSONObject();
 		try {
+			unplanJSON.put(UnplanJSONEnum.ID, unplan.getIssueID());
 			unplanJSON.put(UnplanJSONEnum.NAME, unplan.getSummary());
 			unplanJSON.put(UnplanJSONEnum.HANDLER, unplan.getAssignto());
 			unplanJSON.put(UnplanJSONEnum.ESTIMATE, unplan.getEstimated());

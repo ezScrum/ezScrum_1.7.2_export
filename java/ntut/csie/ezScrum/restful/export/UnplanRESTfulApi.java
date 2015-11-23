@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.restful.export.support.ResourceFinder;
 import ntut.csie.ezScrum.web.mapper.UnplannedItemMapper;
@@ -32,6 +33,25 @@ public class UnplanRESTfulApi {
 		UnplannedItemMapper unplannedItemMapper = new UnplannedItemMapper(project, null);
 		List<IIssue> unplans = unplannedItemMapper.getList(String.valueOf(sprintId));
 		String entity = JSONEncoder.toUnplanJSONArray(unplans).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{unplanId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistories(@PathParam("projectName") String projectName,
+	                             @PathParam("sprintId") long sprintId,
+	                             @PathParam("unplanId") long unplanId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
+		IIssue unplan = resourceFinder.findUnplan(unplanId);
+
+		if (project == null || sprint == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		@SuppressWarnings("deprecation")
+		String entity = JSONEncoder.toHistoryJSONArray(unplan.getIssueHistories(), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

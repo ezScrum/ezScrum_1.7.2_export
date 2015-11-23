@@ -106,7 +106,7 @@ public class ResourceFinder {
 	}
 
 	public IIssue findUnplan(long unplanId) {
-		if (mProject == null) {
+		if (mProject == null || mSprint == null) {
 			return null;
 		}
 
