@@ -141,6 +141,8 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		IIssue task2 = mATTS.getTaskList().get(1);
 		IIssue task3 = mATTS.getTaskList().get(2);
 		IIssue task4 = mATTS.getTaskList().get(3);
+		IIssue unplan1 = mCU.getIssueList().get(0);
+		IIssue unplan2 = mCU.getIssueList().get(1);
 		
 		// Create an unplan has two partners
 		String name = "unplan name";
@@ -206,6 +208,16 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/histories' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + sprintId1 +
+		                "/stories/" + story2.getIssueID() +
+		                "/histories")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/attachfiles' API
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project.getName() +
@@ -222,6 +234,17 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		              "/sprints/" + sprintId1 +
 		              "/stories/" + story2.getIssueID() +
 		              "/tasks")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		               "/sprints/" + sprintId1 +
+		               "/stories/" + story2.getIssueID() +
+		               "/tasks/" + task4.getIssueID() +
+		               "/histories")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -252,9 +275,22 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
+		//// Unplan Resource Test
 		// Call '/projects/{projectName}/sprints/{sprintId}/unplans' API
 		response = mClient.target(mBaseUri)
-		        .path("projects/" + project.getName() + "/sprints/" + sprintId1 + "/unplans/")
+		        .path("projects/" + project.getName() +
+		                "/sprints/" + unplan1.getSprintID() +
+		                "/unplans")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/unplans/{unplanId}/histories' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		        	  "/sprints/" + sprintId1 + 
+		              "/unplans/" + unplan1.getIssueID() +
+		              "/histories")
 		        .request()
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -292,6 +328,15 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
+		// Call '/projects/{projectName}/stories/{storyId}/histories' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		               "/stories/" + story1.getIssueID() +
+		               "/histories")
+		        .request()
+		        .get();
+	    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		
 		// Call '/projects/{projectName}/stories/{storyId}/attachfiles' API
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project.getName() +
@@ -301,6 +346,16 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/histories' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story1.getIssueID() +
+		                "/tasks/" + task2.getIssueID() +
+		                "/histories")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
 		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/attachfiles' API
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project.getName() +
@@ -319,6 +374,15 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		        .get();
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		
+		// Call '/projects/{projectName}/tasks/{taskId}/histories' API
+		response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/tasks/" + task1.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+				
 		// Call '/projects/{projectName}/tasks/{taskId}/attachfiles' API
 		response = mClient.target(mBaseUri)
 		        .path("projects/" + project.getName() +
