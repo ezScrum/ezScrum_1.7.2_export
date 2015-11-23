@@ -19,7 +19,6 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
-import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -32,9 +31,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateUnplannedItem;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
-import ntut.csie.ezScrum.web.helper.UnplannedItemHelper;
 import ntut.csie.ezScrum.web.logic.ProductBacklogLogic;
-import ntut.csie.jcis.core.util.DateUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class RESTfulApiPathConflictTest extends JerseyTest {
@@ -142,19 +139,6 @@ public class RESTfulApiPathConflictTest extends JerseyTest {
 		IIssue task3 = mATTS.getTaskList().get(2);
 		IIssue task4 = mATTS.getTaskList().get(3);
 		IIssue unplan1 = mCU.getIssueList().get(0);
-		IIssue unplan2 = mCU.getIssueList().get(1);
-		
-		// Create an unplan has two partners
-		String name = "unplan name";
-		String estimation = "5";
-		String handler = "Jay";
-		String partners = "Henry;Mike;Jonathan;Tony";
-		String notes = "unplan notes";
-		String sprintId = mCS.getSprintIDList().get(0);
-		String specificTime = DateUtil.getNow();
-		// Add new unplanned item
-		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, mConfig.getUserSession());
-		unplannedItemHelper.addUnplannedItem(name, estimation, handler, partners, notes, DateUtil.dayFillter(specificTime, DateUtil._16DIGIT_DATE_TIME), ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE, sprintId);
 		
 		// Api Test
 		// Call '/accounts' API
