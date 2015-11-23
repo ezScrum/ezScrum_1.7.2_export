@@ -1,12 +1,9 @@
 package ntut.csie.ezScrum.restful.export;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -517,6 +514,51 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
 		
+		// Remove story from Sprint
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story.getIssueID() +
+		                "/tasks/" + task.getIssueID() +
+		                "/histories")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		task = sprintBacklogMapper.getIssue(task.getIssueID());
+		@SuppressWarnings("deprecation")
+		JSONArray expectedResponse = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory());
+
+		// Assert histories
+		assertEquals(expectedResponse.length(), jsonResponse.length());
+		for (int i = 0; i < expectedResponse.length(); i++) {
+			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
+					jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+		}
+	}
+	
+	@Test
+	public void testGetHistoriesInTask_ModifyTaskInformation() throws InterruptedException, JSONException {
+		// Test Data
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
 		TaskObject taskObject = new TaskObject();
 		taskObject.name = "new name";
@@ -546,13 +588,77 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 
 		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
 
-		// Assert
-		assertEquals(8, jsonResponse.length());
-		Integer[] expectedTypeArray = new Integer[] {HistoryJSONEnum.TYPE_APPEND, HistoryJSONEnum.TYPE_CREATE, HistoryJSONEnum.TYPE_ESTIMATE, HistoryJSONEnum.TYPE_REMAIMS, HistoryJSONEnum.TYPE_ACTUAL, HistoryJSONEnum.TYPE_NAME};
-		List<Integer> expectedTypes = Arrays.asList(expectedTypeArray);
-		for (int i = 0; i < jsonResponse.length(); i++) {
-			JSONObject json = jsonResponse.getJSONObject(i);
-			assertTrue(expectedTypes.contains(json.getInt(HistoryJSONEnum.HISTORY_TYPE)));
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		task = sprintBacklogMapper.getIssue(task.getIssueID());
+		@SuppressWarnings("deprecation")
+		JSONArray expectedResponse = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory());
+
+		// Assert histories
+		assertEquals(expectedResponse.length(), jsonResponse.length());
+		for (int i = 0; i < expectedResponse.length(); i++) {
+			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
+					jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+		}
+	}
+	
+	@Test
+	public void testGetHistoriesInTask_ModifyTaskStatus() throws InterruptedException, JSONException {
+		// Test Data
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		
+		// Checkout Task
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprintId);
+		sprintBacklogHelper.checkOutTask(task.getIssueID(), task.getSummary(), "henry", "", "", null);
+		Thread.sleep(1000);
+		// Done Task
+		sprintBacklogHelper.doneIssue(task.getIssueID(), task.getSummary(), task.getNotes(), null, "0");
+		Thread.sleep(1000);
+		task = sprintBacklogHelper.getTaskById(task.getIssueID());
+		
+		// Remove story from Sprint
+		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
+		// It's need some delay for manipulating file IO (add story to sprint)
+		Thread.sleep(1000);
+		productBacklogLogic.removeStoryFromSprint(story.getIssueID());
+		// It's need some delay for manipulating file IO (productBacklogLogic.removeStoryFromSprint)
+		Thread.sleep(1000);
+
+		// Call '/projects/{projectName}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/stories/" + story.getIssueID() +
+		                "/tasks/" + task.getIssueID() +
+		                "/histories")
+		        .request()
+		        .get();
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+
+		SprintBacklogMapper sprintBacklogMapper = new SprintBacklogMapper(project, null);
+		task = sprintBacklogMapper.getIssue(task.getIssueID());
+		@SuppressWarnings("deprecation")
+		JSONArray expectedResponse = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory());
+
+		// Assert histories
+		assertEquals(expectedResponse.length(), jsonResponse.length());
+		for (int i = 0; i < expectedResponse.length(); i++) {
+			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
+					jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 	}
 }
