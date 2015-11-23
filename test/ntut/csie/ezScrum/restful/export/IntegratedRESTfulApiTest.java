@@ -710,7 +710,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(task4.getActualHour()), task4JSON.getInt(TaskJSONEnum.ACTUAL));
 		assertEquals(task4.getNotes(), task4JSON.getString(TaskJSONEnum.NOTES));
 		assertEquals(task4.getStatus(), task4JSON.getString(TaskJSONEnum.STATUS));
-		JSONArray historyJSONArrayInTask4 = task4JSON.getJSONArray(StoryJSONEnum.HISTORIES);
+		JSONArray historyJSONArrayInTask4 = task4JSON.getJSONArray(TaskJSONEnum.HISTORIES);
 		@SuppressWarnings("deprecation")
 		JSONArray expectedHistoryJSONArrayInTask4 = JSONEncoder.toHistoryJSONArray(task4.getIssueHistories(), task4.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask4.length(), historyJSONArrayInTask4.length());
@@ -789,7 +789,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONObject unplan1JSON = unplanJSONArrayInSprint.getJSONObject(0);
 		JSONArray partnersInUnplan1 = unplan1JSON.getJSONArray(UnplanJSONEnum.PARTNERS);
 		assertEquals(0, partnersInUnplan1.length());
-		JSONArray historyJSONArrayInUnplan1 = unplan1JSON.getJSONArray(StoryJSONEnum.HISTORIES);
+		JSONArray historyJSONArrayInUnplan1 = unplan1JSON.getJSONArray(UnplanJSONEnum.HISTORIES);
 		@SuppressWarnings("deprecation")
 		JSONArray expectedHistoryJSONArrayInUnplan1 = JSONEncoder.toHistoryJSONArray(unplan1.getIssueHistories(), unplan1.getCategory());
 		assertEquals(expectedHistoryJSONArrayInUnplan1.length(), historyJSONArrayInUnplan1.length());
@@ -811,7 +811,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(2, partnersInUnplan2.length());
 		assertEquals(account2.getID(), partnersInUnplan2.getJSONObject(0).getString(AccountJSONEnum.USERNAME));
 		assertEquals(account3.getID(), partnersInUnplan2.getJSONObject(1).getString(AccountJSONEnum.USERNAME));
-		JSONArray historyJSONArrayInUnplan2 = unplan2JSON.getJSONArray(StoryJSONEnum.HISTORIES);
+		JSONArray historyJSONArrayInUnplan2 = unplan2JSON.getJSONArray(UnplanJSONEnum.HISTORIES);
 		@SuppressWarnings("deprecation")
 		JSONArray expectedHistoryJSONArrayInUnplan2 = JSONEncoder.toHistoryJSONArray(unplan2.getIssueHistories(), unplan2.getCategory());
 		assertEquals(expectedHistoryJSONArrayInUnplan2.length(), historyJSONArrayInUnplan2.length());
@@ -881,7 +881,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(task2.getActualHour()), task2JSON.getInt(TaskJSONEnum.ACTUAL));
 		assertEquals(task2.getNotes(), task2JSON.getString(TaskJSONEnum.NOTES));
 		assertEquals(task2.getStatus(), task2JSON.getString(TaskJSONEnum.STATUS));
-		JSONArray historyJSONArrayInTask2 = task2JSON.getJSONArray(StoryJSONEnum.HISTORIES);
+		JSONArray historyJSONArrayInTask2 = task2JSON.getJSONArray(TaskJSONEnum.HISTORIES);
 		@SuppressWarnings("deprecation")
 		JSONArray expectedHistoryJSONArrayInTask2 = JSONEncoder.toHistoryJSONArray(task2.getIssueHistories(), task2.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask2.length(), historyJSONArrayInTask2.length());
@@ -922,7 +922,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(task1.getActualHour()), droppedTask1JSON.getInt(TaskJSONEnum.ACTUAL));
 		assertEquals(task1.getNotes(), droppedTask1JSON.getString(TaskJSONEnum.NOTES));
 		assertEquals(task1.getStatus(), droppedTask1JSON.getString(TaskJSONEnum.STATUS));
-		JSONArray historyJSONArrayInTask1 = droppedTask1JSON.getJSONArray(StoryJSONEnum.HISTORIES);
+		JSONArray historyJSONArrayInTask1 = droppedTask1JSON.getJSONArray(TaskJSONEnum.HISTORIES);
 		@SuppressWarnings("deprecation")
 		JSONArray expectedHistoryJSONArrayInTask1 = JSONEncoder.toHistoryJSONArray(task1.getIssueHistories(), task1.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask1.length(), historyJSONArrayInTask1.length());
@@ -960,7 +960,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(task3.getActualHour()), droppedTask3JSON.getInt(TaskJSONEnum.ACTUAL));
 		assertEquals(task3.getNotes(), droppedTask3JSON.getString(TaskJSONEnum.NOTES));
 		assertEquals(task3.getStatus(), droppedTask3JSON.getString(TaskJSONEnum.STATUS));
-		JSONArray historyJSONArrayInTask3 = droppedTask3JSON.getJSONArray(StoryJSONEnum.HISTORIES);
+		JSONArray historyJSONArrayInTask3 = droppedTask3JSON.getJSONArray(TaskJSONEnum.HISTORIES);
 		@SuppressWarnings("deprecation")
 		JSONArray expectedHistoryJSONArrayInTask3 = JSONEncoder.toHistoryJSONArray(task3.getIssueHistories(), task3.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask3.length(), historyJSONArrayInTask3.length());
