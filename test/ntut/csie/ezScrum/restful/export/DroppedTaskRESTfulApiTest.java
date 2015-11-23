@@ -39,6 +39,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
@@ -231,7 +232,7 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 	}
 
 	@Test
-	public void testGetHistoriesInDroppedTask() throws JSONException {
+	public void testGetHistoriesInDroppedTask_CreateTask() throws JSONException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
@@ -286,5 +287,48 @@ public class DroppedTaskRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedJSONArray.getJSONObject(5).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(5).getString(HistoryJSONEnum.OLD_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(5).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(5).getString(HistoryJSONEnum.NEW_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(5).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(5).getLong(HistoryJSONEnum.CREATE_TIME));
+	}
+	
+	@Test
+	public void testGetHistoriesInDroppedTask_ModifyTaskInformation() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
+		TaskObject taskInformation = new TaskObject();
+		taskInformation.id = String.valueOf(task.getIssueID());
+		taskInformation.estimation = "8";
+		taskInformation.name = "TEST_TASK_NAME_NEW";
+		taskInformation.remains = "1";
+		taskInformation.actual = "20";
+		sprintBacklogHelper.editTask(taskInformation);
+		task = sprintBacklogHelper.getTaskById(task.getIssueID());
+
+		// Remove task from story
+		sprintBacklogHelper.removeTask(task.getIssueID(), story.getIssueID());
+		task = sprintBacklogHelper.getIssue(task.getIssueID());
+
+		// Call '/projects/{projectName}/tasks/{taskId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		                "/tasks/" + task.getIssueID() +
+		                "/histories")
+		        .request()
+		        .get();
+
+		@SuppressWarnings("deprecation")
+		List<IIssueHistory> histories = task.getIssueHistories();
+		JSONArray expectedJSONArray = JSONEncoder.toHistoryJSONArray(histories, ScrumEnum.TASK_ISSUE_TYPE);
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		// Assert
+		assertEquals(expectedJSONArray.length(), jsonResponse.length());
+		for (int i = 0; i < expectedJSONArray.length(); i++) {
+			assertEquals(expectedJSONArray.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+		}
 	}
 }
