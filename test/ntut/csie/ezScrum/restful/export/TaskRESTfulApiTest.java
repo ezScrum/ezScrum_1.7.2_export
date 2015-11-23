@@ -314,15 +314,19 @@ public class TaskRESTfulApiTest extends JerseyTest {
 	}
 	
 	@Test
-	public void testGetHistoriesInTask_ModifyTaskStatus() throws JSONException {
+	public void testGetHistoriesInTask_ModifyTaskStatus() throws JSONException, Exception {
 		IProject project = mCP.getProjectList().get(0);
 		String sprintId = mCS.getSprintIDList().get(0);
 		IIssue story = mASTS.getIssueList().get(0);
 		IIssue task = mATTS.getTaskList().get(0);
-
+		
 		// Checkout Task
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprintId);
 		sprintBacklogHelper.checkOutTask(task.getIssueID(), task.getSummary(), "henry", "", "", null);
+		Thread.sleep(1000);
+		// Done Task
+		sprintBacklogHelper.doneIssue(task.getIssueID(), task.getSummary(), task.getNotes(), null, "0");
+		Thread.sleep(1000);
 		task = sprintBacklogHelper.getTaskById(task.getIssueID());
 
 		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
