@@ -9,4 +9,5 @@ public class UnplanJSONEnum {
     public static final String ACTUAL = "actual";
     public static final String NOTES = "notes";
     public static final String STATUS = "status";
+    public static final String HISTORIES = "histories";
 }

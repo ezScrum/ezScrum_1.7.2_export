@@ -22,6 +22,7 @@ import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.SprintJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.TaskJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.UnplanJSONEnum;
 
 @Path("export")
 public class IntegratedRESTfulApi {
@@ -136,6 +137,21 @@ public class IntegratedRESTfulApi {
 				JSONArray storiesArray = new JSONArray(response.readEntity(String.class));
 				sprintJSON.put(SprintJSONEnum.STORIES, storiesArray);
 
+				//// Get histories in Story ////
+				for (int j = 0; j < storiesArray.length(); j++) {
+					JSONObject story = storiesArray.getJSONObject(j);
+					long storyId = story.getLong(StoryJSONEnum.ID);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectName +
+					                "/sprints/" + sprintId +
+					                "/stories/" + storyId +
+					                "/histories")
+					        .request()
+					        .get();
+					JSONArray historiesArray = new JSONArray(response.readEntity(String.class));
+					story.put(StoryJSONEnum.HISTORIES, historiesArray);
+				}
+
 				//// Get attach_files in Story ////
 				for (int j = 0; j < storiesArray.length(); j++) {
 					JSONObject story = storiesArray.getJSONObject(j);
@@ -164,6 +180,22 @@ public class IntegratedRESTfulApi {
 					        .get();
 					JSONArray tasksArray = new JSONArray(response.readEntity(String.class));
 					story.put(StoryJSONEnum.TASKS, tasksArray);
+					
+					// Get histories in Task
+					for (int k = 0; k < tasksArray.length(); k++) {
+						JSONObject task = tasksArray.getJSONObject(k);
+						long taskId = task.getLong(TaskJSONEnum.ID);
+						response = mClient.target(BASE_URL)
+						        .path("projects/" + projectName +
+						                "/sprints/" + sprintId +
+						                "/stories/" + storyId +
+						                "/tasks/" + taskId +
+						                "/histories")
+						        .request()
+						        .get();
+						JSONArray historiesArray = new JSONArray(response.readEntity(String.class));
+						task.put(TaskJSONEnum.HISTORIES, historiesArray);
+					}
 
 					// Get attach_files in Task
 					for (int k = 0; k < tasksArray.length(); k++) {
@@ -211,6 +243,21 @@ public class IntegratedRESTfulApi {
 				        .get();
 				JSONArray unplansArray = new JSONArray(response.readEntity(String.class));
 				sprintJSON.put(SprintJSONEnum.UNPLANS, unplansArray);
+				
+				// Get histories in Unplan
+				for (int j = 0; j < unplansArray.length(); j++) {
+					JSONObject unplan = unplansArray.getJSONObject(j);
+					long unplanId = unplan.getLong(TaskJSONEnum.ID);
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectName +
+					                "/sprints/" + sprintId +
+					                "/unplans/" + unplanId +
+					                "/histories")
+					        .request()
+					        .get();
+					JSONArray historiesArray = new JSONArray(response.readEntity(String.class));
+					unplan.put(UnplanJSONEnum.HISTORIES, historiesArray);
+				}
 			}
 		}
 
@@ -230,6 +277,16 @@ public class IntegratedRESTfulApi {
 			for (int j = 0; j < droppedStoriesArray.length(); j++) {
 				JSONObject droppedStory = droppedStoriesArray.getJSONObject(j);
 				long droppedStoryId = droppedStory.getLong(StoryJSONEnum.ID);
+				// Get histories
+				response = mClient.target(BASE_URL)
+				        .path("projects/" + projectName +
+				                "/stories/" + droppedStoryId +
+				                "/histories")
+				        .request()
+				        .get();
+				JSONArray historiesArray = new JSONArray(response.readEntity(String.class));
+				droppedStory.put(StoryJSONEnum.HISTORIES, historiesArray);
+				
 				// Get attach_files
 				response = mClient.target(BASE_URL)
 				        .path("projects/" + projectName +
@@ -258,6 +315,17 @@ public class IntegratedRESTfulApi {
 				for (int k = 0; k < tasksArray.length(); k++) {
 					JSONObject task = tasksArray.getJSONObject(k);
 					long taskId = task.getLong(TaskJSONEnum.ID);
+					// Get histories
+					response = mClient.target(BASE_URL)
+					        .path("projects/" + projectName +
+					                "/stories/" + droppedStoryId +
+					                "/tasks/" + taskId +
+					                "/histories")
+					        .request()
+					        .get();
+					JSONArray historiesArray = new JSONArray(response.readEntity(String.class));
+					task.put(TaskJSONEnum.HISTORIES, historiesArray);
+					
 					// Get attach_files
 					response = mClient.target(BASE_URL)
 					        .path("projects/" + projectName +
@@ -288,6 +356,16 @@ public class IntegratedRESTfulApi {
 			for (int k = 0; k < tasksArray.length(); k++) {
 				JSONObject task = tasksArray.getJSONObject(k);
 				long taskId = task.getLong(TaskJSONEnum.ID);
+				// Get histories
+				response = mClient.target(BASE_URL)
+				        .path("projects/" + projectName +
+				                "/tasks/" + taskId +
+				                "/histories")
+				        .request()
+				        .get();
+				JSONArray historiesArray = new JSONArray(response.readEntity(String.class));
+				task.put(TaskJSONEnum.HISTORIES, historiesArray);
+				
 				// Get attach_files
 				response = mClient.target(BASE_URL)
 				        .path("projects/" + projectName +
