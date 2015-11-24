@@ -98,16 +98,6 @@ public class HistoryTranslator {
 			} else if (value == ITSEnum.CLOSED_STATUS) {
 				translatedValue = HistoryJSONEnum.TASK_STATUS_DONE;
 			}
-		} else if (issueType.equals(ScrumEnum.GOOD_ISSUE_TYPE) || issueType.equals(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE)) {
-			if (value == ITSEnum.NEW_STATUS) {
-				translatedValue = HistoryJSONEnum.RETROSPECTIVE_STATUS_NEW;
-			} else if (value == ITSEnum.ASSIGNED_STATUS) {
-				translatedValue = HistoryJSONEnum.RETROSPECTIVE_STATUS_ASSIGNED;
-			} else if (value == ITSEnum.RESOLVED_STATUS) {
-				translatedValue = HistoryJSONEnum.RETROSPECTIVE_STATUS_RESOLVED;
-			} else if (value == ITSEnum.CLOSED_STATUS) {
-				translatedValue = HistoryJSONEnum.RETROSPECTIVE_STATUS_CLOSED;
-			}
 		} else if (issueType.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
 			if (value == ITSEnum.NEW_STATUS) {
 				translatedValue = HistoryJSONEnum.STORY_STATUS_UNCHECK;
