@@ -365,7 +365,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_REMOVE, newHistory.getType());
+		assertEquals(HistoryJSONEnum.TYPE_DROP, newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("7", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -384,7 +384,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_DROP, newHistory.getType());
+		assertEquals(HistoryJSONEnum.TYPE_REMOVE, newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("8", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());

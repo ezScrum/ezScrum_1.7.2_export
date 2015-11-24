@@ -20,3 +20,4 @@ _UnitTest
 /WebContent/Workspace/RoleBase.xml
 /WebContent/Workspace/AttachFile
 /upload_tmp
+*.class
