@@ -83,7 +83,7 @@ public class JSONEncoder {
 		JSONObject historyJSON = new JSONObject();
 		try {
 			IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, issueType);
-			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, newHistory.getType());
+			historyJSON.put(HistoryJSONEnum.HISTORY_TYPE, HistoryJSONEnum.HistoryType.values()[newHistory.getType()].name());
 			historyJSON.put(HistoryJSONEnum.OLD_VALUE, newHistory.getOldValue());
 			historyJSON.put(HistoryJSONEnum.NEW_VALUE, newHistory.getNewValue());
 			historyJSON.put(HistoryJSONEnum.CREATE_TIME, newHistory.getModifyDate());

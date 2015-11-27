@@ -101,7 +101,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
-		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.APPEND_TO_SPRINT.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("1", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -118,7 +118,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
-		assertEquals(HistoryJSONEnum.TYPE_NAME, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.NAME.ordinal(), newHistory.getType());
 		assertEquals("Old Story Name", newHistory.getOldValue());
 		assertEquals("New Story Name", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -137,7 +137,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.STATUS.ordinal(), newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_UNCHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -156,7 +156,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.STATUS.ordinal(), newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_DONE, newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -175,7 +175,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, unplan.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.STATUS.ordinal(), newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_UNCHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -194,7 +194,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, unplan.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.STATUS.ordinal(), newHistory.getType());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_CHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.TASK_STATUS_DONE, newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -213,7 +213,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_STATUS, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.STATUS.ordinal(), newHistory.getType());
 		assertEquals(HistoryJSONEnum.STORY_STATUS_UNCHECK, newHistory.getOldValue());
 		assertEquals(HistoryJSONEnum.STORY_STATUS_DONE, newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -232,7 +232,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_VALUE, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.VALUE.ordinal(), newHistory.getType());
 		assertEquals("0", newHistory.getOldValue());
 		assertEquals("5", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -251,7 +251,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_ESTIMATE, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.ESTIMATE.ordinal(), newHistory.getType());
 		assertEquals("0", newHistory.getOldValue());
 		assertEquals("20", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -270,7 +270,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_IMPORTANCE, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.IMPORTANCE.ordinal(), newHistory.getType());
 		assertEquals("0", newHistory.getOldValue());
 		assertEquals("100", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -289,7 +289,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_ACTUAL, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.ACTUAL.ordinal(), newHistory.getType());
 		assertEquals("10", newHistory.getOldValue());
 		assertEquals("5", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -308,7 +308,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_REMAIMS, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.REMAINS.ordinal(), newHistory.getType());
 		assertEquals("8", newHistory.getOldValue());
 		assertEquals("3", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -327,7 +327,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_ADD, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.ADD_TASK.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("5", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -346,7 +346,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.APPEND_TO_STORY.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("4", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -365,7 +365,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_DROP, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.DROP_TASK.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("7", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -384,7 +384,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, task.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_REMOVE, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.REMOVE_FROM_STORY.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("8", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -403,7 +403,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, unplan.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_SPRINTID, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.UNPLAN_CHANGE_SPRINT_ID.ordinal(), newHistory.getType());
 		assertEquals("0", newHistory.getOldValue());
 		assertEquals("150", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -422,7 +422,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.APPEND_TO_SPRINT.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("150", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -441,7 +441,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.APPEND_TO_SPRINT.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("170", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());
@@ -460,7 +460,7 @@ public class HistoryTranslatorTest {
 		oldHistory.setModifyDate(modifyDate);
 		
 		IIssueHistory newHistory = HistoryTranslator.toNewHistory(oldHistory, story.getCategory());
-		assertEquals(HistoryJSONEnum.TYPE_REMOVE, newHistory.getType());
+		assertEquals(HistoryJSONEnum.HistoryType.REMOVE_FROM_SPRINT.ordinal(), newHistory.getType());
 		assertEquals("", newHistory.getOldValue());
 		assertEquals("120", newHistory.getNewValue());
 		assertEquals(modifyDate, newHistory.getModifyDate());

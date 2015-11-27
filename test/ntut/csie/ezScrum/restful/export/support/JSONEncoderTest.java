@@ -1079,7 +1079,7 @@ public class JSONEncoderTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		JSONObject newHistoryJSON = JSONEncoder.toHistoryJSON(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
-		assertEquals(HistoryJSONEnum.TYPE_APPEND, newHistoryJSON.getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(HistoryJSONEnum.HistoryType.APPEND_TO_SPRINT.name(), newHistoryJSON.getString(HistoryJSONEnum.HISTORY_TYPE));
 		assertEquals("", newHistoryJSON.getString(HistoryJSONEnum.OLD_VALUE));
 		assertEquals("1", newHistoryJSON.getString(HistoryJSONEnum.NEW_VALUE));
 		assertEquals(modifyDate, newHistoryJSON.getLong(HistoryJSONEnum.CREATE_TIME));
@@ -1094,7 +1094,7 @@ public class JSONEncoderTest {
 		oldHistory.setModifyDate(modifyDate);
 
 		newHistoryJSON = JSONEncoder.toHistoryJSON(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
-		assertEquals(HistoryJSONEnum.TYPE_NAME, newHistoryJSON.getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(HistoryJSONEnum.HistoryType.NAME.name(), newHistoryJSON.getString(HistoryJSONEnum.HISTORY_TYPE));
 		assertEquals("Old Story Name", newHistoryJSON.getString(HistoryJSONEnum.OLD_VALUE));
 		assertEquals("New Story Name", newHistoryJSON.getString(HistoryJSONEnum.NEW_VALUE));
 		assertEquals(modifyDate, newHistoryJSON.getLong(HistoryJSONEnum.CREATE_TIME));

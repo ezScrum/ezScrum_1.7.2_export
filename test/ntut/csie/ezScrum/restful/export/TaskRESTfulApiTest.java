@@ -250,22 +250,22 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(expectedJSONArray.length(), jsonResponse.length());
 		// First History
-		assertEquals(expectedJSONArray.getJSONObject(0).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(0).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.HISTORY_TYPE));
 		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.OLD_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.NEW_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(0).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(0).getLong(HistoryJSONEnum.CREATE_TIME));
 		// Second History
-		assertEquals(expectedJSONArray.getJSONObject(1).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(1).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.HISTORY_TYPE));
 		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.OLD_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.NEW_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(1).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(1).getLong(HistoryJSONEnum.CREATE_TIME));
 		// Third History
-		assertEquals(expectedJSONArray.getJSONObject(2).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(2).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.HISTORY_TYPE));
 		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.OLD_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.NEW_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(2).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(2).getLong(HistoryJSONEnum.CREATE_TIME));
 		// fourth History
-		assertEquals(expectedJSONArray.getJSONObject(3).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(3).getInt(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(3).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(3).getString(HistoryJSONEnum.HISTORY_TYPE));
 		assertEquals(expectedJSONArray.getJSONObject(3).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(3).getString(HistoryJSONEnum.OLD_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(3).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(3).getString(HistoryJSONEnum.NEW_VALUE));
 		assertEquals(expectedJSONArray.getJSONObject(3).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(3).getLong(HistoryJSONEnum.CREATE_TIME));
@@ -306,7 +306,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(expectedJSONArray.length(), jsonResponse.length());
 		for (int i = 0; i < expectedJSONArray.length(); i++) {
-			assertEquals(expectedJSONArray.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedJSONArray.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
@@ -347,7 +347,7 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		// Assert
 		assertEquals(expectedJSONArray.length(), jsonResponse.length());
 		for (int i = 0; i < expectedJSONArray.length(); i++) {
-			assertEquals(expectedJSONArray.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedJSONArray.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
