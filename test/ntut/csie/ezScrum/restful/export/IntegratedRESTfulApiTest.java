@@ -676,8 +676,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInStory2 = JSONEncoder.toHistoryJSONArray(story2.getIssueHistories(), story2.getCategory());
 		assertEquals(expectedHistoryJSONArrayInStory2.length(), historyJSONArrayInStory2.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInStory2.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInStory2.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -715,8 +715,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInTask4 = JSONEncoder.toHistoryJSONArray(task4.getIssueHistories(), task4.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask4.length(), historyJSONArrayInTask4.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask4.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask4.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -794,8 +794,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInUnplan1 = JSONEncoder.toHistoryJSONArray(unplan1.getIssueHistories(), unplan1.getCategory());
 		assertEquals(expectedHistoryJSONArrayInUnplan1.length(), historyJSONArrayInUnplan1.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInUnplan1.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInUnplan1.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -816,8 +816,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInUnplan2 = JSONEncoder.toHistoryJSONArray(unplan2.getIssueHistories(), unplan2.getCategory());
 		assertEquals(expectedHistoryJSONArrayInUnplan2.length(), historyJSONArrayInUnplan2.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInUnplan1.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInUnplan2.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -847,8 +847,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInStory1 = JSONEncoder.toHistoryJSONArray(story1.getIssueHistories(), story1.getCategory());
 		assertEquals(expectedHistoryJSONArrayInStory1.length(), historyJSONArrayInStory1.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInStory1.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInStory1.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -886,8 +886,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInTask2 = JSONEncoder.toHistoryJSONArray(task2.getIssueHistories(), task2.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask2.length(), historyJSONArrayInTask2.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask2.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask2.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -927,8 +927,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInTask1 = JSONEncoder.toHistoryJSONArray(task1.getIssueHistories(), task1.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask1.length(), historyJSONArrayInTask1.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask1.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask1.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -965,8 +965,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray expectedHistoryJSONArrayInTask3 = JSONEncoder.toHistoryJSONArray(task3.getIssueHistories(), task3.getCategory());
 		assertEquals(expectedHistoryJSONArrayInTask3.length(), historyJSONArrayInTask3.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask3.length(); i++) {
-			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask3.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),

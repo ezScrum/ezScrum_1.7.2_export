@@ -304,8 +304,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert histories
 		assertEquals(expectedResponse.length(), jsonResponse.length());
 		for (int i = 0; i < expectedResponse.length(); i++) {
-			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -354,8 +354,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert histories
 		assertEquals(expectedResponse.length(), jsonResponse.length());
 		for (int i = 0; i < expectedResponse.length(); i++) {
-			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -401,8 +401,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert histories
 		assertEquals(expectedResponse.length(), jsonResponse.length());
 		for (int i = 0; i < expectedResponse.length(); i++) {
-			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -450,8 +450,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert histories
 		assertEquals(expectedResponse.length(), jsonResponse.length());
 		for (int i = 0; i < expectedResponse.length(); i++) {
-			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -541,8 +541,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert histories
 		assertEquals(expectedResponse.length(), jsonResponse.length());
 		for (int i = 0; i < expectedResponse.length(); i++) {
-			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -596,8 +596,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert histories
 		assertEquals(expectedResponse.length(), jsonResponse.length());
 		for (int i = 0; i < expectedResponse.length(); i++) {
-			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
@@ -651,8 +651,8 @@ public class DroppedStoryRESTfulApiTest extends JerseyTest {
 		// Assert histories
 		assertEquals(expectedResponse.length(), jsonResponse.length());
 		for (int i = 0; i < expectedResponse.length(); i++) {
-			assertEquals(expectedResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE),
-					jsonResponse.getJSONObject(i).getInt(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
+					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
 					jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
