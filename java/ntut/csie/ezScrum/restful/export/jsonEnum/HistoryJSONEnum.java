@@ -34,17 +34,17 @@ public class HistoryJSONEnum {
 	}
 	
 	// Task, Unplan status in new version
-	public final static String TASK_STATUS_UNCHECK = "1";
-	public final static String TASK_STATUS_CHECK = "2";
-	public final static String TASK_STATUS_DONE = "3";
+	public final static String TASK_UNPLAN_STATUS_UNCHECK = "new";
+	public final static String TASK_UNPLAN_STATUS_CHECK = "assigned";
+	public final static String TASK_UNPLAN_STATUS_DONE = "closed";
 	
 	// Story status in new version
-	public final static String STORY_STATUS_UNCHECK = "0";
-	public final static String STORY_STATUS_DONE = "1";
+	public final static String STORY_STATUS_UNCHECK = "new";
+	public final static String STORY_STATUS_DONE = "closed";
 	
 	// Retrospective status in new version
 	public final static String RETROSPECTIVE_STATUS_NEW = "new";
 	public final static String RETROSPECTIVE_STATUS_CLOSED = "closed";
-	public final static String RETROSPECTIVE_STATUS_RESOLVED = "resolved";
 	public final static String RETROSPECTIVE_STATUS_ASSIGNED = "assigned";
+	public final static String RETROSPECTIVE_STATUS_RESOLVED = "resolved";
 }

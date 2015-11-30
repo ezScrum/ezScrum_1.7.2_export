@@ -92,11 +92,11 @@ public class HistoryTranslator {
 		String translatedValue = String.valueOf(value);
 		if (issueType.equals(ScrumEnum.TASK_ISSUE_TYPE) || issueType.equals(ScrumEnum.UNPLANNEDITEM_ISSUE_TYPE)) {
 			if (value == ITSEnum.NEW_STATUS) {
-				translatedValue = HistoryJSONEnum.TASK_STATUS_UNCHECK;
+				translatedValue = HistoryJSONEnum.TASK_UNPLAN_STATUS_UNCHECK;
 			} else if (value == ITSEnum.ASSIGNED_STATUS) {
-				translatedValue = HistoryJSONEnum.TASK_STATUS_CHECK;
+				translatedValue = HistoryJSONEnum.TASK_UNPLAN_STATUS_CHECK;
 			} else if (value == ITSEnum.CLOSED_STATUS) {
-				translatedValue = HistoryJSONEnum.TASK_STATUS_DONE;
+				translatedValue = HistoryJSONEnum.TASK_UNPLAN_STATUS_DONE;
 			}
 		} else if (issueType.equals(ScrumEnum.STORY_ISSUE_TYPE)) {
 			if (value == ITSEnum.NEW_STATUS) {
