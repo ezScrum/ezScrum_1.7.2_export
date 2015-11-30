@@ -514,13 +514,12 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		
 		// Assert Account data
 		JSONArray accountJSONArray = jsonArrayResponse.getJSONArray(ExportJSONEnum.ACCOUNTS);
-		assertEquals(6, accountJSONArray.length());
+		assertEquals(5, accountJSONArray.length());
 		assertEquals(account5.getID(), accountJSONArray.getJSONObject(0).getString(AccountJSONEnum.USERNAME));
-		assertEquals("admin", accountJSONArray.getJSONObject(1).getString(AccountJSONEnum.USERNAME));
-		assertEquals(account3.getID(), accountJSONArray.getJSONObject(2).getString(AccountJSONEnum.USERNAME));
-		assertEquals(account4.getID(), accountJSONArray.getJSONObject(3).getString(AccountJSONEnum.USERNAME));
-		assertEquals(account1.getID(), accountJSONArray.getJSONObject(4).getString(AccountJSONEnum.USERNAME));
-		assertEquals(account2.getID(), accountJSONArray.getJSONObject(5).getString(AccountJSONEnum.USERNAME));
+		assertEquals(account3.getID(), accountJSONArray.getJSONObject(1).getString(AccountJSONEnum.USERNAME));
+		assertEquals(account4.getID(), accountJSONArray.getJSONObject(2).getString(AccountJSONEnum.USERNAME));
+		assertEquals(account1.getID(), accountJSONArray.getJSONObject(3).getString(AccountJSONEnum.USERNAME));
+		assertEquals(account2.getID(), accountJSONArray.getJSONObject(4).getString(AccountJSONEnum.USERNAME));
 		// end
 		
 		// Assert project data

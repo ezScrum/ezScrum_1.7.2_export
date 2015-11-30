@@ -20,9 +20,13 @@ public class AccountRESTfulApi {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAccounts() {
 		AccountMapper accountMapper = new AccountMapper();
+		final String ADMIN_USERNAME = "admin"; 
 		List<IActor> accountsActor = accountMapper.getAccountList();
 		List<IAccount> accounts = new ArrayList<IAccount>();
 		for (IActor actor : accountsActor) {
+			if (actor.getID().equals(ADMIN_USERNAME)) {
+				continue;
+			}
 			accounts.add((IAccount) actor);
 		}
 		String entity = JSONEncoder.toAccountJSONArray(accounts).toString();
