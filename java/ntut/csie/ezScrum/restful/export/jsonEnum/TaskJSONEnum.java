@@ -10,6 +10,7 @@ public class TaskJSONEnum {
     public static final String ACTUAL = "actual";
     public static final String NOTES = "notes";
     public static final String STATUS = "status";
+    public static final String HISTORIES = "histories";
     public static final String ATTACH_FILES = "attach_files";
     public static final String PROJECT_ID = "project_id";
     public static final String STORY_ID = "story_id";

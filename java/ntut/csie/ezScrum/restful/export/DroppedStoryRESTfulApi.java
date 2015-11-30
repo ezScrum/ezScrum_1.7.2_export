@@ -75,6 +75,23 @@ public class DroppedStoryRESTfulApi {
 	}
 	
 	@GET
+	@Path("/{storyId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistoriesInDroppedStory(@PathParam("projectName") String projectName, @PathParam("storyId") long storyId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		IIssue story = resourceFinder.findDroppedStory(storyId);
+		
+		if (project == null || story == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
+		@SuppressWarnings("deprecation")
+		String entity = JSONEncoder.toHistoryJSONArray(story.getIssueHistories(), story.getCategory()).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
 	@Path("/{storyId}/tasks")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTasksInDroppedStory(@PathParam("projectName") String projectName,
@@ -117,6 +134,26 @@ public class DroppedStoryRESTfulApi {
 			sourceFiles.add(srouceFile);
 		}
 		String entity = JSONEncoder.toAttachFileJSONArray(attachFiles, sourceFiles).toString();
+		return Response.status(Response.Status.OK).entity(entity).build();
+	}
+	
+	@GET
+	@Path("/{storyId}/tasks/{taskId}/histories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistoriesInTask(@PathParam("projectName") String projectName,
+	                    				 @PathParam("storyId") long storyId, 
+	                    				 @PathParam("taskId") long taskId) {
+		ResourceFinder resourceFinder = new ResourceFinder();
+		IProject project = resourceFinder.findProject(projectName);
+		IIssue story = resourceFinder.findDroppedStory(storyId);
+		IIssue task = resourceFinder.findTaskInDroppedStory(taskId);
+		
+		if (project == null || story == null || task == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		
+		@SuppressWarnings("deprecation")
+		String entity = JSONEncoder.toHistoryJSONArray(task.getIssueHistories(), task.getCategory()).toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 }

@@ -88,27 +88,22 @@ public class AccountRESTfulApiTest extends JerseyTest {
 		
 		// Assert
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-		assertEquals(3, jsonResponse.length());
+		assertEquals(2, jsonResponse.length());
 		
-		JSONObject accountJSON1 = jsonResponse.getJSONObject(0);
-		assertEquals("admin", accountJSON1.getString(AccountJSONEnum.USERNAME));
-		assertEquals("admin", accountJSON1.getString(AccountJSONEnum.NICK_NAME));
+		JSONObject accountJSON1 = jsonResponse.getJSONObject(1);
+		IAccount account1 = mCA.getAccountList().get(1);
+		assertEquals(account1.getID(), accountJSON1.getString(AccountJSONEnum.USERNAME));
+		assertEquals(account1.getName(), accountJSON1.getString(AccountJSONEnum.NICK_NAME));
+		assertEquals(account1.getPassword(), accountJSON1.getString(AccountJSONEnum.PASSWORD));
+		assertEquals(account1.getEmail(), accountJSON1.getString(AccountJSONEnum.EMAIL));
 		assertEquals(1, accountJSON1.getInt(AccountJSONEnum.ENABLE));
 		
-		JSONObject accountJSON2 = jsonResponse.getJSONObject(1);
-		IAccount account1 = mCA.getAccountList().get(0);
-		assertEquals(account1.getID(), accountJSON2.getString(AccountJSONEnum.USERNAME));
-		assertEquals(account1.getName(), accountJSON2.getString(AccountJSONEnum.NICK_NAME));
-		assertEquals(account1.getPassword(), accountJSON2.getString(AccountJSONEnum.PASSWORD));
-		assertEquals(account1.getEmail(), accountJSON2.getString(AccountJSONEnum.EMAIL));
+		JSONObject accountJSON2 = jsonResponse.getJSONObject(0);
+		IAccount account2 = mCA.getAccountList().get(0);
+		assertEquals(account2.getID(), accountJSON2.getString(AccountJSONEnum.USERNAME));
+		assertEquals(account2.getName(), accountJSON2.getString(AccountJSONEnum.NICK_NAME));
+		assertEquals(account2.getPassword(), accountJSON2.getString(AccountJSONEnum.PASSWORD));
+		assertEquals(account2.getEmail(), accountJSON2.getString(AccountJSONEnum.EMAIL));
 		assertEquals(1, accountJSON2.getInt(AccountJSONEnum.ENABLE));
-		
-		JSONObject accountJSON3 = jsonResponse.getJSONObject(2);
-		IAccount account2 = mCA.getAccountList().get(1);
-		assertEquals(account2.getID(), accountJSON3.getString(AccountJSONEnum.USERNAME));
-		assertEquals(account2.getName(), accountJSON3.getString(AccountJSONEnum.NICK_NAME));
-		assertEquals(account2.getPassword(), accountJSON3.getString(AccountJSONEnum.PASSWORD));
-		assertEquals(account2.getEmail(), accountJSON3.getString(AccountJSONEnum.EMAIL));
-		assertEquals(1, accountJSON3.getInt(AccountJSONEnum.ENABLE));
 	}
 }

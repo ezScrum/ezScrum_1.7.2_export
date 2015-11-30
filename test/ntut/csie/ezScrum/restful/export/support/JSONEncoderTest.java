@@ -1,6 +1,8 @@
 package ntut.csie.ezScrum.restful.export.support;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,17 +16,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
 import ntut.csie.ezScrum.issue.core.IIssueTag;
+import ntut.csie.ezScrum.issue.core.ITSEnum;
 import ntut.csie.ezScrum.issue.internal.Issue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
+import ntut.csie.ezScrum.issue.internal.IssueHistory;
 import ntut.csie.ezScrum.issue.internal.IssueTag;
 import ntut.csie.ezScrum.iteration.core.IReleasePlanDesc;
 import ntut.csie.ezScrum.iteration.core.IScrumIssue;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.iteration.iternal.ScrumIssue;
 import ntut.csie.ezScrum.pic.core.ScrumRole;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AccountJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ProjectJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.ReleaseJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.RetrospectiveJSONEnum;
@@ -34,8 +41,6 @@ import ntut.csie.ezScrum.restful.export.jsonEnum.StoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.TagJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.TaskJSONEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.UnplanJSONEnum;
-import ntut.csie.ezScrum.restful.export.support.FileEncoder;
-import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
 import ntut.csie.ezScrum.test.CreateData.AddTaskToStory;
 import ntut.csie.ezScrum.test.CreateData.CopyProject;
@@ -811,5 +816,287 @@ public class JSONEncoderTest {
 		// Assert
 		assertEquals(userName, projectRoleJSON.getString(AccountJSONEnum.USERNAME));
 		assertEquals(ScrumRoleJSONEnum.PRODUCT_OWNER, projectRoleJSON.getString(ScrumRoleJSONEnum.ROLE));
+	}
+	
+	@Test
+	public void testToHistoryJSONArray_fillterUselessHistories() {
+		IIssue story = mASTS.getIssueList().get(0);
+		long modifyDate = System.currentTimeMillis();
+		IssueHistory history1 = new IssueHistory();
+		history1.setIssueID(story.getIssueID());
+		history1.setType(IIssueHistory.OTHER_TYPE);
+		history1.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		history1.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
+		history1.setNewValue(String.valueOf(ITSEnum.CONFIRMED_STATUS));
+		history1.setModifyDate(modifyDate);
+		IssueHistory history2 = new IssueHistory();
+		history2.setIssueID(story.getIssueID());
+		history2.setType(IIssueHistory.OTHER_TYPE);
+		history2.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		history2.setOldValue(String.valueOf(ITSEnum.CONFIRMED_STATUS));
+		history2.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
+		history2.setModifyDate(modifyDate);
+		IssueHistory history3 = new IssueHistory();
+		history3.setIssueID(story.getIssueID());
+		history3.setType(IIssueHistory.OTHER_TYPE);
+		history3.setFieldName(IssueHistory.HANDLER_FIELD_NAME);
+		history3.setOldValue("1");
+		history3.setNewValue("2");
+		history3.setModifyDate(modifyDate);
+		IssueHistory history4 = new IssueHistory();
+		history4.setIssueID(story.getIssueID());
+		history4.setType(IIssueHistory.OTHER_TYPE);
+		history4.setFieldName("resolution");
+		history4.setOldValue("1");
+		history4.setNewValue("2");
+		history4.setModifyDate(modifyDate);
+		List<IIssueHistory> histories = new ArrayList<IIssueHistory>();
+		histories.add(history1);
+		histories.add(history2);
+		histories.add(history3);
+		histories.add(history4);
+		assertEquals(0, JSONEncoder.toHistoryJSONArray(histories, story.getCategory()).length());
+	}
+	
+	@Test
+	public void testIsHistoryValid() {
+		// Verify valid histories
+		List<IssueHistory> validHistories = new ArrayList<IssueHistory>();
+		IssueHistory validHistory1 = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		validHistory1.setType(IIssueHistory.OTHER_TYPE);
+		validHistory1.setFieldName(ScrumEnum.SPRINT_ID);
+		validHistory1.setOldValue("-1");
+		validHistory1.setNewValue("1");
+		validHistory1.setModifyDate(modifyDate);
+		validHistories.add(validHistory1);
+		IssueHistory validHistory2 = new IssueHistory();
+		validHistory2.setType(IIssueHistory.OTHER_TYPE);
+		validHistory2.setFieldName(IIssueHistory.SUMMARY);
+		validHistory2.setOldValue("Old Story Name");
+		validHistory2.setNewValue("New Story Name");
+		validHistory2.setModifyDate(modifyDate);
+		validHistories.add(validHistory2);
+		IIssue task = mATTS.getTaskList().get(0);
+		IssueHistory validHistory3 = new IssueHistory();
+		validHistory3.setIssueID(task.getIssueID());
+		validHistory3.setType(IIssueHistory.OTHER_TYPE);
+		validHistory3.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		validHistory3.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
+		validHistory3.setNewValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
+		validHistory3.setModifyDate(modifyDate);
+		validHistories.add(validHistory3);
+		IssueHistory validHistory4 = new IssueHistory();
+		validHistory4.setIssueID(task.getIssueID());
+		validHistory4.setType(IIssueHistory.OTHER_TYPE);
+		validHistory4.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		validHistory4.setOldValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
+		validHistory4.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
+		validHistory4.setModifyDate(modifyDate);
+		validHistories.add(validHistory4);
+		IIssue unplan = mCU.getIssueList().get(0);
+		IssueHistory validHistory5 = new IssueHistory();
+		validHistory5.setIssueID(unplan.getIssueID());
+		validHistory5.setType(IIssueHistory.OTHER_TYPE);
+		validHistory5.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		validHistory5.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
+		validHistory5.setNewValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
+		validHistory5.setModifyDate(modifyDate);
+		validHistories.add(validHistory5);
+		IssueHistory validHistory6 = new IssueHistory();
+		validHistory6.setIssueID(unplan.getIssueID());
+		validHistory6.setType(IIssueHistory.OTHER_TYPE);
+		validHistory6.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		validHistory6.setOldValue(String.valueOf(ITSEnum.ASSIGNED_STATUS));
+		validHistory6.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
+		validHistory6.setModifyDate(modifyDate);
+		validHistories.add(validHistory6);
+		IIssue story = mASTS.getIssueList().get(0);
+		IssueHistory validHistory7 = new IssueHistory();
+		validHistory7.setIssueID(story.getIssueID());
+		validHistory7.setType(IIssueHistory.OTHER_TYPE);
+		validHistory7.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		validHistory7.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
+		validHistory7.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
+		validHistory7.setModifyDate(modifyDate);
+		validHistories.add(validHistory7);
+		IssueHistory validHistory8 = new IssueHistory();
+		validHistory8.setIssueID(story.getIssueID());
+		validHistory8.setType(IIssueHistory.OTHER_TYPE);
+		validHistory8.setFieldName(ScrumEnum.VALUE);
+		validHistory8.setOldValue("0");
+		validHistory8.setNewValue("5");
+		validHistory8.setModifyDate(modifyDate);
+		validHistories.add(validHistory8);
+		IssueHistory validHistory9 = new IssueHistory();
+		validHistory9.setIssueID(story.getIssueID());
+		validHistory9.setType(IIssueHistory.OTHER_TYPE);
+		validHistory9.setFieldName(ScrumEnum.ESTIMATION);
+		validHistory9.setOldValue("0");
+		validHistory9.setNewValue("20");
+		validHistory9.setModifyDate(modifyDate);
+		validHistories.add(validHistory9);
+		IssueHistory validHistory10 = new IssueHistory();
+		validHistory10.setIssueID(story.getIssueID());
+		validHistory10.setType(IIssueHistory.OTHER_TYPE);
+		validHistory10.setFieldName(ScrumEnum.IMPORTANCE);
+		validHistory10.setOldValue("0");
+		validHistory10.setNewValue("100");
+		validHistory10.setModifyDate(modifyDate);
+		validHistories.add(validHistory10);
+		IssueHistory validHistory11 = new IssueHistory();
+		validHistory11.setIssueID(task.getIssueID());
+		validHistory11.setType(IIssueHistory.OTHER_TYPE);
+		validHistory11.setFieldName(ScrumEnum.ACTUALHOUR);
+		validHistory11.setOldValue("10");
+		validHistory11.setNewValue("5");
+		validHistory11.setModifyDate(modifyDate);
+		validHistories.add(validHistory11);
+		IssueHistory validHistory12 = new IssueHistory();
+		validHistory12.setIssueID(task.getIssueID());
+		validHistory12.setType(IIssueHistory.OTHER_TYPE);
+		validHistory12.setFieldName(ScrumEnum.REMAINS);
+		validHistory12.setOldValue("8");
+		validHistory12.setNewValue("3");
+		validHistory12.setModifyDate(modifyDate);
+		validHistories.add(validHistory12);
+		IssueHistory validHistory13 = new IssueHistory();
+		validHistory13.setIssueID(story.getIssueID());
+		validHistory13.setType(IIssueHistory.RELEATIONSHIP_ADD_TYPE);
+		validHistory13.setFieldName("null");
+		validHistory13.setOldValue(IIssueHistory.PARENT_OLD_VALUE);
+		validHistory13.setNewValue("5");
+		validHistory13.setModifyDate(modifyDate);
+		validHistories.add(validHistory13);
+		IssueHistory validHistory14 = new IssueHistory();
+		validHistory14.setIssueID(task.getIssueID());
+		validHistory14.setType(IIssueHistory.RELEATIONSHIP_ADD_TYPE);
+		validHistory14.setFieldName("null");
+		validHistory14.setOldValue(IIssueHistory.CHILD_OLD_VALUE);
+		validHistory14.setNewValue("4");
+		validHistory14.setModifyDate(modifyDate);
+		validHistories.add(validHistory14);
+		IssueHistory validHistory15 = new IssueHistory();
+		validHistory15.setIssueID(story.getIssueID());
+		validHistory15.setType(IIssueHistory.RELEATIONSHIP_DELETE_TYPE);
+		validHistory15.setFieldName("null");
+		validHistory15.setOldValue(IIssueHistory.PARENT_OLD_VALUE);
+		validHistory15.setNewValue("7");
+		validHistory15.setModifyDate(modifyDate);
+		validHistories.add(validHistory15);
+		IssueHistory validHistory16 = new IssueHistory();
+		validHistory16.setIssueID(task.getIssueID());
+		validHistory16.setType(IIssueHistory.RELEATIONSHIP_DELETE_TYPE);
+		validHistory16.setFieldName("null");
+		validHistory16.setOldValue(IIssueHistory.CHILD_OLD_VALUE);
+		validHistory16.setNewValue("8");
+		validHistory16.setModifyDate(modifyDate);
+		validHistories.add(validHistory16);
+		IssueHistory validHistory17 = new IssueHistory();
+		validHistory17.setIssueID(unplan.getIssueID());
+		validHistory17.setType(IIssueHistory.OTHER_TYPE);
+		validHistory17.setFieldName(ScrumEnum.SPRINT_ID);
+		validHistory17.setOldValue("0");
+		validHistory17.setNewValue("150");
+		validHistory17.setModifyDate(modifyDate);
+		validHistories.add(validHistory17);
+		IssueHistory validHistory18 = new IssueHistory();
+		validHistory18.setIssueID(story.getIssueID());
+		validHistory18.setType(IIssueHistory.OTHER_TYPE);
+		validHistory18.setFieldName(ScrumEnum.SPRINT_ID);
+		validHistory18.setOldValue("0");
+		validHistory18.setNewValue("150");
+		validHistory18.setModifyDate(modifyDate);
+		validHistories.add(validHistory18);
+		IssueHistory validHistory19 = new IssueHistory();
+		validHistory19.setIssueID(story.getIssueID());
+		validHistory19.setType(IIssueHistory.OTHER_TYPE);
+		validHistory19.setFieldName(ScrumEnum.SPRINT_ID);
+		validHistory19.setOldValue("-1");
+		validHistory19.setNewValue("170");
+		validHistory19.setModifyDate(modifyDate);
+		validHistories.add(validHistory19);
+		IssueHistory validHistory20 = new IssueHistory();
+		validHistory20.setIssueID(story.getIssueID());
+		validHistory20.setType(IIssueHistory.OTHER_TYPE);
+		validHistory20.setFieldName(ScrumEnum.SPRINT_ID);
+		validHistory20.setOldValue("120");
+		validHistory20.setNewValue("0");
+		validHistory20.setModifyDate(modifyDate);
+		validHistories.add(validHistory20);
+		for (IssueHistory validHistory : validHistories) {
+			assertTrue(JSONEncoder.isHistoryValid(validHistory));
+		}
+		
+		// Verify invalid histories
+		IssueHistory invalidHistory1 = new IssueHistory();
+		invalidHistory1.setIssueID(story.getIssueID());
+		invalidHistory1.setType(IIssueHistory.OTHER_TYPE);
+		invalidHistory1.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		invalidHistory1.setOldValue(String.valueOf(ITSEnum.NEW_STATUS));
+		invalidHistory1.setNewValue(String.valueOf(ITSEnum.CONFIRMED_STATUS));
+		invalidHistory1.setModifyDate(modifyDate);
+		IssueHistory invalidHistory2 = new IssueHistory();
+		invalidHistory2.setIssueID(story.getIssueID());
+		invalidHistory2.setType(IIssueHistory.OTHER_TYPE);
+		invalidHistory2.setFieldName(IssueHistory.STATUS_FIELD_NAME);
+		invalidHistory2.setOldValue(String.valueOf(ITSEnum.CONFIRMED_STATUS));
+		invalidHistory2.setNewValue(String.valueOf(ITSEnum.CLOSED_STATUS));
+		invalidHistory2.setModifyDate(modifyDate);
+		IssueHistory invalidHistory3 = new IssueHistory();
+		invalidHistory3.setIssueID(story.getIssueID());
+		invalidHistory3.setType(IIssueHistory.OTHER_TYPE);
+		invalidHistory3.setFieldName(IssueHistory.HANDLER_FIELD_NAME);
+		invalidHistory3.setOldValue("1");
+		invalidHistory3.setNewValue("2");
+		invalidHistory3.setModifyDate(modifyDate);
+		IssueHistory invalidHistory4 = new IssueHistory();
+		invalidHistory4.setIssueID(story.getIssueID());
+		invalidHistory4.setType(IIssueHistory.OTHER_TYPE);
+		invalidHistory4.setFieldName("resolution");
+		invalidHistory4.setOldValue("1");
+		invalidHistory4.setNewValue("2");
+		invalidHistory4.setModifyDate(modifyDate);
+		List<IIssueHistory> invalidHistories = new ArrayList<IIssueHistory>();
+		invalidHistories.add(invalidHistory1);
+		invalidHistories.add(invalidHistory2);
+		invalidHistories.add(invalidHistory3);
+		invalidHistories.add(invalidHistory4);
+		for (IIssueHistory invalidHistory : invalidHistories) {
+			assertFalse(JSONEncoder.isHistoryValid(invalidHistory));
+		}
+	}
+	
+	@Test
+	public void testToHistoryJSON() throws JSONException {
+		// Create Story In Sprint
+		IssueHistory oldHistory = new IssueHistory();
+		long modifyDate = System.currentTimeMillis();
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(ScrumEnum.SPRINT_ID);
+		oldHistory.setOldValue("-1");
+		oldHistory.setNewValue("1");
+		oldHistory.setModifyDate(modifyDate);
+
+		JSONObject newHistoryJSON = JSONEncoder.toHistoryJSON(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
+		assertEquals(HistoryJSONEnum.HistoryType.APPEND_TO_SPRINT.name(), newHistoryJSON.getString(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals("", newHistoryJSON.getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals("1", newHistoryJSON.getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(modifyDate, newHistoryJSON.getLong(HistoryJSONEnum.CREATE_TIME));
+
+		// Modify Story Name
+		oldHistory = new IssueHistory();
+		modifyDate = System.currentTimeMillis();
+		oldHistory.setType(IIssueHistory.OTHER_TYPE);
+		oldHistory.setFieldName(IIssueHistory.SUMMARY);
+		oldHistory.setOldValue("Old Story Name");
+		oldHistory.setNewValue("New Story Name");
+		oldHistory.setModifyDate(modifyDate);
+
+		newHistoryJSON = JSONEncoder.toHistoryJSON(oldHistory, ScrumEnum.STORY_ISSUE_TYPE);
+		assertEquals(HistoryJSONEnum.HistoryType.NAME.name(), newHistoryJSON.getString(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals("Old Story Name", newHistoryJSON.getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals("New Story Name", newHistoryJSON.getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(modifyDate, newHistoryJSON.getLong(HistoryJSONEnum.CREATE_TIME));
 	}
 }

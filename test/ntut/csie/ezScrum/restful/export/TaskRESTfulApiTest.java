@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -23,7 +24,10 @@ import org.junit.Test;
 import com.sun.net.httpserver.HttpServer;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
+import ntut.csie.ezScrum.issue.core.IIssueHistory;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.jsonEnum.AttachFileJSONEnum;
+import ntut.csie.ezScrum.restful.export.jsonEnum.HistoryJSONEnum;
 import ntut.csie.ezScrum.restful.export.support.FileEncoder;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.test.CreateData.AddStoryToSprint;
@@ -35,6 +39,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateProject;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.dataObject.TaskObject;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.account.core.IAccount;
@@ -218,5 +223,134 @@ public class TaskRESTfulApiTest extends JerseyTest {
 		assertEquals("ScrumRole.xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.NAME));
 		assertEquals("text/xml", jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(expectedXmlBinary2, jsonResponse.getJSONObject(1).getString(AttachFileJSONEnum.BINARY));
+	}
+	
+	@Test
+	public void testGetHistoriesInTask_CreateTask() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/tasks/" + task.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
+		
+		@SuppressWarnings("deprecation")
+		List<IIssueHistory> histories = task.getIssueHistories();
+		JSONArray expectedJSONArray = JSONEncoder.toHistoryJSONArray(histories, ScrumEnum.TASK_ISSUE_TYPE);
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		// Assert
+		assertEquals(expectedJSONArray.length(), jsonResponse.length());
+		// First History
+		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(0).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(0).getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(0).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(0).getLong(HistoryJSONEnum.CREATE_TIME));
+		// Second History
+		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(1).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(1).getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(1).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(1).getLong(HistoryJSONEnum.CREATE_TIME));
+		// Third History
+		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(2).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(2).getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(2).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(2).getLong(HistoryJSONEnum.CREATE_TIME));
+		// fourth History
+		assertEquals(expectedJSONArray.getJSONObject(3).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(3).getString(HistoryJSONEnum.HISTORY_TYPE));
+		assertEquals(expectedJSONArray.getJSONObject(3).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(3).getString(HistoryJSONEnum.OLD_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(3).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(3).getString(HistoryJSONEnum.NEW_VALUE));
+		assertEquals(expectedJSONArray.getJSONObject(3).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(3).getLong(HistoryJSONEnum.CREATE_TIME));
+	}
+	
+	@Test
+	public void testGetHistoriesInTask_ModifyTaskInformation() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprintId);
+		TaskObject taskInformation = new TaskObject();
+		taskInformation.id = String.valueOf(task.getIssueID());
+		taskInformation.estimation = "8";
+		taskInformation.name = "TEST_TASK_NAME_NEW";
+		taskInformation.remains = "1";
+		taskInformation.actual = "20";
+		sprintBacklogHelper.editTask(taskInformation);
+		task = sprintBacklogHelper.getTaskById(task.getIssueID());
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/tasks/" + task.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
+		
+		@SuppressWarnings("deprecation")
+		List<IIssueHistory> histories = task.getIssueHistories();
+		JSONArray expectedJSONArray = JSONEncoder.toHistoryJSONArray(histories, ScrumEnum.TASK_ISSUE_TYPE);
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		// Assert
+		assertEquals(expectedJSONArray.length(), jsonResponse.length());
+		for (int i = 0; i < expectedJSONArray.length(); i++) {
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+		}
+	}
+	
+	@Test
+	public void testGetHistoriesInTask_ModifyTaskStatus() throws JSONException, Exception {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		IIssue task = mATTS.getTaskList().get(0);
+		
+		// Checkout Task
+		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprintId);
+		sprintBacklogHelper.checkOutTask(task.getIssueID(), task.getSummary(), "henry", "", "", null);
+		Thread.sleep(1000);
+		// Done Task
+		sprintBacklogHelper.doneIssue(task.getIssueID(), task.getSummary(), task.getNotes(), null, "0");
+		Thread.sleep(1000);
+		task = sprintBacklogHelper.getTaskById(task.getIssueID());
+
+		// Call '/projects/{projectName}/sprints/{sprintId}/stories/{storyId}/tasks/{taskId}/histories' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() +
+		              "/sprints/" + sprintId +
+		              "/stories/" + story.getIssueID() +
+		              "/tasks/" + task.getIssueID() +
+		              "/histories")
+		        .request()
+		        .get();
+
+		@SuppressWarnings("deprecation")
+		List<IIssueHistory> histories = task.getIssueHistories();
+		JSONArray expectedJSONArray = JSONEncoder.toHistoryJSONArray(histories, ScrumEnum.TASK_ISSUE_TYPE);
+
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		// Assert
+		assertEquals(expectedJSONArray.length(), jsonResponse.length());
+		for (int i = 0; i < expectedJSONArray.length(); i++) {
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE), jsonResponse.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			assertEquals(expectedJSONArray.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME), jsonResponse.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+		}
 	}
 }
