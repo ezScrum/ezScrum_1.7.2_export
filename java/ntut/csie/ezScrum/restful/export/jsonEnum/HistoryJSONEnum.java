@@ -44,7 +44,7 @@ public class HistoryJSONEnum {
 	
 	// Retrospective status in new version
 	public final static String RETROSPECTIVE_STATUS_NEW = "new";
-	public final static String RETROSPECTIVE_STATUS_CLOSED = "closed";
 	public final static String RETROSPECTIVE_STATUS_ASSIGNED = "assigned";
+	public final static String RETROSPECTIVE_STATUS_CLOSED = "closed";
 	public final static String RETROSPECTIVE_STATUS_RESOLVED = "resolved";
 }
