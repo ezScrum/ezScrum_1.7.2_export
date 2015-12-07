@@ -271,7 +271,7 @@ public class JSONEncoder {
 			accountJson.put(AccountJSONEnum.NICK_NAME, account.getName());
 			accountJson.put(AccountJSONEnum.PASSWORD, account.getPassword());
 			accountJson.put(AccountJSONEnum.EMAIL, account.getEmail());
-			accountJson.put(AccountJSONEnum.ENABLE, account.getEnable().equalsIgnoreCase("true") ? 1 : 0);
+			accountJson.put(AccountJSONEnum.ENABLE, Boolean.parseBoolean(account.getEnable()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

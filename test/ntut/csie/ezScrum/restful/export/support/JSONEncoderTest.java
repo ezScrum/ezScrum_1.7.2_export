@@ -259,14 +259,14 @@ public class JSONEncoderTest {
 		assertEquals(account1.getName(), accountJSON1.getString(AccountJSONEnum.NICK_NAME));
 		assertEquals(account1.getPassword(), accountJSON1.getString(AccountJSONEnum.PASSWORD));
 		assertEquals(account1.getEmail(), accountJSON1.getString(AccountJSONEnum.EMAIL));
-		assertEquals(1, accountJSON1.getInt(AccountJSONEnum.ENABLE));
+		assertTrue(accountJSON1.getBoolean(AccountJSONEnum.ENABLE));
 
 		JSONObject accountJSON2 = accountJSONArray.getJSONObject(1);
 		assertEquals(account2.getID(), accountJSON2.getString(AccountJSONEnum.USERNAME));
 		assertEquals(account2.getName(), accountJSON2.getString(AccountJSONEnum.NICK_NAME));
 		assertEquals(account2.getPassword(), accountJSON2.getString(AccountJSONEnum.PASSWORD));
 		assertEquals(account2.getEmail(), accountJSON2.getString(AccountJSONEnum.EMAIL));
-		assertEquals(1, accountJSON1.getInt(AccountJSONEnum.ENABLE));
+		assertTrue(accountJSON2.getBoolean(AccountJSONEnum.ENABLE));
 	}
 	
 	@Test
@@ -289,7 +289,7 @@ public class JSONEncoderTest {
 		assertEquals(userRealName, accountJSON.getString(AccountJSONEnum.NICK_NAME));
 		assertEquals(account.getPassword(), accountJSON.getString(AccountJSONEnum.PASSWORD));
 		assertEquals(email, accountJSON.getString(AccountJSONEnum.EMAIL));
-		assertEquals(1, accountJSON.getInt(AccountJSONEnum.ENABLE));
+		assertTrue(accountJSON.getBoolean(AccountJSONEnum.ENABLE));
 	}
 	
 	@Test
