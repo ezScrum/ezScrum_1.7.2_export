@@ -548,7 +548,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(mProductOwner.getAccessRetrospective(),
 				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
 		assertEquals(mProductOwner.getAccessUnplannedItem(),
-				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mProductOwner.getReadReport(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mProductOwner.getEditProject(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 
@@ -563,7 +563,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(mScrumMaster.getAccessReleasePlan(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(mScrumMaster.getAccessRetrospective(),
 				scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(mScrumMaster.getAccessUnplannedItem(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(mScrumMaster.getAccessUnplannedItem(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mScrumMaster.getReadReport(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mScrumMaster.getEditProject(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 
@@ -576,7 +576,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(mScrumTeam.getAccessSprintBacklog(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(mScrumTeam.getAccessReleasePlan(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(mScrumTeam.getAccessRetrospective(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(mScrumTeam.getAccessUnplannedItem(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(mScrumTeam.getAccessUnplannedItem(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mScrumTeam.getReadReport(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mScrumTeam.getEditProject(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 
@@ -591,7 +591,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(mStakeholder.getAccessReleasePlan(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(mStakeholder.getAccessRetrospective(),
 				stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(mStakeholder.getAccessUnplannedItem(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(mStakeholder.getAccessUnplannedItem(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mStakeholder.getReadReport(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mStakeholder.getEditProject(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 
@@ -603,7 +603,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(mGuest.getAccessSprintBacklog(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(mGuest.getAccessReleasePlan(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(mGuest.getAccessRetrospective(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(mGuest.getAccessUnplannedItem(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(mGuest.getAccessUnplannedItem(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mGuest.getReadReport(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mGuest.getEditProject(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 		// end
