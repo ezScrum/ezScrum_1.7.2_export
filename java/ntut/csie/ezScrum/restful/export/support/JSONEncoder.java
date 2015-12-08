@@ -342,11 +342,16 @@ public class JSONEncoder {
 	public static JSONObject toProjectJSON(IProject project) {
 		JSONObject projectJson = new JSONObject();
 		try {
+			long attachFileSize = 2;
+			String attachFileSizeString = project.getProjectDesc().getAttachFileSize();
+			if (attachFileSizeString != null && !attachFileSizeString.isEmpty()) {
+				attachFileSize = Long.parseLong(attachFileSizeString);
+			}
 			projectJson.put(ProjectJSONEnum.NAME, project.getName())
 					.put(ProjectJSONEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
 					.put(ProjectJSONEnum.COMMENT, project.getProjectDesc().getComment())
 					.put(ProjectJSONEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
-					.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, Long.parseLong(project.getProjectDesc().getAttachFileSize()))
+					.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, attachFileSize)
 			        .put(ProjectJSONEnum.CREATE_TIME, project.getProjectDesc().getCreateDate().getTime());
 		} catch (JSONException e) {
 			e.printStackTrace();
