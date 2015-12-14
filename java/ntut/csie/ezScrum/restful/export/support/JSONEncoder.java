@@ -206,8 +206,8 @@ public class JSONEncoder {
 			unplanJSON.put(UnplanJSONEnum.ID, unplan.getIssueID());
 			unplanJSON.put(UnplanJSONEnum.NAME, unplan.getSummary());
 			unplanJSON.put(UnplanJSONEnum.HANDLER, unplan.getAssignto());
-			unplanJSON.put(UnplanJSONEnum.ESTIMATE, unplan.getEstimated());
-			unplanJSON.put(UnplanJSONEnum.ACTUAL, unplan.getActualHour());
+			unplanJSON.put(UnplanJSONEnum.ESTIMATE, intStringToIntValue(unplan.getEstimated()));
+			unplanJSON.put(UnplanJSONEnum.ACTUAL, intStringToIntValue(unplan.getActualHour()));
 			unplanJSON.put(UnplanJSONEnum.NOTES, unplan.getNotes());
 			unplanJSON.put(UnplanJSONEnum.STATUS, unplan.getStatus());
 			// Process Partners
@@ -314,11 +314,12 @@ public class JSONEncoder {
 	public static JSONObject toSprintJSON(ISprintPlanDesc sprint) {
 		JSONObject sprintJson = new JSONObject();
 		try {
-			sprintJson.put(SprintJSONEnum.ID, Long.parseLong(sprint.getID())).put(SprintJSONEnum.GOAL, sprint.getGoal())
-					.put(SprintJSONEnum.INTERVAL, Integer.parseInt(sprint.getInterval()))
-					.put(SprintJSONEnum.TEAM_SIZE, Integer.parseInt(sprint.getMemberNumber()))
-					.put(SprintJSONEnum.AVAILABLE_HOURS, Integer.parseInt(sprint.getAvailableDays()))
-					.put(SprintJSONEnum.FOCUS_FACTOR, Integer.parseInt(sprint.getFocusFactor()))
+			sprintJson.put(SprintJSONEnum.ID, Long.parseLong(sprint.getID()))
+			        .put(SprintJSONEnum.GOAL, sprint.getGoal())
+					.put(SprintJSONEnum.INTERVAL, intStringToIntValue(sprint.getInterval()))
+					.put(SprintJSONEnum.TEAM_SIZE, intStringToIntValue(sprint.getMemberNumber()))
+					.put(SprintJSONEnum.AVAILABLE_HOURS, intStringToIntValue(sprint.getAvailableDays()))
+					.put(SprintJSONEnum.FOCUS_FACTOR, intStringToIntValue(sprint.getFocusFactor()))
 					.put(SprintJSONEnum.START_DATE, sprint.getStartDate())
 					.put(SprintJSONEnum.DUE_DATE, sprint.getEndDate())
 					.put(SprintJSONEnum.DEMO_DATE, sprint.getDemoDate())
@@ -375,9 +376,9 @@ public class JSONEncoder {
 			storyJson.put(StoryJSONEnum.ID, story.getIssueID())
 			  		 .put(StoryJSONEnum.NAME, story.getSummary())
 					 .put(StoryJSONEnum.STATUS, story.getStatus())
-					 .put(StoryJSONEnum.ESTIMATE, Integer.parseInt(story.getEstimated()))
-					 .put(StoryJSONEnum.IMPORTANCE, Integer.parseInt(story.getImportance()))
-					 .put(StoryJSONEnum.VALUE, Integer.parseInt(story.getValue()))
+					 .put(StoryJSONEnum.ESTIMATE, intStringToIntValue(story.getEstimated()))
+					 .put(StoryJSONEnum.IMPORTANCE, intStringToIntValue(story.getImportance()))
+					 .put(StoryJSONEnum.VALUE, intStringToIntValue(story.getValue()))
 					 .put(StoryJSONEnum.NOTES, story.getNotes())
 					 .put(StoryJSONEnum.HOW_TO_DEMO, story.getHowToDemo());
 			JSONArray tagJSONArray = new JSONArray();
@@ -409,10 +410,10 @@ public class JSONEncoder {
 			taskJson.put(TaskJSONEnum.ID, task.getIssueID())
 			        .put(TaskJSONEnum.NAME, task.getSummary())
 					.put(TaskJSONEnum.HANDLER, task.getAssignto())
-					.put(TaskJSONEnum.ESTIMATE, Integer.parseInt(task.getEstimated()))
-					.put(TaskJSONEnum.REMAIN, Integer.parseInt(task.getRemains()))
-					.put(TaskJSONEnum.ACTUAL, Integer.parseInt(task.getActualHour()))
-					.put(TaskJSONEnum.NOTES, task.getNotes())
+			        .put(TaskJSONEnum.ESTIMATE, intStringToIntValue(task.getEstimated()))
+			        .put(TaskJSONEnum.REMAIN, intStringToIntValue(task.getRemains()))
+			        .put(TaskJSONEnum.ACTUAL, intStringToIntValue(task.getActualHour()))
+			        .put(TaskJSONEnum.NOTES, task.getNotes())
 					.put(TaskJSONEnum.STATUS, task.getStatus());
 			// Process Partners
 			JSONArray partnerJSONArray = new JSONArray();
@@ -456,5 +457,15 @@ public class JSONEncoder {
 			e.printStackTrace();
 		}
 		return releaseJson;
+	}
+	
+	private static int intStringToIntValue(String intString) {
+		double intValueInDouble;
+		try {
+			intValueInDouble = Double.valueOf(intString);
+		} catch (NumberFormatException e) {
+			intValueInDouble = 0;
+		}
+		return (int) intValueInDouble;
 	}
 }
