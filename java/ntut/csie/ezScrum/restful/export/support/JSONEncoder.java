@@ -161,7 +161,7 @@ public class JSONEncoder {
 			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG, scrumRole.getAccessSprintBacklog());
 			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN, scrumRole.getAccessReleasePlan());
 			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE, scrumRole.getAccessRetrospective());
-			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLANNED, scrumRole.getAccessUnplannedItem());
+			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_UNPLAN, scrumRole.getAccessUnplannedItem());
 			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_REPORT, scrumRole.getReadReport());
 			scrumRoleJSON.put(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT, scrumRole.getEditProject());
 		} catch (JSONException e) {
@@ -271,7 +271,7 @@ public class JSONEncoder {
 			accountJson.put(AccountJSONEnum.NICK_NAME, account.getName());
 			accountJson.put(AccountJSONEnum.PASSWORD, account.getPassword());
 			accountJson.put(AccountJSONEnum.EMAIL, account.getEmail());
-			accountJson.put(AccountJSONEnum.ENABLE, account.getEnable().equalsIgnoreCase("true") ? 1 : 0);
+			accountJson.put(AccountJSONEnum.ENABLE, Boolean.parseBoolean(account.getEnable()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -342,12 +342,17 @@ public class JSONEncoder {
 	public static JSONObject toProjectJSON(IProject project) {
 		JSONObject projectJson = new JSONObject();
 		try {
+			long attachFileSize = 2;
+			String attachFileSizeString = project.getProjectDesc().getAttachFileSize();
+			if (attachFileSizeString != null && !attachFileSizeString.isEmpty()) {
+				attachFileSize = Long.parseLong(attachFileSizeString);
+			}
 			projectJson.put(ProjectJSONEnum.NAME, project.getName())
 					.put(ProjectJSONEnum.DISPLAY_NAME, project.getProjectDesc().getDisplayName())
 					.put(ProjectJSONEnum.COMMENT, project.getProjectDesc().getComment())
 					.put(ProjectJSONEnum.PRODUCT_OWNER, project.getProjectDesc().getProjectManager())
-					.put(ProjectJSONEnum.ATTATCH_MAX_SIZE,
-							Long.parseLong(project.getProjectDesc().getAttachFileSize()));
+					.put(ProjectJSONEnum.ATTATCH_MAX_SIZE, attachFileSize)
+			        .put(ProjectJSONEnum.CREATE_TIME, project.getProjectDesc().getCreateDate().getTime());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

@@ -259,14 +259,14 @@ public class JSONEncoderTest {
 		assertEquals(account1.getName(), accountJSON1.getString(AccountJSONEnum.NICK_NAME));
 		assertEquals(account1.getPassword(), accountJSON1.getString(AccountJSONEnum.PASSWORD));
 		assertEquals(account1.getEmail(), accountJSON1.getString(AccountJSONEnum.EMAIL));
-		assertEquals(1, accountJSON1.getInt(AccountJSONEnum.ENABLE));
+		assertTrue(accountJSON1.getBoolean(AccountJSONEnum.ENABLE));
 
 		JSONObject accountJSON2 = accountJSONArray.getJSONObject(1);
 		assertEquals(account2.getID(), accountJSON2.getString(AccountJSONEnum.USERNAME));
 		assertEquals(account2.getName(), accountJSON2.getString(AccountJSONEnum.NICK_NAME));
 		assertEquals(account2.getPassword(), accountJSON2.getString(AccountJSONEnum.PASSWORD));
 		assertEquals(account2.getEmail(), accountJSON2.getString(AccountJSONEnum.EMAIL));
-		assertEquals(1, accountJSON1.getInt(AccountJSONEnum.ENABLE));
+		assertTrue(accountJSON2.getBoolean(AccountJSONEnum.ENABLE));
 	}
 	
 	@Test
@@ -289,7 +289,7 @@ public class JSONEncoderTest {
 		assertEquals(userRealName, accountJSON.getString(AccountJSONEnum.NICK_NAME));
 		assertEquals(account.getPassword(), accountJSON.getString(AccountJSONEnum.PASSWORD));
 		assertEquals(email, accountJSON.getString(AccountJSONEnum.EMAIL));
-		assertEquals(1, accountJSON.getInt(AccountJSONEnum.ENABLE));
+		assertTrue(accountJSON.getBoolean(AccountJSONEnum.ENABLE));
 	}
 	
 	@Test
@@ -681,7 +681,7 @@ public class JSONEncoderTest {
 		assertEquals(productOwner.getAccessSprintBacklog(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(productOwner.getAccessReleasePlan(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(productOwner.getAccessRetrospective(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(productOwner.getAccessUnplannedItem(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(productOwner.getAccessUnplannedItem(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(productOwner.getReadReport(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(productOwner.getEditProject(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 		
@@ -693,7 +693,7 @@ public class JSONEncoderTest {
 		assertEquals(scrumMaster.getAccessSprintBacklog(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(scrumMaster.getAccessReleasePlan(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(scrumMaster.getAccessRetrospective(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(scrumMaster.getAccessUnplannedItem(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(scrumMaster.getAccessUnplannedItem(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(scrumMaster.getReadReport(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(scrumMaster.getEditProject(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 		
@@ -705,7 +705,7 @@ public class JSONEncoderTest {
 		assertEquals(scrumTeam.getAccessSprintBacklog(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(scrumTeam.getAccessReleasePlan(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(scrumTeam.getAccessRetrospective(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(scrumTeam.getAccessUnplannedItem(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(scrumTeam.getAccessUnplannedItem(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(scrumTeam.getReadReport(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(scrumTeam.getEditProject(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 		
@@ -717,7 +717,7 @@ public class JSONEncoderTest {
 		assertEquals(stakeholder.getAccessSprintBacklog(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(stakeholder.getAccessReleasePlan(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(stakeholder.getAccessRetrospective(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(stakeholder.getAccessUnplannedItem(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(stakeholder.getAccessUnplannedItem(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(stakeholder.getReadReport(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(stakeholder.getEditProject(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 		
@@ -729,7 +729,7 @@ public class JSONEncoderTest {
 		assertEquals(guest.getAccessSprintBacklog(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(guest.getAccessReleasePlan(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(guest.getAccessRetrospective(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(guest.getAccessUnplannedItem(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(guest.getAccessUnplannedItem(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(guest.getReadReport(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(guest.getEditProject(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 	}
@@ -750,7 +750,7 @@ public class JSONEncoderTest {
 		assertEquals(scrumRole.getAccessSprintBacklog(), scrumRoleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(scrumRole.getAccessReleasePlan(), scrumRoleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(scrumRole.getAccessRetrospective(), scrumRoleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
-		assertEquals(scrumRole.getAccessUnplannedItem(), scrumRoleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLANNED));
+		assertEquals(scrumRole.getAccessUnplannedItem(), scrumRoleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(scrumRole.getReadReport(), scrumRoleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(scrumRole.getEditProject(), scrumRoleJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 	}
