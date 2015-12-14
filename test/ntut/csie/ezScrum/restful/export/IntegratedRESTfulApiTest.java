@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
@@ -84,18 +85,18 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	private AddStoryToSprint mASTS;
 	private AddTaskToStory mATTS;
 	private CreateAccount mCA;
-	
+
 	private ScrumRole mProductOwner;
 	private ScrumRole mScrumMaster;
 	private ScrumRole mScrumTeam;
 	private ScrumRole mStakeholder;
 	private ScrumRole mGuest;
-	
+
 	// project tags
 	private final static String PROJECT_TAG1 = "Data Migration";
 	private final static String PROJECT_TAG2 = "Thesis";
 	private final static String PROJECT_TAG3 = "Bug fix";
-	
+
 	// attach files
 	private final String TEXT_FILE_TYPE = "application/octet-stream";
 	private final String FILE_PATH_STORY1 = "./TestData/story1.txt";
@@ -116,8 +117,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	private File mSourceFileOfTask2;
 	private File mSourceFileOfTask3;
 	private File mSourceFileOfTask4;
-	
-	
+
 	private Client mClient;
 	private HttpServer mHttpServer;
 	private ResourceConfig mResourceConfig;
@@ -127,8 +127,8 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 	@Override
 	protected Application configure() {
 		mResourceConfig = new ResourceConfig(ProjectRESTfulApi.class, SprintRESTfulApi.class, StoryRESTfulApi.class,
-                TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class,
-                ReleaseRESTfulApi.class, AccountRESTfulApi.class, RetrospectiveRESTfulApi.class, UnplanRESTfulApi.class, IntegratedRESTfulApi.class);
+		        TaskRESTfulApi.class, DroppedStoryRESTfulApi.class, DroppedTaskRESTfulApi.class,
+		        ReleaseRESTfulApi.class, AccountRESTfulApi.class, RetrospectiveRESTfulApi.class, UnplanRESTfulApi.class, IntegratedRESTfulApi.class);
 		return mResourceConfig;
 	}
 
@@ -141,7 +141,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Create Project
 		mCP = new CreateProject(1);
 		mCP.exeCreate();
-		
+
 		// Create Release
 		mCR = new CreateRelease(2, mCP);
 		mCR.exe();
@@ -157,7 +157,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Add Task to Story
 		mATTS = new AddTaskToStory(2, 13, mASTS, mCP);
 		mATTS.exe();
-		
+
 		// Create Retrospective
 		mCRE = new CreateRetrospective(2, 2, mCP, mCS);
 		mCRE.exe();
@@ -165,32 +165,32 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Create Unplan
 		mCU = new CreateUnplannedItem(2, mCP, mCS);
 		mCU.exe();
-		
+
 		// Create Account
 		mCA = new CreateAccount(5);
 		mCA.exe();
-		
+
 		// set up dropped story and dropped task
 		setUpDroppedStoryAndDroppedTask();
-		
+
 		// set up scrum roles
 		setUpScrumRoles();
-		
+
 		// set up project roles
 		setUpProjectRoles();
-		
+
 		// set up project tags
 		setUpProjectTags();
-		
+
 		// set up stories tag
 		setUpStoriesTag();
-		
+
 		// set up attach files
 		setUpAttachFiles();
-		
+
 		// set up partners
 		setUpPartners();
-				
+
 		// Start Server
 		mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);
 
@@ -207,7 +207,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// 刪除測試檔案
 		CopyProject copyProject = new CopyProject(mCP);
 		copyProject.exeDelete_Project();
-		
+
 		// Clear source file
 		mSourceFileOfStory1.delete();
 		mSourceFileOfStory2.delete();
@@ -232,7 +232,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		mHttpServer = null;
 		mClient = null;
 	}
-	
+
 	private void setUpPartners() {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue task1 = mATTS.getTaskList().get(0);
@@ -243,32 +243,36 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		IAccount account1 = mCA.getAccountList().get(0);
 		IAccount account2 = mCA.getAccountList().get(1);
 		IAccount account3 = mCA.getAccountList().get(2);
-		
+
 		List<IIssue> unplans = mCU.getIssueList();
 		IIssue unplan1 = unplans.get(0);
 		IIssue unplan2 = unplans.get(1);
-		
+
 		ResourceFinder resourceFinder = new ResourceFinder();
 		resourceFinder.findProject(project.getName());
 		ISprintPlanDesc sprint = resourceFinder.findSprint(Long.parseLong(mCS.getSprintIDList().get(0)));
-		
+
 		SprintBacklogLogic sprintBacklogLogic = new SprintBacklogLogic(project, mConfig.getUserSession(), sprint.getID());
 		// assign account1 as handler for task1
 		sprintBacklogLogic.editTask(task1.getIssueID(), task1.getSummary(), task1.getEstimated(), task1.getRemains(), account1.getID(), "", task1.getActualHour(), task1.getNotes(), null);
 		// assign account2 as handler for task2
 		sprintBacklogLogic.editTask(task2.getIssueID(), task2.getSummary(), task2.getEstimated(), task2.getRemains(), account2.getID(), "", task2.getActualHour(), task2.getNotes(), null);
 		// assign account1 as handler for task3, and assign account2 as partner for task3
-		sprintBacklogLogic.editTask(task3.getIssueID(), task3.getSummary(), task3.getEstimated(), task3.getRemains(), account1.getID(), account2.getID(), task3.getActualHour(), task3.getNotes(), null);
+		sprintBacklogLogic.editTask(task3.getIssueID(), task3.getSummary(), task3.getEstimated(), task3.getRemains(), account1.getID(), account2.getID(), task3.getActualHour(), task3.getNotes(),
+		        null);
 		// assign account1 as handler for task4, and assign account2, account3 as partners for task4
-		sprintBacklogLogic.editTask(task4.getIssueID(), task4.getSummary(), task4.getEstimated(), task4.getRemains(), account1.getID(), account2.getID() + ";" + account3.getID(), task4.getActualHour(), task4.getNotes(), null);
-	
+		sprintBacklogLogic.editTask(task4.getIssueID(), task4.getSummary(), task4.getEstimated(), task4.getRemains(), account1.getID(), account2.getID() + ";" + account3.getID(),
+		        task4.getActualHour(), task4.getNotes(), null);
+
 		UnplannedItemHelper unplannedItemHelper = new UnplannedItemHelper(project, mConfig.getUserSession());
 		// assign account1 as handler for unplan1
-		unplannedItemHelper.modifyUnplannedItemIssue(unplan1.getIssueID(), unplan1.getSummary(), account1.getID(), ITSEnum.ASSIGNED, "", unplan1.getEstimated(), unplan1.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
+		unplannedItemHelper.modifyUnplannedItemIssue(unplan1.getIssueID(), unplan1.getSummary(), account1.getID(), ITSEnum.ASSIGNED, "", unplan1.getEstimated(), unplan1.getActualHour(),
+		        unplan1.getNotes(), sprint.getID(), null);
 		// assign account1 as handler, and assign account2, account3 as partners for unplan2
-		unplannedItemHelper.modifyUnplannedItemIssue(unplan2.getIssueID(), unplan2.getSummary(), account1.getID(), ITSEnum.ASSIGNED, account2.getID() + ";" + account3.getID(), unplan2.getEstimated(), unplan2.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
+		unplannedItemHelper.modifyUnplannedItemIssue(unplan2.getIssueID(), unplan2.getSummary(), account1.getID(), ITSEnum.ASSIGNED, account2.getID() + ";" + account3.getID(), unplan2.getEstimated(),
+		        unplan2.getActualHour(), unplan1.getNotes(), sprint.getID(), null);
 	}
-	
+
 	private void setUpAttachFiles() throws IOException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
@@ -289,7 +293,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 			writer.close();
 		}
 		sprintBacklogMapper.addAttachFile(story1.getIssueID(), FILE_PATH_STORY1);
-		
+
 		mSourceFileOfStory2 = new File(FILE_PATH_STORY2);
 		try {
 			writer = new BufferedWriter(new FileWriter(FILE_PATH_STORY2));
@@ -300,7 +304,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 			writer.close();
 		}
 		sprintBacklogMapper.addAttachFile(story2.getIssueID(), FILE_PATH_STORY2);
-		
+
 		mSourceFileOfTask1 = new File(FILE_PATH_TASK1);
 		try {
 			writer = new BufferedWriter(new FileWriter(FILE_PATH_TASK1));
@@ -311,7 +315,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 			writer.close();
 		}
 		sprintBacklogMapper.addAttachFile(task1.getIssueID(), FILE_PATH_TASK1);
-		
+
 		mSourceFileOfTask2 = new File(FILE_PATH_TASK2);
 		try {
 			writer = new BufferedWriter(new FileWriter(FILE_PATH_TASK2));
@@ -322,7 +326,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 			writer.close();
 		}
 		sprintBacklogMapper.addAttachFile(task2.getIssueID(), FILE_PATH_TASK2);
-		
+
 		mSourceFileOfTask3 = new File(FILE_PATH_TASK3);
 		try {
 			writer = new BufferedWriter(new FileWriter(FILE_PATH_TASK3));
@@ -333,7 +337,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 			writer.close();
 		}
 		sprintBacklogMapper.addAttachFile(task3.getIssueID(), FILE_PATH_TASK3);
-		
+
 		mSourceFileOfTask4 = new File(FILE_PATH_TASK4);
 		try {
 			writer = new BufferedWriter(new FileWriter(FILE_PATH_TASK4));
@@ -345,7 +349,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		}
 		sprintBacklogMapper.addAttachFile(task4.getIssueID(), FILE_PATH_TASK4);
 	}
-	
+
 	private void setUpStoriesTag() {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
@@ -358,7 +362,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		IIssueTag tag2 = productBacklogHelper.getTagByName(PROJECT_TAG2);
 		productBacklogHelper.addStoryTag(String.valueOf(story2.getIssueID()), String.valueOf(tag2.getTagId()));
 	}
-	
+
 	private void setUpProjectTags() {
 		String tagName1 = PROJECT_TAG1;
 		String tagName2 = PROJECT_TAG2;
@@ -369,22 +373,22 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		productBacklogHelper.addNewTag(tagName2);
 		productBacklogHelper.addNewTag(tagName3);
 	}
-	
+
 	private void setUpProjectRoles() throws Exception {
 		IProject project = mCP.getProjectList().get(0);
 		IAccount account1 = mCA.getAccountList().get(0);
 		IAccount account2 = mCA.getAccountList().get(1);
 		IAccount account3 = mCA.getAccountList().get(2);
-		
+
 		AccountHelper accountHelper = new AccountHelper();
 		accountHelper.assignRole_add(mConfig.getUserSession(), account1.getID(),
-				project.getName(), ScrumRoleJSONEnum.SCRUM_MASTER);
+		        project.getName(), ScrumRoleJSONEnum.SCRUM_MASTER);
 		accountHelper.assignRole_add(mConfig.getUserSession(), account2.getID(),
-				project.getName(), ScrumRoleJSONEnum.SCRUM_TEAM);
+		        project.getName(), ScrumRoleJSONEnum.SCRUM_TEAM);
 		accountHelper.assignRole_add(mConfig.getUserSession(), account3.getID(),
-				project.getName(), ScrumRoleJSONEnum.SCRUM_TEAM);
+		        project.getName(), ScrumRoleJSONEnum.SCRUM_TEAM);
 	}
-	
+
 	private void setUpDroppedStoryAndDroppedTask() throws InterruptedException {
 		IProject project = mCP.getProjectList().get(0);
 		IIssue story1 = mASTS.getIssueList().get(0);
@@ -393,21 +397,21 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		IIssue task3 = mATTS.getTaskList().get(2);
 		ResourceFinder resourceFinder = new ResourceFinder();
 		resourceFinder.findProject(project.getName());
-		
+
 		// Drop Story1
 		ProductBacklogLogic productBacklogLogic = new ProductBacklogLogic(null, project);
-		
+
 		// It's need some delay for manipulating file IO (add story to sprint)
 		Thread.sleep(1000);
 		// Remove story1 from Sprint
 		productBacklogLogic.removeStoryFromSprint(story1.getIssueID());
-		
+
 		// Drop task1, task3 from story
 		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null);
 		sprintBacklogHelper.removeTask(task1.getIssueID(), story1.getIssueID());
 		sprintBacklogHelper.removeTask(task3.getIssueID(), story2.getIssueID());
 	}
-	
+
 	private void setUpScrumRoles() {
 		IProject project = mCP.getProjectList().get(0);
 		ScrumRoleMapper scrumRoleMapper = new ScrumRoleMapper();
@@ -471,7 +475,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		mGuest.setEditProject(false);
 		scrumRoleMapper.update(mGuest);
 	}
-	
+
 	@Test
 	public void testGetExportedJSON() throws InterruptedException, JSONException {
 		IProject project = mCP.getProjectList().get(0);
@@ -495,23 +499,29 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		resourceFinder.findProject(project.getName());
 		ISprintPlanDesc sprint = resourceFinder.findSprint(Long.parseLong(mCS.getSprintIDList().get(0)));
-		
+
 		IAccount account1 = mCA.getAccountList().get(0);
 		IAccount account2 = mCA.getAccountList().get(1);
 		IAccount account3 = mCA.getAccountList().get(2);
 		IAccount account4 = mCA.getAccountList().get(3);
 		IAccount account5 = mCA.getAccountList().get(4);
-		
+
+		// Post Entity
+		JSONArray entityJSONArray = new JSONArray();
+		JSONObject selectedProjectJSON = new JSONObject();
+		selectedProjectJSON.put(ProjectJSONEnum.NAME, project.getName());
+		entityJSONArray.put(selectedProjectJSON);
+
 		Response response = mClient.target(mBaseUri)
 		        .path("export/projects")
 		        .request()
-		        .get();
-		
+		        .post(Entity.text(entityJSONArray.toString()));
+
 		JSONObject jsonArrayResponse = new JSONObject(response.readEntity(String.class));
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 		JSONArray projectJSONArray = jsonArrayResponse.getJSONArray(ExportJSONEnum.PROJECTS);
 		assertEquals(1, projectJSONArray.length());
-		
+
 		// Assert Account data
 		JSONArray accountJSONArray = jsonArrayResponse.getJSONArray(ExportJSONEnum.ACCOUNTS);
 		assertEquals(5, accountJSONArray.length());
@@ -521,7 +531,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(account1.getID(), accountJSONArray.getJSONObject(3).getString(AccountJSONEnum.USERNAME));
 		assertEquals(account2.getID(), accountJSONArray.getJSONObject(4).getString(AccountJSONEnum.USERNAME));
 		// end
-		
+
 		// Assert project data
 		JSONObject projectJSON = projectJSONArray.getJSONObject(0);
 		assertEquals(project.getName(), projectJSON.getString(ProjectJSONEnum.NAME));
@@ -532,37 +542,37 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray sprintJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.SPRINTS);
 		assertEquals(1, sprintJSONArray.length());
 		// end
-		
+
 		// Assert scrum roles in project
 		JSONObject scrumRolesJSON = projectJSON.getJSONObject(ProjectJSONEnum.SCRUM_ROLES);
 		// Assert Product Owner
 		JSONObject productOwnerJSON = scrumRolesJSON.getJSONObject(ScrumRoleJSONEnum.PRODUCT_OWNER);
 		assertEquals(mProductOwner.getAccessProductBacklog(),
-				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
+		        productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
 		assertEquals(mProductOwner.getAccessSprintPlan(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN));
 		assertEquals(mProductOwner.getAccessTaskBoard(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_TASKBOARD));
 		assertEquals(mProductOwner.getAccessSprintBacklog(),
-				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
+		        productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(mProductOwner.getAccessReleasePlan(),
-				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
+		        productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(mProductOwner.getAccessRetrospective(),
-				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
+		        productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
 		assertEquals(mProductOwner.getAccessUnplannedItem(),
-				productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
+		        productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mProductOwner.getReadReport(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mProductOwner.getEditProject(), productOwnerJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 
 		// Assert Scrum Master
 		JSONObject scrumMasterJSON = scrumRolesJSON.getJSONObject(ScrumRoleJSONEnum.SCRUM_MASTER);
 		assertEquals(mScrumMaster.getAccessProductBacklog(),
-				scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
+		        scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
 		assertEquals(mScrumMaster.getAccessSprintPlan(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN));
 		assertEquals(mScrumMaster.getAccessTaskBoard(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_TASKBOARD));
 		assertEquals(mScrumMaster.getAccessSprintBacklog(),
-				scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
+		        scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(mScrumMaster.getAccessReleasePlan(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(mScrumMaster.getAccessRetrospective(),
-				scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
+		        scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
 		assertEquals(mScrumMaster.getAccessUnplannedItem(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mScrumMaster.getReadReport(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mScrumMaster.getEditProject(), scrumMasterJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
@@ -570,7 +580,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Assert Scrum Team
 		JSONObject scrumTeamJSON = scrumRolesJSON.getJSONObject(ScrumRoleJSONEnum.SCRUM_TEAM);
 		assertEquals(mScrumTeam.getAccessProductBacklog(),
-				scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
+		        scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
 		assertEquals(mScrumTeam.getAccessSprintPlan(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN));
 		assertEquals(mScrumTeam.getAccessTaskBoard(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_TASKBOARD));
 		assertEquals(mScrumTeam.getAccessSprintBacklog(), scrumTeamJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
@@ -583,14 +593,14 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		// Assert Stakeholder
 		JSONObject stakeholderJSON = scrumRolesJSON.getJSONObject(ScrumRoleJSONEnum.STAKEHOLDER);
 		assertEquals(mStakeholder.getAccessProductBacklog(),
-				stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
+		        stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_PRODUCT_BACKLOG));
 		assertEquals(mStakeholder.getAccessSprintPlan(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_PLAN));
 		assertEquals(mStakeholder.getAccessTaskBoard(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_TASKBOARD));
 		assertEquals(mStakeholder.getAccessSprintBacklog(),
-				stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
+		        stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_SPRINT_BACKLOG));
 		assertEquals(mStakeholder.getAccessReleasePlan(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RELEASE_PLAN));
 		assertEquals(mStakeholder.getAccessRetrospective(),
-				stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
+		        stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_RETROSPECTIVE));
 		assertEquals(mStakeholder.getAccessUnplannedItem(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_UNPLAN));
 		assertEquals(mStakeholder.getReadReport(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mStakeholder.getEditProject(), stakeholderJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
@@ -607,7 +617,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(mGuest.getReadReport(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_REPORT));
 		assertEquals(mGuest.getEditProject(), guestJSON.getBoolean(ScrumRoleJSONEnum.ACCESS_EDIT_PROJECT));
 		// end
-		
+
 		// Assert project roles in project
 		JSONArray projectRoleJSONArray = projectJSON.getJSONArray(ProjectJSONEnum.PROJECT_ROLES);
 		ProjectMapper projectMapper = new ProjectMapper();
@@ -615,7 +625,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(3, projectRoleJSONArray.length());
 		assertEquals(JSONEncoder.toProjectRoleJSONArray(project.getName(), projectRoles).toString(), projectRoleJSONArray.toString());
 		// end
-		
+
 		// Assert project's tags in project
 		JSONArray tagJSONArrayInProject = projectJSON.getJSONArray(ProjectJSONEnum.TAGS);
 		assertEquals(3, tagJSONArrayInProject.length());
@@ -623,7 +633,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(PROJECT_TAG2, tagJSONArrayInProject.getJSONObject(1).getString(TagJSONEnum.NAME));
 		assertEquals(PROJECT_TAG3, tagJSONArrayInProject.getJSONObject(2).getString(TagJSONEnum.NAME));
 		// end
-		
+
 		// Assert releases in project
 		IReleasePlanDesc release1 = mCR.getReleaseList().get(0);
 		IReleasePlanDesc release2 = mCR.getReleaseList().get(1);
@@ -633,14 +643,14 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(release1.getDescription(), releaseJson1.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release1.getStartDate(), releaseJson1.getString(ReleaseJSONEnum.START_DATE));
 		assertEquals(release1.getEndDate(), releaseJson1.getString(ReleaseJSONEnum.DUE_DATE));
-		
+
 		JSONObject releaseJson2 = releaseJSONArrayInProject.getJSONObject(1);
 		assertEquals(release2.getName(), releaseJson2.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release2.getDescription(), releaseJson2.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release2.getStartDate(), releaseJson2.getString(ReleaseJSONEnum.START_DATE));
 		assertEquals(release2.getEndDate(), releaseJson2.getString(ReleaseJSONEnum.DUE_DATE));
 		// end
-		
+
 		// Assert sprint data in project
 		JSONObject sprintJSON = sprintJSONArray.getJSONObject(0);
 		assertEquals(Long.parseLong(sprint.getID()), sprintJSON.getLong(SprintJSONEnum.ID));
@@ -657,7 +667,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		JSONArray storyJSONArray = sprintJSON.getJSONArray(SprintJSONEnum.STORIES);
 		assertEquals(1, storyJSONArray.length());
 		// end
-		
+
 		// Assert story2 data in sprint
 		JSONObject story2JSON = storyJSONArray.getJSONObject(0);
 		assertEquals(story2.getIssueID(), story2JSON.getLong(StoryJSONEnum.ID));
@@ -676,22 +686,22 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInStory2.length(), historyJSONArrayInStory2.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInStory2.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInStory2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInStory2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInStory2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInStory2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		// Assert tags in story2
 		JSONArray tagJSONArrayInStory2 = story2JSON.getJSONArray(StoryJSONEnum.TAGS);
 		assertEquals(1, tagJSONArrayInStory2.length());
 		assertEquals(PROJECT_TAG2, tagJSONArrayInStory2.getJSONObject(0).getString(TagJSONEnum.NAME));
 		// end
-		
+
 		// Assert attach files in story2
 		JSONArray attachFileJSONArrayInStory2 = story2JSON.getJSONArray(StoryJSONEnum.ATTACH_FILES);
 		assertEquals(1, attachFileJSONArrayInStory2.length());
@@ -699,7 +709,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(TEXT_FILE_TYPE, attachFileJSONArrayInStory2.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(FileEncoder.toBase64BinaryString(mSourceFileOfStory2), attachFileJSONArrayInStory2.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 		// end
-		
+
 		// Assert task4 data in story2
 		JSONObject task4JSON = taskInStory2JSONArray.getJSONObject(0);
 		assertEquals(task4.getSummary(), task4JSON.getString(TaskJSONEnum.NAME));
@@ -715,23 +725,23 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInTask4.length(), historyJSONArrayInTask4.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask4.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInTask4.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask4.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInTask4.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInTask4.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		// Assert partners in task4
 		JSONArray parterJSONArrayInTask4 = task4JSON.getJSONArray(TaskJSONEnum.PARTNERS);
 		assertEquals(2, parterJSONArrayInTask4.length());
 		assertEquals(account2.getID(), parterJSONArrayInTask4.getJSONObject(0).getString(AccountJSONEnum.USERNAME));
 		assertEquals(account3.getID(), parterJSONArrayInTask4.getJSONObject(1).getString(AccountJSONEnum.USERNAME));
 		// end
-		
+
 		// Assert attach files in task4
 		JSONArray attachFileJSONArrayInTask4 = task4JSON.getJSONArray(StoryJSONEnum.ATTACH_FILES);
 		assertEquals(1, attachFileJSONArrayInTask4.length());
@@ -739,7 +749,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(TEXT_FILE_TYPE, attachFileJSONArrayInTask4.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(FileEncoder.toBase64BinaryString(mSourceFileOfTask4), attachFileJSONArrayInTask4.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 		// end
-		
+
 		// Assert retrospectives in sprint
 		JSONArray retrospectiveJSONArrayInSprint = sprintJSON.getJSONArray(SprintJSONEnum.RETROSPECTIVES);
 		List<IScrumIssue> goods = mCRE.getGoodRetrospectiveList();
@@ -749,23 +759,23 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(goods.get(0).getDescription(), retrospectiveJSONArrayInSprint.getJSONObject(0).getString(RetrospectiveJSONEnum.DESCRIPTION));
 		assertEquals(goods.get(0).getCategory(), retrospectiveJSONArrayInSprint.getJSONObject(0).getString(RetrospectiveJSONEnum.TYPE));
 		assertEquals(goods.get(0).getStatus(), retrospectiveJSONArrayInSprint.getJSONObject(0).getString(RetrospectiveJSONEnum.STATUS));
-		
+
 		assertEquals(goods.get(1).getName(), retrospectiveJSONArrayInSprint.getJSONObject(1).getString(RetrospectiveJSONEnum.NAME));
 		assertEquals(goods.get(1).getDescription(), retrospectiveJSONArrayInSprint.getJSONObject(1).getString(RetrospectiveJSONEnum.DESCRIPTION));
 		assertEquals(goods.get(1).getCategory(), retrospectiveJSONArrayInSprint.getJSONObject(1).getString(RetrospectiveJSONEnum.TYPE));
 		assertEquals(goods.get(1).getStatus(), retrospectiveJSONArrayInSprint.getJSONObject(1).getString(RetrospectiveJSONEnum.STATUS));
-		
+
 		assertEquals(improvements.get(0).getName(), retrospectiveJSONArrayInSprint.getJSONObject(2).getString(RetrospectiveJSONEnum.NAME));
 		assertEquals(improvements.get(0).getDescription(), retrospectiveJSONArrayInSprint.getJSONObject(2).getString(RetrospectiveJSONEnum.DESCRIPTION));
 		assertEquals(improvements.get(0).getCategory(), retrospectiveJSONArrayInSprint.getJSONObject(2).getString(RetrospectiveJSONEnum.TYPE));
 		assertEquals(improvements.get(0).getStatus(), retrospectiveJSONArrayInSprint.getJSONObject(2).getString(RetrospectiveJSONEnum.STATUS));
-		
+
 		assertEquals(improvements.get(1).getName(), retrospectiveJSONArrayInSprint.getJSONObject(3).getString(RetrospectiveJSONEnum.NAME));
 		assertEquals(improvements.get(1).getDescription(), retrospectiveJSONArrayInSprint.getJSONObject(3).getString(RetrospectiveJSONEnum.DESCRIPTION));
 		assertEquals(improvements.get(1).getCategory(), retrospectiveJSONArrayInSprint.getJSONObject(3).getString(RetrospectiveJSONEnum.TYPE));
 		assertEquals(improvements.get(1).getStatus(), retrospectiveJSONArrayInSprint.getJSONObject(3).getString(RetrospectiveJSONEnum.STATUS));
 		// end
-		
+
 		// Assert unplans in sprint
 		JSONArray unplanJSONArrayInSprint = sprintJSON.getJSONArray(SprintJSONEnum.UNPLANS);
 		assertEquals(2, unplanJSONArrayInSprint.length());
@@ -775,7 +785,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(unplan1.getActualHour(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanJSONEnum.ACTUAL));
 		assertEquals(unplan1.getNotes(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanJSONEnum.NOTES));
 		assertEquals(unplan1.getStatus(), unplanJSONArrayInSprint.getJSONObject(0).getString(UnplanJSONEnum.STATUS));
-		
+
 		assertEquals(unplan2.getSummary(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanJSONEnum.NAME));
 		assertEquals(unplan2.getAssignto(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanJSONEnum.HANDLER));
 		assertEquals(unplan2.getEstimated(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanJSONEnum.ESTIMATE));
@@ -783,7 +793,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(unplan2.getNotes(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanJSONEnum.NOTES));
 		assertEquals(unplan2.getStatus(), unplanJSONArrayInSprint.getJSONObject(1).getString(UnplanJSONEnum.STATUS));
 		// end
-		
+
 		// Assert partners in unplan1
 		JSONObject unplan1JSON = unplanJSONArrayInSprint.getJSONObject(0);
 		JSONArray partnersInUnplan1 = unplan1JSON.getJSONArray(UnplanJSONEnum.PARTNERS);
@@ -794,16 +804,16 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInUnplan1.length(), historyJSONArrayInUnplan1.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInUnplan1.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInUnplan1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInUnplan1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInUnplan1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInUnplan1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		// Assert partners in unplan2
 		JSONObject unplan2JSON = unplanJSONArrayInSprint.getJSONObject(1);
 		JSONArray partnersInUnplan2 = unplan2JSON.getJSONArray(UnplanJSONEnum.PARTNERS);
@@ -816,19 +826,19 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInUnplan2.length(), historyJSONArrayInUnplan2.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInUnplan1.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInUnplan2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInUnplan2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInUnplan2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInUnplan2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		JSONArray droppedStoryJSONArray = projectJSON.getJSONArray(ExportJSONEnum.DROPPED_STORIES);
 		assertEquals(1, droppedStoryJSONArray.length());
-		
+
 		// Assert dropped story1 data in project
 		JSONObject droppedStory1JSON = droppedStoryJSONArray.getJSONObject(0);
 		assertEquals(story1.getIssueID(), droppedStory1JSON.getLong(StoryJSONEnum.ID));
@@ -847,16 +857,16 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInStory1.length(), historyJSONArrayInStory1.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInStory1.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInStory1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInStory1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInStory1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInStory1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		// Assert attach files in dropped story1
 		JSONArray attachFileJSONArrayInStory1 = droppedStory1JSON.getJSONArray(StoryJSONEnum.ATTACH_FILES);
 		assertEquals(1, attachFileJSONArrayInStory1.length());
@@ -864,13 +874,13 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(TEXT_FILE_TYPE, attachFileJSONArrayInStory1.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(FileEncoder.toBase64BinaryString(mSourceFileOfStory1), attachFileJSONArrayInStory1.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 		// end
-		
+
 		// Assert tags in dropped story1
 		JSONArray tagJSONArrayInStory1 = droppedStory1JSON.getJSONArray(StoryJSONEnum.TAGS);
 		assertEquals(1, tagJSONArrayInStory1.length());
 		assertEquals(PROJECT_TAG1, tagJSONArrayInStory1.getJSONObject(0).getString(TagJSONEnum.NAME));
 		// end
-		
+
 		// Assert task2 data in dropped story1
 		JSONObject task2JSON = taskInDroppedStory1JSONArray.getJSONObject(0);
 		assertEquals(task2.getSummary(), task2JSON.getString(TaskJSONEnum.NAME));
@@ -886,21 +896,21 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInTask2.length(), historyJSONArrayInTask2.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask2.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInTask2.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInTask2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInTask2.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		// Assert partners in task2
 		JSONArray partnerJSONArrayInTask2 = task2JSON.getJSONArray(TaskJSONEnum.PARTNERS);
 		assertEquals(0, partnerJSONArrayInTask2.length());
 		// end
-		
+
 		// Assert attach files in task2
 		JSONArray attachFileJSONArrayInTask2 = task2JSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
 		assertEquals(1, attachFileJSONArrayInTask2.length());
@@ -908,10 +918,10 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(TEXT_FILE_TYPE, attachFileJSONArrayInTask2.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(FileEncoder.toBase64BinaryString(mSourceFileOfTask2), attachFileJSONArrayInTask2.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 		// end
-		
+
 		JSONArray droppedTaskJSONArray = projectJSON.getJSONArray(ExportJSONEnum.DROPPED_TASKS);
 		assertEquals(2, droppedTaskJSONArray.length());
-		
+
 		// Assert dropped task1 data
 		JSONObject droppedTask1JSON = droppedTaskJSONArray.getJSONObject(0);
 		assertEquals(task1.getSummary(), droppedTask1JSON.getString(TaskJSONEnum.NAME));
@@ -927,21 +937,21 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInTask1.length(), historyJSONArrayInTask1.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask1.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInTask1.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInTask1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInTask1.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		// Assert partners in dropped task1
 		JSONArray partnerJSONArrayInTask1 = droppedTask1JSON.getJSONArray(TaskJSONEnum.PARTNERS);
 		assertEquals(0, partnerJSONArrayInTask1.length());
 		// end
-		
+
 		// Assert attach files in dropped task1
 		JSONArray attachFileJSONArrayInTask1 = droppedTask1JSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
 		assertEquals(1, attachFileJSONArrayInTask1.length());
@@ -949,7 +959,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(TEXT_FILE_TYPE, attachFileJSONArrayInTask1.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(FileEncoder.toBase64BinaryString(mSourceFileOfTask1), attachFileJSONArrayInTask1.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 		// end
-		
+
 		// Assert dropped task3 data
 		JSONObject droppedTask3JSON = droppedTaskJSONArray.getJSONObject(1);
 		assertEquals(task3.getSummary(), droppedTask3JSON.getString(TaskJSONEnum.NAME));
@@ -965,22 +975,22 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(expectedHistoryJSONArrayInTask3.length(), historyJSONArrayInTask3.length());
 		for (int i = 0; i < expectedHistoryJSONArrayInTask3.length(); i++) {
 			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE),
-					historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
+			        historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.HISTORY_TYPE));
 			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE),
-					historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
+			        historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.OLD_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE),
-					historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
+			        historyJSONArrayInTask3.getJSONObject(i).getString(HistoryJSONEnum.NEW_VALUE));
 			assertEquals(expectedHistoryJSONArrayInTask3.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME),
-					historyJSONArrayInTask3.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
+			        historyJSONArrayInTask3.getJSONObject(i).getLong(HistoryJSONEnum.CREATE_TIME));
 		}
 		// end
-		
+
 		// Assert partners in task3
 		JSONArray partnerJSONArrayInTask3 = droppedTask3JSON.getJSONArray(TaskJSONEnum.PARTNERS);
 		assertEquals(1, partnerJSONArrayInTask3.length());
 		assertEquals(account2.getID(), partnerJSONArrayInTask3.getJSONObject(0).getString(AccountJSONEnum.USERNAME));
 		// end
-		
+
 		// Assert attach files in task3
 		JSONArray attachFileJSONArrayInTask3 = droppedTask3JSON.getJSONArray(TaskJSONEnum.ATTACH_FILES);
 		assertEquals(1, attachFileJSONArrayInTask3.length());
@@ -988,5 +998,44 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(TEXT_FILE_TYPE, attachFileJSONArrayInTask3.getJSONObject(0).getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(FileEncoder.toBase64BinaryString(mSourceFileOfTask3), attachFileJSONArrayInTask3.getJSONObject(0).getString(AttachFileJSONEnum.BINARY));
 		// end
+	}
+
+	@Test
+	public void testGetExportedJSON_WithNoSelectedProject() {
+		// Post Entity
+		JSONArray entityJSONArray = new JSONArray();
+		JSONObject selectedProjectJSON = new JSONObject();
+		entityJSONArray.put(selectedProjectJSON);
+
+		Response response = mClient.target(mBaseUri)
+		        .path("export/projects")
+		        .request()
+		        .post(Entity.text(entityJSONArray.toString()));
+		// Assert
+		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+	}
+
+	@Test
+	public void testGetExportedJSON_With2SelectedProject() throws JSONException {
+		// Post Entity
+		JSONArray entityJSONArray = new JSONArray();
+		JSONObject selectedProjectJSON = new JSONObject();
+		selectedProjectJSON.put(ProjectJSONEnum.NAME, "project01");
+		JSONObject selectedProjectJSON2 = new JSONObject();
+		selectedProjectJSON2.put(ProjectJSONEnum.NAME, mCP.getProjectList().get(0).getName());
+		entityJSONArray.put(selectedProjectJSON2);
+
+		Response response = mClient.target(mBaseUri)
+		        .path("export/projects")
+		        .request()
+		        .post(Entity.text(entityJSONArray.toString()));
+
+		String responseString = response.readEntity(String.class);
+		JSONObject responseJSON = new JSONObject(responseString);
+
+		// Assert
+		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+		assertEquals(mCP.getProjectList().get(0).getName(), 
+				     responseJSON.getJSONArray(ExportJSONEnum.PROJECTS).getJSONObject(0).getString(ProjectJSONEnum.NAME));
 	}
 }
