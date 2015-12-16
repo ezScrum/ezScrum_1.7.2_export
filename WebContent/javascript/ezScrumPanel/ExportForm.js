@@ -107,9 +107,31 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info..."});
 		loadmask.show();
 	},
+	downloadFileFromResponse: function(response){
+		var disposition = response.getResponseHeader('Content-Disposition');
+		var filename = disposition.slice(disposition.indexOf("=") + 1, disposition.length);
+		var type = response.getResponseHeader('Content-Type');
+		var blob = new Blob([ response.responseText ], {type : type});
+		if (typeof window.navigator.msSaveBlob !== 'undefined') {
+			window.navigator.msSaveBlob(blob, filename);
+		} else {
+			var URL = window.URL || window.webkitURL;
+			var downloadUrl = URL.createObjectURL(blob);
+			if (filename) {
+				console.log(filename);
+				// use HTML5 a[download] attribute to specify filename
+				var a = document.createElement("a");
+				// safari doesn't support this yet
+				a.href = downloadUrl;
+				a.download = filename;
+				document.body.appendChild(a);
+				a.click();
+			}
+		}
+	},
     doExport: function() {
     	var obj = this;
-		// Get Entiry
+		// Get Entity
 		var jsonArray = [];
 		for (var i = 0; i < projectArray.length; i++) {
 			if (projectArray[i].checked) {
@@ -119,31 +141,6 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 				jsonArray.push(jsonObject);
 			}
 		}
-		
-		//var form = this.getForm();
-//    	var form = Ext.DomHelper.append(document.body, {
-//	        tag : 'form',
-//	        method : 'post',
-//	        action : '/ezScrum/resource/export/projects',
-//	        params : jsonArray,
-//	        standardSubmit : true
-//	    });
-//    	form.submit({
-//            url: '/ezScrum/resource/export/projects' , 
-//            method: 'POST',
-//            params : jsonArray,
-//            waitMsg:'Saving...',
-//            reset: false,
-//            failure: function(form, action) {
-//            	console.log('fail');
-//            },
-//            success: function(form, action) {
-//            	console.log('success');
-//            }
-//        });    
-//    	form.submit();
-//	    Ext.example.msg('Success', 'Export Projects Success');
-	    
     	Ext.Ajax.request({
     		  url : '/ezScrum/resource/export/projects',
     		  method: 'POST',
@@ -151,14 +148,13 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
     		  params : {},
     		  jsonData: jsonArray,
     		  success: function (response) {
-    		      var jsonResp = Ext.util.JSON.decode(response.responseText);
-    		      console.log(jsonResp);
+    		     obj.downloadFileFromResponse(response);
     		  },
     		  failure: function (response) {
     		      var jsonResp = Ext.util.JSON.decode(response.responseText);
     		      Ext.Msg.alert("Error",jsonResp.error);
     		  }
-    		});
+    	});
 	}, 
 	
 });

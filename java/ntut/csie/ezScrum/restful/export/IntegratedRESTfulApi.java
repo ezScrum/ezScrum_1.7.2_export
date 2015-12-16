@@ -497,7 +497,7 @@ public class IntegratedRESTfulApi {
 		} catch (JSONException e) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		return Response.status(Status.OK).entity(exportJSON.toString()).header("Content-Disposition", "attachment; filename=\"" + getFileName() + "\"").build();
+		return Response.status(Status.OK).entity(exportJSON.toString()).header("Content-Disposition", "attachment; filename=" + getFileName()).build();
 	}
 
 	private String getFileName() {
