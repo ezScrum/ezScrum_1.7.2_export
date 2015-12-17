@@ -1,15 +1,34 @@
-var myCheckboxGroup = new Ext.form.CheckboxGroup({
-    id:'myGroup',
-    xtype: 'checkboxgroup',
-    fieldLabel: 'Existing Project List',
-    itemCls: 'x-check-group-alt',
-    // Put all controls in a single column with width 100%
-    columns: 1,
-    items: [
-            {boxLabel: 'Project1', name: 'cb-col-1'},
-            {boxLabel: 'Project2', name: 'cb-col-1', checked: true}
-        ]
-});
+var projectArray = [];
+
+var checkGroup = {
+		id : 'projectCheckBoxGroup',
+        xtype: 'fieldset',
+        title: 'Existing Project List',
+        items: [{
+            xtype: 'checkboxgroup',
+            itemCls: 'x-check-group-alt',
+            columns: 1,
+            items: projectArray, 
+            listeners: {
+            	 change: function() {
+            		 var allUnchecked = true;
+            		 for (var i = 0; i < projectArray.length; i++)    
+                     {    
+                         if(projectArray[i].checked){
+                        	 allUnchecked = false;
+                         }
+                     }
+            		 if(allUnchecked){
+            			 var exportButton = Ext.getCmp('exportButton');
+            			 exportButton.setDisabled(true);
+            		 } else {
+            			 var exportButton = Ext.getCmp('exportButton');
+            			 exportButton.setDisabled(false);
+            		 }
+               }
+            }
+        }]
+    };
 
 var Project = Ext.data.Record.create(['ID', 'Name', 'Comment', 'ProjectManager', 'CreateDate', 'DemoDate']);
 
@@ -43,18 +62,36 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 	buttonAlign		: 'left',
 	monitorValid	: true,
 	initComponent	: function() {
-		var config = {	
-			export_url : "/ezScrum/resource/export/projects",
-//			items		: myCheckboxGroup,
-	        buttons : [{
-	        	formBind : true,
-	        	scope    : this,
-	        	text     : 'Export',
-	        	disabled : true,
-	        	handler  : this.doExport
-	        }]
+		var config = {
+			items	   : [checkGroup, {
+				id : 'exportButton',
+				xtype: 'button',
+				formBind : true,
+				scope : this,
+				text : 'Export',
+				disabled : true,
+				width : 100,
+				handler : this.doExport
+			}]
 		}
-		
+		// Load Projects
+		Ext.Ajax.request({
+			url:'viewProjectList.do',
+			success : function(response) {
+				ProjectStore.loadData(response.responseXML);
+				ProjectStore.each(function(record){
+					var checkbox = new Ext.form.Checkbox({
+						boxLabel : '`Name`: ' + record.get("ID") + ', ' + '`Comment`: ' + record.get("Comment"),
+						id : record.get("ID"),
+						name : record.get("Name")
+					});
+			        projectArray.push(checkbox);
+			    });
+			},
+			failure : function(){
+				 Ext.example.msg('Fail', 'Server error.');
+			}
+		});
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ExportFormLayout.superclass.initComponent.apply(this, arguments);
 	},
@@ -70,17 +107,69 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		var loadmask = new Ext.LoadMask(this.getEl(), {msg:"loading info..."});
 		loadmask.show();
 	},
+	downloadFileFromResponse: function(response){
+		var disposition = response.getResponseHeader('Content-Disposition');
+		var filename = disposition.slice(disposition.indexOf("=") + 1, disposition.length);
+		var type = response.getResponseHeader('Content-Type');
+		var blob = new Blob([ response.responseText ], {type : type});
+		if (typeof window.navigator.msSaveBlob !== 'undefined') {
+			window.navigator.msSaveBlob(blob, filename);
+		} else {
+			var URL = window.URL || window.webkitURL;
+			var downloadUrl = URL.createObjectURL(blob);
+			if (filename) {
+				console.log(filename);
+				// use HTML5 a[download] attribute to specify filename
+				var a = document.createElement("a");
+				// safari doesn't support this yet
+				a.href = downloadUrl;
+				a.download = filename;
+				document.body.appendChild(a);
+				a.click();
+			}
+		}
+	},
     doExport: function() {
-		var obj = this;
-    	var form = this.getForm();
-    	var form = Ext.DomHelper.append(document.body, {
-	        tag : 'form',
-	        method : 'get',
-	        action : obj.export_url
-	    });
-	    form.submit();
-	    Ext.example.msg('Success', 'Export Projects Success');
-	}
+    	// Progress Bar Dialog
+		Ext.MessageBox.show({
+			title : 'Please wait',
+			msg : 'Exporting projects...',
+			progressText : 'Initializing...',
+			width : 300,
+			progress : true,
+			closable : false,
+			wait:true,
+			waitConfig: {interval:200}
+		});
+    	var obj = this;
+		// Get Entity
+		var jsonArray = [];
+		for (var i = 0; i < projectArray.length; i++) {
+			if (projectArray[i].checked) {
+				var jsonObject = {
+					name : projectArray[i].id
+				};
+				jsonArray.push(jsonObject);
+			}
+		}
+    	Ext.Ajax.request({
+    		  url : '/ezScrum/resource/export/projects',
+    		  method: 'POST',
+    		  headers: { 'Content-Type': 'application/json'},
+    		  params : {},
+    		  jsonData: jsonArray,
+    		  success: function (response) {
+    		     obj.downloadFileFromResponse(response);
+    		     Ext.MessageBox.hide();
+    		     Ext.example.msg('Done', 'Your data is downloaded!');
+    		  },
+    		  failure: function (response) {
+    			  Ext.MessageBox.hide();
+    		      Ext.Msg.alert("Error", response);
+    		  }
+    	});
+	}, 
+	
 });
 
 Ext.reg('ExportForm', ExportFormLayout);
