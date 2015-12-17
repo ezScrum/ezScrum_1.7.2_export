@@ -74,13 +74,14 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 				handler : this.doExport
 			}]
 		}
+		// Load Projects
 		Ext.Ajax.request({
 			url:'viewProjectList.do',
 			success : function(response) {
 				ProjectStore.loadData(response.responseXML);
 				ProjectStore.each(function(record){
 					var checkbox = new Ext.form.Checkbox({
-						boxLabel : 'Name: ' + record.get("ID") + ', ' + 'Comment: ' + record.get("Comment"),
+						boxLabel : '`Name`: ' + record.get("ID") + ', ' + '`Comment`: ' + record.get("Comment"),
 						id : record.get("ID"),
 						name : record.get("Name")
 					});
@@ -91,7 +92,6 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 				 Ext.example.msg('Fail', 'Server error.');
 			}
 		});
-		
 		Ext.apply(this, Ext.apply(this.initialConfig, config));
 		ExportFormLayout.superclass.initComponent.apply(this, arguments);
 	},
@@ -130,6 +130,17 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		}
 	},
     doExport: function() {
+    	// Progress Bar Dialog
+		Ext.MessageBox.show({
+			title : 'Please wait',
+			msg : 'Exporting projects...',
+			progressText : 'Initializing...',
+			width : 300,
+			progress : true,
+			closable : false,
+			wait:true,
+			waitConfig: {interval:200}
+		});
     	var obj = this;
 		// Get Entity
 		var jsonArray = [];
@@ -149,10 +160,12 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
     		  jsonData: jsonArray,
     		  success: function (response) {
     		     obj.downloadFileFromResponse(response);
+    		     Ext.MessageBox.hide();
+    		     Ext.example.msg('Done', 'Your data is downloaded!');
     		  },
     		  failure: function (response) {
-    		      var jsonResp = Ext.util.JSON.decode(response.responseText);
-    		      Ext.Msg.alert("Error",jsonResp.error);
+    			  Ext.MessageBox.hide();
+    		      Ext.Msg.alert("Error", response);
     		  }
     	});
 	}, 
