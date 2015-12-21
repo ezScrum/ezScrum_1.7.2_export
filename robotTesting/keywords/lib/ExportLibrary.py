@@ -1,24 +1,27 @@
 # coding=UTF-8
 import MySQLdb
+import warnings
 import shutil
 import os
 
-testData = "C:/Users/ibmboy/Desktop/Export_Acceptance_Test_Data/WebContent_With_Test_Data"
-pureWorkspace = "C:/Users/ibmboy/Desktop/Export_Acceptance_Test_Data/Pure_WebContent"
-dst = "C:/Users/ibmboy/Desktop/WebContent"
-workspace = "Workspace"
-roleBase = "RoleBase.xml"
+ezscrum_web_content = "/WebContent"
+workspace = "/Workspace"
+role_base = "/RoleBase.xml"
+pure_web_content = "/robotTesting/TestData/Pure_WebContent"
+test_data_web_content = "/robotTesting/TestData/WebContent_With_Test_Data"
+test_data_sql_file_name = "/robotTesting/TestData/golden_answer_dump.sql"
+
 
 class ExportLibrary:
     def __init__(self):
         pass
 
     """ 將Test Data覆蓋到目標 """
-    def export_setup(self):
+    def export_setup(self, ezscrum_directory):
         # Delete 目標資料
         try:
-            shutil.rmtree(dst + "/" + workspace)
-            os.remove(dst + "/" + roleBase)
+            shutil.rmtree(ezscrum_directory + ezscrum_web_content + workspace)
+            os.remove(ezscrum_directory + ezscrum_web_content + role_base)
         except WindowsError:
             print("刪除失敗")
         except OSError:
@@ -26,47 +29,46 @@ class ExportLibrary:
 
         # 複製檔案到目標
         try:
-            shutil.copytree(testData + "/" + workspace, dst + "/" + workspace)
-            shutil.copy(testData + "/" + roleBase, dst + "/" + roleBase)
-        except OSError as exc: # python >2.5
-            if exc.errno == errno.ENOTDIR:
-                shutil.copy(src, dst)
-            else: raise
+            shutil.copytree(ezscrum_directory + test_data_web_content + workspace, ezscrum_directory + ezscrum_web_content + workspace)
+            shutil.copy(ezscrum_directory + test_data_web_content + role_base, ezscrum_directory + ezscrum_web_content + role_base)
+        except OSError, e: # python >2.5
+            print '找不到此檔案或檔案路徑: %s' % e
 
     """ 將Test Data清除 """
-    def export_teardown(self):
+    def export_teardown(self, ezscrum_directory):
         # Delete 目標資料
         try:
-            shutil.rmtree(dst + "/" + workspace)
-            os.remove(dst + "/" + roleBase)
+            shutil.rmtree(ezscrum_directory + ezscrum_web_content + workspace)
+            os.remove(ezscrum_directory + ezscrum_web_content + role_base)
         except WindowsError:
             print("刪除失敗")
         except OSError:
             print("刪除失敗")
         # 複製檔案到目標
         try:
-            shutil.copytree(pureWorkspace + "/" + workspace, dst + "/" + workspace)
-            shutil.copy(pureWorkspace + "/" + roleBase, dst + "/" + roleBase)
-        except OSError as exc: # python >2.5
-            if exc.errno == errno.ENOTDIR:
-                shutil.copy(src, dst)
-            else: raise
+            shutil.copytree(ezscrum_directory + pure_web_content + workspace, ezscrum_directory + ezscrum_web_content + workspace)
+            shutil.copy(ezscrum_directory + pure_web_content + role_base, ezscrum_directory + ezscrum_web_content + role_base)
+        except OSError, e: # python >2.5
+            print '找不到此檔案或檔案路徑: %s' % e
 
-    def executeScriptsFromFile(self, hostUrl, account, password, databaseName):
+    def execute_scripts_from_file(self, host_url, account, password, databaseName, ezscrum_directory):
         # Open and read the file as a single buffer
-        fd = open(filename, 'r')
+        fd = open(ezscrum_directory + test_data_sql_file_name, 'r')
         sqlFile = fd.read()
         fd.close()
 
         # all SQL commands (split on ';')
         sqlCommands = sqlFile.split(';')
-        db = MySQLdb.connect(host=hostUrl, user=account, passwd=password, db=databaseName)
+        db = MySQLdb.connect(host=host_url, user=account, passwd=password, db=databaseName)
         cursor = db.cursor()
+
+        warnings.filterwarnings('ignore', 'Unknown table .*')
 
         # Execute every command from the input file
         for command in sqlCommands:
             try:
                 cursor.execute(command)
-            except OperationalError, msg:
-                print "Command skipped: ", msg
-        db.commit()
+            except MySQLdb.OperationalError:
+                print "Command error"
+            except MySQLdb.Warning:
+                print "Command warning"

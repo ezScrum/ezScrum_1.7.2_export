@@ -1,0 +1,15 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          ../../Global Define.txt
+Library           ../lib/ExportLibrary.py
+Resource          ../../ServerConfig.txt
+
+*** Keywords ***
+Test Export Setup
+    Log    show ezScrum directory below
+    Log    ${EZSCRUM_DIRECTORY}
+    Export Setup    ${EZSCRUM_DIRECTORY}
+    Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${EZSCRUM_DIRECTORY}
+
+Test Export Teardown
+    Log    henrry is good

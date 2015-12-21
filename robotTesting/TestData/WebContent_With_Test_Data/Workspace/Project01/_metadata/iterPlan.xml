@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Plan>
+  <Sprint id="1">
+    <Start>2015/12/17</Start>
+    <Interval>2</Interval>
+    <MemNumber>5</MemNumber>
+    <FocusFactor>70</FocusFactor>
+    <Goal>Sprint01</Goal>
+    <AvailableDays>100</AvailableDays>
+    <DemoDate>2015/12/30</DemoDate>
+    <DemoPlace />
+    <Notes />
+  </Sprint>
+</Plan>
+
