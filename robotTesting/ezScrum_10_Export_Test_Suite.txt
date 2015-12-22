@@ -7,6 +7,7 @@ Resource          keywords/ezScrum_Login.txt
 Resource          keywords/Export/ezScrum_Export.txt
 Resource          Global Define.txt
 Library           keywords/lib/JSONFileComparator.py
+Library           keywords/lib/ezScrumFileManager.py
 
 *** Test Cases ***
 Test Export - Export and Compare With Golden Answer
@@ -25,6 +26,8 @@ Test Export - Export and Compare With Golden Answer
     # 等待成功訊息視窗顯示
     Wait Until Page Contains    Your data is downloaded!
     # 驗證檔案格式及內容
-    ${are_files_the_same} =    Compare JSON File    C:/Users/ibmboy/Desktop/2015-12-22-1551_ezScrum_export.json    C:/workspace/ezScrum_1.7.2_export/robotTesting/TestData/golden_answer.json
+    ${exported_file_path} =    Get Latest Ezscrum JSON File Path In Directory    ${USER_DOWNLOAD_DIRECTORY}
+    ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project01.json
+    ${are_files_the_same} =    Compare JSON File    ${exported_file_path}    ${golden_answer_path}
     Should Be True    ${are_files_the_same}    The JSON files are not the same
     [Teardown]    Test Export Teardown

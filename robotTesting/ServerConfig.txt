@@ -4,4 +4,3 @@ ${DB_NAME}        DB_NAME
 ${DB_ACCOUNT}     DB_ACCOUNT
 ${DB_PASSWORD}    DB_PASSWORD
 ${BROWSER}        googlechrome
-${FOLDER}         EZSCRUM    # C:/workspace/ezScrum_1.7.2_export

@@ -4,15 +4,17 @@ Resource          ../../Global Define.txt
 Library           ../lib/ExportLibrary.py
 Resource          ../../ServerConfig.txt
 Resource          ../common_resource.txt
+Library           ../lib/ezScrumFileManager.py
 
 *** Keywords ***
 Test Export Setup
-    Log    ${PROJECT_FOLDER}
-    Export Setup    ${PROJECT_FOLDER}
-    Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${PROJECT_FOLDER}
+    Export Setup    ${EZSCRUM_DIRECTORY}
+    Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${EZSCRUM_DIRECTORY}
+    Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
 
 Test Export Teardown
-    Export Teardown    ${PROJECT_FOLDER}
-    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Comment    Export Teardown    ${EZSCRUM_DIRECTORY}
+    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Comment    Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
     Select Window
     Close Browser
