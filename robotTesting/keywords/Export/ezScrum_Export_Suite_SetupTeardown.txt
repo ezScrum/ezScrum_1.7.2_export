@@ -8,15 +8,16 @@ Library           ../lib/ezScrumFileManager.py
 Library           Process
 
 *** Keywords ***
-Test Export Setup
-    Run Process    net    start    ezScrum
+Test Suite Export Setup
     Export Setup    ${EZSCRUM_DIRECTORY}
     Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${EZSCRUM_DIRECTORY}
     Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
+    Run Process    net    start    ezScrum
 
-Test Export Teardown
-    Comment    Export Teardown    ${EZSCRUM_DIRECTORY}
-    Comment    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
-    Comment    Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
+Test Suite Export Teardown
+    Run Process    net    stop    ezScrum
+    Export Teardown    ${EZSCRUM_DIRECTORY}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
     Select Window
     Close Browser
