@@ -1,30 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RoleBase>
   <Roles>
+    <Role id="Project02_Guest" name="Project02_Guest">
+      <Permissions>
+        <Permission name="Project02_Guest" />
+      </Permissions>
+    </Role>
+    <Role id="Project02_ScrumTeam" name="Project02_ScrumTeam">
+      <Permissions>
+        <Permission name="Project02_ScrumTeam" />
+      </Permissions>
+    </Role>
+    <Role id="Project02_ScrumMaster" name="Project02_ScrumMaster">
+      <Permissions>
+        <Permission name="Project02_ScrumMaster" />
+      </Permissions>
+    </Role>
+    <Role id="Project01_ScrumMaster" name="Project01_ScrumMaster">
+      <Permissions>
+        <Permission name="Project01_ScrumMaster" />
+      </Permissions>
+    </Role>
+    <Role id="Project02_ProductOwner" name="Project02_ProductOwner">
+      <Permissions>
+        <Permission name="Project02_ProductOwner" />
+      </Permissions>
+    </Role>
     <Role id="admin" name="administrator">
       <Permissions>
         <Permission name="system_admin" />
         <Permission name="system_createProject" />
       </Permissions>
     </Role>
-    <Role id="testProject_ScrumTeam" name="testProject_ScrumTeam">
+    <Role id="Project01_Guest" name="Project01_Guest">
       <Permissions>
-        <Permission name="testProject_ScrumTeam" />
+        <Permission name="Project01_Guest" />
       </Permissions>
     </Role>
-    <Role id="testProject_Stakeholder" name="testProject_Stakeholder">
+    <Role id="Project01_ProductOwner" name="Project01_ProductOwner">
       <Permissions>
-        <Permission name="testProject_Stakeholder" />
+        <Permission name="Project01_ProductOwner" />
       </Permissions>
     </Role>
-    <Role id="testProject_ScrumMaster" name="testProject_ScrumMaster">
+    <Role id="Project02_Stakeholder" name="Project02_Stakeholder">
       <Permissions>
-        <Permission name="testProject_ScrumMaster" />
-      </Permissions>
-    </Role>
-    <Role id="testProject_Guest" name="testProject_Guest">
-      <Permissions>
-        <Permission name="testProject_Guest" />
+        <Permission name="Project02_Stakeholder" />
       </Permissions>
     </Role>
     <Role id="user" name="Default User">
@@ -32,9 +52,14 @@
         <Permission name="system_read" />
       </Permissions>
     </Role>
-    <Role id="testProject_ProductOwner" name="testProject_ProductOwner">
+    <Role id="Project01_Stakeholder" name="Project01_Stakeholder">
       <Permissions>
-        <Permission name="testProject_ProductOwner" />
+        <Permission name="Project01_Stakeholder" />
+      </Permissions>
+    </Role>
+    <Role id="Project01_ScrumTeam" name="Project01_ScrumTeam">
+      <Permissions>
+        <Permission name="Project01_ScrumTeam" />
       </Permissions>
     </Role>
     <Role id="CreateProject" name="CreateProject">
@@ -44,26 +69,47 @@
     </Role>
   </Roles>
   <Permissions>
+    <Permission name="Project02_Guest" operation="Guest" resourceName="Project02" />
+    <Permission name="Project02_ScrumTeam" operation="ScrumTeam" resourceName="Project02" />
     <Permission name="system_admin" operation="admin" resourceName="system" />
-    <Permission name="testProject_ScrumTeam" operation="ScrumTeam" resourceName="testProject" />
-    <Permission name="testProject_Stakeholder" operation="Stakeholder" resourceName="testProject" />
+    <Permission name="Project02_ScrumMaster" operation="ScrumMaster" resourceName="Project02" />
+    <Permission name="Project01_ScrumMaster" operation="ScrumMaster" resourceName="Project01" />
+    <Permission name="Project02_ProductOwner" operation="ProductOwner" resourceName="Project02" />
+    <Permission name="Project01_Guest" operation="Guest" resourceName="Project01" />
+    <Permission name="Project01_ProductOwner" operation="ProductOwner" resourceName="Project01" />
     <Permission name="system_read" operation="read" resourceName="system" />
-    <Permission name="testProject_ScrumMaster" operation="ScrumMaster" resourceName="testProject" />
-    <Permission name="testProject_Guest" operation="Guest" resourceName="testProject" />
+    <Permission name="Project02_Stakeholder" operation="Stakeholder" resourceName="Project02" />
     <Permission name="system_createProject" operation="createProject" resourceName="system" />
-    <Permission name="testProject_ProductOwner" operation="ProductOwner" resourceName="testProject" />
+    <Permission name="Project01_Stakeholder" operation="Stakeholder" resourceName="Project01" />
+    <Permission name="Project01_ScrumTeam" operation="ScrumTeam" resourceName="Project01" />
   </Permissions>
   <Actors>
     <Groups />
     <Accounts>
+      <Account id="account2" name="account2" password="93189e2c4c7b1a2c7b16a24d5daa98a9" email="account2@gmail.com" enable="true" />
+      <Account id="account1" name="account1" password="809d7aea9eacf339b2e35e3c8ae0a57c" email="account1@gmail.com" enable="true" />
+      <Account id="account4" name="account4" password="201e9991afe90c65e13b08b53fb695de" email="account4@gmail.com" enable="true" />
       <Account id="admin" name="admin" password="21232f297a57a5a743894a0e4a801fc3" email="example@ezScrum.tw" enable="true" />
-      <Account id="TEST_ACCOUNT_ID_1" name="TEST_ACCOUNT_REALNAME_1" password="5e6698ee13f3ef999374751897721cb6" email="TEST_ACCOUNT_MAIL_1" enable="true" />
+      <Account id="account3" name="account3" password="fbcd0ff0529a3dd9b733884b30941297" email="account3@gmail.com" enable="true" />
+      <Account id="account5" name="account5" password="7ea4950f63c983360c863bd5d1608944" email="account5@gmail.com" enable="true" />
     </Accounts>
   </Actors>
   <Assigns>
-    <Assign actor="admin" role="user" />
+    <Assign actor="account2" role="Project01_ScrumMaster" />
+    <Assign actor="account2" role="user" />
+    <Assign actor="account2" role="Project02_ProductOwner" />
+    <Assign actor="account1" role="user" />
+    <Assign actor="account1" role="Project01_ProductOwner" />
+    <Assign actor="account4" role="Project02_ScrumTeam" />
+    <Assign actor="account4" role="user" />
+    <Assign actor="account4" role="Project01_ScrumTeam" />
     <Assign actor="admin" role="admin" />
-    <Assign actor="TEST_ACCOUNT_ID_1" role="user" />
+    <Assign actor="admin" role="user" />
+    <Assign actor="account3" role="Project02_ScrumMaster" />
+    <Assign actor="account3" role="user" />
+    <Assign actor="account3" role="Project01_ScrumTeam" />
+    <Assign actor="account5" role="Project02_ScrumTeam" />
+    <Assign actor="account5" role="user" />
   </Assigns>
 </RoleBase>
 

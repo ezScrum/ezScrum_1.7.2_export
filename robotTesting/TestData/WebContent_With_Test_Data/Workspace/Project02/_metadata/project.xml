@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Project id="Project01" name="Project01">
+<Project id="Project02" name="Project02">
     <ParentProject></ParentProject>
     <SubProjects/>
     <Output>/</Output>
     <Src>
         <Path>/</Path>
     </Src>
-    <CreateDate>2015-12-22T16:03:23.608+08:00</CreateDate>
+    <CreateDate>2015-12-22T16:10:57.760+08:00</CreateDate>
     <CVS>
         <ConnectionType>pserver</ConnectionType>
         <UserID></UserID>
@@ -21,8 +21,8 @@
     <Version></Version>
     <SourceVersion></SourceVersion>
     <State></State>
-    <ProjectManager>Manager</ProjectManager>
-    <Comment>Comment in Project01</Comment>
+    <ProjectManager>manager</ProjectManager>
+    <Comment>Comment in Project02</Comment>
     <NotifyBuild/>
     <ProjectReferences/>
     <ExternalReferences/>

@@ -3,13 +3,16 @@ Library           Selenium2Library
 Resource          ../../Global Define.txt
 Library           ../lib/ExportLibrary.py
 Resource          ../../ServerConfig.txt
+Resource          ../common_resource.txt
 
 *** Keywords ***
 Test Export Setup
-    Log    show ezScrum directory below
-    Log    ${EZSCRUM_DIRECTORY}
-    Export Setup    ${EZSCRUM_DIRECTORY}
-    Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${EZSCRUM_DIRECTORY}
+    Log    ${PROJECT_FOLDER}
+    Export Setup    ${PROJECT_FOLDER}
+    Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${PROJECT_FOLDER}
 
 Test Export Teardown
-    Log    henrry is good
+    Export Teardown    ${PROJECT_FOLDER}
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+    Select Window
+    Close Browser

@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Plan>
   <Sprint id="1">
-    <Start>2015/12/17</Start>
+    <Start>2015/12/22</Start>
     <Interval>2</Interval>
-    <MemNumber>5</MemNumber>
+    <MemNumber>4</MemNumber>
     <FocusFactor>70</FocusFactor>
     <Goal>Sprint01</Goal>
+    <AvailableDays>120</AvailableDays>
+    <DemoDate>2016/01/04</DemoDate>
+    <DemoPlace>Lab1321</DemoPlace>
+    <Notes>17:00@Lab1321</Notes>
+  </Sprint>
+  <Sprint id="2">
+    <Start>2016/01/05</Start>
+    <Interval>2</Interval>
+    <MemNumber>4</MemNumber>
+    <FocusFactor>60</FocusFactor>
+    <Goal>Sprint02</Goal>
     <AvailableDays>100</AvailableDays>
-    <DemoDate>2015/12/30</DemoDate>
-    <DemoPlace />
-    <Notes />
+    <DemoDate>2016/01/18</DemoDate>
+    <DemoPlace>Lab1321</DemoPlace>
+    <Notes>17:00@Lab1321</Notes>
   </Sprint>
 </Plan>
 

@@ -15,4 +15,3 @@ ${TEST_ID}        0    # 在做 Concurrent 測試時,用來辨識是何台機器
 ${RUN_TIMES}      10    # 在做 Concurrent 測試時,用來指定要重複執行某項任務的次數
 ${VERSION}        Web    # Web or GAE
 ${TENANT_ID}      t1    # for GAE, 預設的租戶id
-${EZSCRUM_DIRECTORY}    C:/workspace/ezScrum_1.7.2_export
