@@ -10,7 +10,7 @@ Library           keywords/lib/JSONFileComparator.py
 Library           keywords/lib/ezScrumFileManager.py
 
 *** Test Cases ***
-Test Export - Export and Compare With Golden Answer
+Test Export - Export and Compare With Golden Answer - Project1
     [Setup]
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
@@ -28,6 +28,51 @@ Test Export - Export and Compare With Golden Answer
     # 驗證檔案格式及內容
     ${exported_file_path} =    Get Latest Ezscrum JSON File Path In Directory    ${USER_DOWNLOAD_DIRECTORY}
     ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project01.json
+    ${are_files_the_same} =    Compare JSON File    ${exported_file_path}    ${golden_answer_path}
+    Should Be True    ${are_files_the_same}    The JSON files are not the same
+    [Teardown]
+
+Test Export - Export and Compare With Golden Answer - Project2
+    [Setup]
+    # 登入ezScrum
+    Login Page    ${LOGIN_URL}
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
+    # 切換到 Export 頁面
+    Switch To Item Link    False    Export
+    #
+    Choose Project By Name    Project02
+    # 按下 Export 按鈕
+    Click Element    //table[@id = 'exportButton']//button[text() = 'Export']
+    # 等待成功訊息視窗顯示
+    Wait Until Page Contains    Your data is downloaded!
+    # 驗證檔案格式及內容
+    ${exported_file_path} =    Get Latest Ezscrum JSON File Path In Directory    ${USER_DOWNLOAD_DIRECTORY}
+    ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project02.json
+    ${are_files_the_same} =    Compare JSON File    ${exported_file_path}    ${golden_answer_path}
+    Should Be True    ${are_files_the_same}    The JSON files are not the same
+    [Teardown]
+
+Test Export - Export and Compare With Golden Answer - Two Projects
+    [Setup]
+    # 登入ezScrum
+    Login Page    ${LOGIN_URL}
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
+    # 切換到 Export 頁面
+    Switch To Item Link    False    Export
+    #
+    Choose Project By Name    Project01
+    Choose Project By Name    Project02
+    # 按下 Export 按鈕
+    Click Element    //table[@id = 'exportButton']//button[text() = 'Export']
+    # 等待成功訊息視窗顯示
+    Wait Until Page Contains    Your data is downloaded!
+    # 驗證檔案格式及內容
+    ${exported_file_path} =    Get Latest Ezscrum JSON File Path In Directory    ${USER_DOWNLOAD_DIRECTORY}
+    ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project01_project02.json
     ${are_files_the_same} =    Compare JSON File    ${exported_file_path}    ${golden_answer_path}
     Should Be True    ${are_files_the_same}    The JSON files are not the same
     [Teardown]
