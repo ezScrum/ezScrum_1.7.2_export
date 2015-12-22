@@ -1,8 +1,8 @@
 *** Settings ***
-Suite Setup       Test Suite Export Setup
-Suite Teardown    Test Suite Export Teardown
+Suite Setup
+Suite Teardown
 Resource          keywords/common_resource.txt
-Resource          keywords/Export/ezScrum_Export_Suite_SetupTeardown.txt
+Resource          keywords/Export/ezScrum_Export_SetupTeardown.txt
 Resource          keywords/ezScrum_Login.txt
 Resource          keywords/Export/ezScrum_Export.txt
 Resource          Global Define.txt
@@ -11,7 +11,7 @@ Library           keywords/lib/ezScrumFileManager.py
 
 *** Test Cases ***
 Test Export - Export and Compare With Golden Answer - Project1
-    [Setup]
+    [Setup]    Test Export Setup
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
     # 進入 Management 頁面
@@ -30,10 +30,10 @@ Test Export - Export and Compare With Golden Answer - Project1
     ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project01.json
     ${are_files_the_same} =    Compare JSON File    ${exported_file_path}    ${golden_answer_path}
     Should Be True    ${are_files_the_same}    The JSON files are not the same
-    [Teardown]
+    [Teardown]    Test Export Teardown
 
 Test Export - Export and Compare With Golden Answer - Project2
-    [Setup]
+    [Setup]    Test Export Setup
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
     # 進入 Management 頁面
@@ -52,10 +52,10 @@ Test Export - Export and Compare With Golden Answer - Project2
     ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project02.json
     ${are_files_the_same} =    Compare JSON File    ${exported_file_path}    ${golden_answer_path}
     Should Be True    ${are_files_the_same}    The JSON files are not the same
-    [Teardown]
+    [Teardown]    Test Export Teardown
 
 Test Export - Export and Compare With Golden Answer - Two Projects
-    [Setup]
+    [Setup]    Test Export Setup
     # 登入ezScrum
     Login Page    ${LOGIN_URL}
     # 進入 Management 頁面
@@ -75,4 +75,4 @@ Test Export - Export and Compare With Golden Answer - Two Projects
     ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project01_project02.json
     ${are_files_the_same} =    Compare JSON File    ${exported_file_path}    ${golden_answer_path}
     Should Be True    ${are_files_the_same}    The JSON files are not the same
-    [Teardown]
+    [Teardown]    Test Export Teardown
