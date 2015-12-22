@@ -17,11 +17,11 @@ class ExportLibrary:
         pass
 
     """ 將Test Data覆蓋到目標 """
-    def export_setup(self, ezscrum_directory):
+    def export_setup(self, ezscrum_directory, builded_directory):
         # Delete 目標資料
         try:
-            shutil.rmtree(ezscrum_directory + ezscrum_web_content + workspace)
-            os.remove(ezscrum_directory + ezscrum_web_content + role_base)
+            shutil.rmtree(builded_directory + ezscrum_web_content + workspace)
+            os.remove(builded_directory + ezscrum_web_content + role_base)
         except WindowsError:
             print("刪除失敗")
         except OSError:
@@ -29,25 +29,25 @@ class ExportLibrary:
 
         # 複製檔案到目標
         try:
-            shutil.copytree(ezscrum_directory + test_data_web_content + workspace, ezscrum_directory + ezscrum_web_content + workspace)
-            shutil.copy(ezscrum_directory + test_data_web_content + role_base, ezscrum_directory + ezscrum_web_content + role_base)
+            shutil.copytree(ezscrum_directory + test_data_web_content + workspace, builded_directory + ezscrum_web_content + workspace)
+            shutil.copy(ezscrum_directory + test_data_web_content + role_base, builded_directory + ezscrum_web_content + role_base)
         except OSError, e: # python >2.5
             print '找不到此檔案或檔案路徑: %s' % e
 
     """ 將Test Data清除 """
-    def export_teardown(self, ezscrum_directory):
+    def export_teardown(self, ezscrum_directory, builded_directory):
         # Delete 目標資料
         try:
-            shutil.rmtree(ezscrum_directory + ezscrum_web_content + workspace)
-            os.remove(ezscrum_directory + ezscrum_web_content + role_base)
+            shutil.rmtree(builded_directory + ezscrum_web_content + workspace)
+            os.remove(builded_directory + ezscrum_web_content + role_base)
         except WindowsError:
             print("刪除失敗")
         except OSError:
             print("刪除失敗")
         # 複製檔案到目標
         try:
-            shutil.copytree(ezscrum_directory + pure_web_content + workspace, ezscrum_directory + ezscrum_web_content + workspace)
-            shutil.copy(ezscrum_directory + pure_web_content + role_base, ezscrum_directory + ezscrum_web_content + role_base)
+            shutil.copytree(ezscrum_directory + pure_web_content + workspace, builded_directory + ezscrum_web_content + workspace)
+            shutil.copy(ezscrum_directory + pure_web_content + role_base, builded_directory + ezscrum_web_content + role_base)
         except OSError, e: # python >2.5
             print '找不到此檔案或檔案路徑: %s' % e
 
