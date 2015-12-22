@@ -5,9 +5,11 @@ Library           ../lib/ExportLibrary.py
 Resource          ../../ServerConfig.txt
 Resource          ../common_resource.txt
 Library           ../lib/ezScrumFileManager.py
+Library           Process
 
 *** Keywords ***
 Test Export Setup
+    Run Process    net    start    ezScrum
     Export Setup    ${EZSCRUM_DIRECTORY}
     Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${EZSCRUM_DIRECTORY}
     Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
