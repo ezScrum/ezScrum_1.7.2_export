@@ -15,6 +15,7 @@ Login Page
     Run Keyword if    "${VERSION}"=="Web"    Open Browser    ${loginUrl}    ${BROWSER}
     Maximize Browser Window
     _InputLoginForm    ${userName}    ${userPassword}
+    Title Should Be    ezScrum, SSLab NTUT
 
 Login With Invalid Credentials Should Fail
     [Arguments]    ${name}    ${password}    ${errorMessage}

@@ -6,18 +6,40 @@ Resource          ../../ServerConfig.txt
 Resource          ../common_resource.txt
 Library           ../lib/ezScrumFileManager.py
 Library           Process
+Resource          ../ezScrum_Login.txt
 
 *** Keywords ***
-Test Export Setup
+Test Suite Export Setup
+    # 建立實體檔案測資
     Export Setup    ${EZSCRUM_DIRECTORY}    ${BUILDED_EZSCRUM_DIRECTORY}
+    # 建立資料庫測資
     Execute Scripts From File    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}    ${EZSCRUM_DIRECTORY}
+    # 啟動 ezScrum 服務
+    Run Process    net    start    ezScrum    alias=ezscrum_process
+    Wait For Process    ezscrum_process
+    Sleep    3s
+
+Test Suite Export Teardown
+    # 停止 ezScrum 服務
+    Run Process    net    stop    ezScrum
+    # 清除實體檔案測資
+    Export Teardown    ${EZSCRUM_DIRECTORY}    ${BUILDED_EZSCRUM_DIRECTORY}
+    # 清除資料庫測資
+    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
+
+Test Export Setup
+    # 清除下載資料夾中 ezScrum JSON 檔
     Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
-    Run Process    net    start    ezScrum
+    # 登入ezScrum
+    Login Page    ${LOGIN_URL}
+    # 進入 Management 頁面
+    Click Element    xpath=//td[text()="Management"]
+    Wait Until Page Contains Element    xpath=//div[@id="Management_Top_Panel"]//td[text()="Account Management"]
+    # 切換到 Export 頁面
+    Switch To Item Link    False    Export
 
 Test Export Teardown
-    Run Process    net    stop    ezScrum
-    Export Teardown    ${EZSCRUM_DIRECTORY}    ${BUILDED_EZSCRUM_DIRECTORY}
-    Clean DB    ${DB_URL}    ${DB_ACCOUNT}    ${DB_PASSWORD}    ${DB_NAME}
-    Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
     Select Window
     Close Browser
+    # 清除下載資料夾中 ezScrum JSON 檔
+    Clean Ezscrum JSON File In Directory    ${USER_DOWNLOAD_DIRECTORY}
