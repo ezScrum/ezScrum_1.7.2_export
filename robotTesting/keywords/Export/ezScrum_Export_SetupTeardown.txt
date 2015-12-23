@@ -17,7 +17,7 @@ Test Suite Export Setup
     # 啟動 ezScrum 服務
     Run Process    net    start    ezScrum    alias=ezscrum_process
     Wait For Process    ezscrum_process
-    Sleep    3s
+    Sleep    5s
 
 Test Suite Export Teardown
     # 停止 ezScrum 服務
