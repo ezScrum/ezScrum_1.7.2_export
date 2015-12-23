@@ -15,6 +15,6 @@ ${TEST_ID}        0    # 在做 Concurrent 測試時,用來辨識是何台機器
 ${RUN_TIMES}      10    # 在做 Concurrent 測試時,用來指定要重複執行某項任務的次數
 ${VERSION}        Web    # Web or GAE
 ${TENANT_ID}      t1    # for GAE, 預設的租戶id
-${EZSCRUM_DIRECTORY}    EZSCRUM_DIRECTORY
-${USER_DOWNLOAD_DIRECTORY}    USER_DOWNLOAD_DIRECTORY
-${BUILDED_EZSCRUM_DIRECTORY}    BUILDED_EZSCRUM_DIRECTORY
+${EZSCRUM_DIRECTORY}    D:\Workspace\Eclipse\ezScrum_1.7.2_export    # For allen slave
+${USER_DOWNLOAD_DIRECTORY}    C:\Users\ezscrum-pc\Downloads    # For allen slave
+${BUILDED_EZSCRUM_DIRECTORY}    D:\Workspace\Eclipse\ezScrum_1.7.2_export\dist\ezScrum\ezScrum    # For allen slave
