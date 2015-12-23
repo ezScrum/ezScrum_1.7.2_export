@@ -62,13 +62,16 @@ class ExportLibrary:
         db = MySQLdb.connect(host=host_url, user=account, passwd=password, db=databaseName)
         cursor = db.cursor()
 
+        # ignore useless warnings
         warnings.filterwarnings('ignore', 'Unknown table .*')
+        warnings.filterwarnings('ignore', 'Changing sql mode*')
 
         # Execute every command from the input file
         for command in sqlCommands:
             try:
-                cursor.execute(command)
+                if command:
+                    cursor.execute(command)
             except MySQLdb.OperationalError:
-                print "Command error"
+                print "Command error: " + command
             except MySQLdb.Warning:
-                print "Command warning"
+                print "Command warning: " + command

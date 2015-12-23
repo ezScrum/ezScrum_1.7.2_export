@@ -203,8 +203,6 @@ def compare_json_file(exported_file_path, golden_answer_file_path):
 
         if exported_json_object == answer_json_object:
             print('these json files are the same')
-            print('exported_json_object')
-            print(exported_json_object)
             return True
         else:
             print('these json files are not the same')
