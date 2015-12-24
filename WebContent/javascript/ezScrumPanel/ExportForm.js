@@ -118,7 +118,6 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 			var URL = window.URL || window.webkitURL;
 			var downloadUrl = URL.createObjectURL(blob);
 			if (filename) {
-				console.log(filename);
 				// use HTML5 a[download] attribute to specify filename
 				var a = document.createElement("a");
 				// safari doesn't support this yet

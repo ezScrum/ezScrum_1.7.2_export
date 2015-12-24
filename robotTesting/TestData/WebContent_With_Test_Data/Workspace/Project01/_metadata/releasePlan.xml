@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Releases>
+  <Release id="1">
+    <Name>Release01</Name>
+    <StartDate>2015/12/22</StartDate>
+    <EndDate>2016/01/18</EndDate>
+    <Description>Description</Description>
+  </Release>
+</Releases>
+
