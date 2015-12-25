@@ -16,7 +16,7 @@
 <entry key="Account" value="root"/>
 <entry key="Password" value="root"/>
 <entry key="DatabaseType" value="MySQL"/>
-<entry key="DatabaseName" value="ezscrum_172"/>
+<entry key="DatabaseName" value="ezscrum"/>
 </map>
 </node>
 </node>

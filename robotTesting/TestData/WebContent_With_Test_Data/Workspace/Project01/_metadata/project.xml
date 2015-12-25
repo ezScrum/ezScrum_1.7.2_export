@@ -6,7 +6,7 @@
     <Src>
         <Path>/</Path>
     </Src>
-    <CreateDate>2015-12-22T16:03:23.608+08:00</CreateDate>
+    <CreateDate>2015-12-25T10:35:35.524+08:00</CreateDate>
     <CVS>
         <ConnectionType>pserver</ConnectionType>
         <UserID></UserID>
@@ -21,8 +21,8 @@
     <Version></Version>
     <SourceVersion></SourceVersion>
     <State></State>
-    <ProjectManager>Manager</ProjectManager>
-    <Comment>Comment in Project01</Comment>
+    <ProjectManager>manager</ProjectManager>
+    <Comment>comment</Comment>
     <NotifyBuild/>
     <ProjectReferences/>
     <ExternalReferences/>
