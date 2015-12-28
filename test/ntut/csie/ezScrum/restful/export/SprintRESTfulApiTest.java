@@ -58,8 +58,8 @@ public class SprintRESTfulApiTest extends JerseyTest {
 		mCP.exeCreate();
 		
 		//	 新增兩個Sprint
-    	this.mCS = new CreateSprint(2, mCP);
-    	this.mCS.exe();
+    	mCS = new CreateSprint(2, mCP);
+    	mCS.exe();
     	
     	// Start Server
     	mHttpServer = JdkHttpServerFactory.createHttpServer(mBaseUri, mResourceConfig, true);

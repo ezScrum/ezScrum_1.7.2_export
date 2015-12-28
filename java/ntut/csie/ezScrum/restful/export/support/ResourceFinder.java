@@ -36,12 +36,10 @@ public class ResourceFinder {
 			return null;
 		}
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mProject);
-		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
-		for (ISprintPlanDesc sprint : sprints) {
-			if (sprint.getID().equals(String.valueOf(sprintId))) {
-				mSprint = sprint;
-				return sprint;
-			}
+		ISprintPlanDesc sprint = sprintPlanHelper.loadPlan(String.valueOf(sprintId));
+		if (!sprint.getGoal().isEmpty()) {
+			mSprint = sprint;
+			return sprint;
 		}
 		return null;
 	}
