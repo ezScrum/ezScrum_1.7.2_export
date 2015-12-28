@@ -1,6 +1,5 @@
 package ntut.csie.ezScrum.restful.export.support;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
@@ -36,12 +35,10 @@ public class ResourceFinder {
 			return null;
 		}
 		SprintPlanHelper sprintPlanHelper = new SprintPlanHelper(mProject);
-		List<ISprintPlanDesc> sprints = sprintPlanHelper.loadListPlans();
-		for (ISprintPlanDesc sprint : sprints) {
-			if (sprint.getID().equals(String.valueOf(sprintId))) {
-				mSprint = sprint;
-				return sprint;
-			}
+		ISprintPlanDesc sprint = sprintPlanHelper.loadPlan(String.valueOf(sprintId));
+		if (!sprint.getGoal().isEmpty()) {
+			mSprint = sprint;
+			return sprint;
 		}
 		return null;
 	}
@@ -52,12 +49,11 @@ public class ResourceFinder {
 		}
 		// Create ProductbacklogMapper
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, null);
-		// Get Stories
-		IIssue[] storyArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
-
-		for (IIssue story : storyArray) {
+		// Get Story
+		IIssue story = productBacklogMapper.getIssue(storyId);
+		if (story != null) {
 			if (mSprint.getID().equals(story.getSprintID())
-			        && story.getIssueID() == storyId) {
+			        && story.getIssueID() == storyId && story.getCategory().equals(ScrumEnum.STORY_ISSUE_TYPE)) {
 				mStory = story;
 				return story;
 			}
@@ -85,19 +81,11 @@ public class ResourceFinder {
 		}
 		// Create ProductbacklogMapper
 		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(mProject, null);
-		// Get Stories
-		IIssue[] allStoryArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
-		// Story List for response
-		ArrayList<IIssue> droppedStories = new ArrayList<IIssue>();
-		for (IIssue story : allStoryArray) {
+		// Get Story
+		IIssue story = productBacklogMapper.getIssue(storyId);
+		if (story != null) {
 			long sprintId = Long.parseLong(story.getSprintID());
-			// 保留野生的Story
-			if (sprintId <= 0) {
-				droppedStories.add(story);
-			}
-		}
-		for (IIssue story : droppedStories) {
-			if (story.getIssueID() == storyId) {
+			if (sprintId <= 0 && story.getIssueID() == storyId && story.getCategory().equals(ScrumEnum.STORY_ISSUE_TYPE)) {
 				mStory = story;
 				return story;
 			}
