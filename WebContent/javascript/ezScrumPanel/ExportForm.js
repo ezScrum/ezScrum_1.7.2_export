@@ -157,6 +157,7 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
     		  headers: { 'Content-Type': 'application/json'},
     		  params : {},
     		  jsonData: jsonArray,
+    		  timeout: 2 * 60 * 60 * 1000,
     		  success: function (response) {
     		     obj.downloadFileFromResponse(response);
     		     Ext.MessageBox.hide();

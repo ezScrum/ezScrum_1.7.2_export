@@ -12,7 +12,7 @@
 						<entry key="ServerUrl" value="127.0.0.1" />
 						<entry key="ServicePath" value="/mantis/mc/mantisconnect.php" />
 						<entry key="Account" value="root" />
-						<entry key="Password" value="root" />
+						<entry key="Password" value="1234" />
 		                <entry key="DatabaseType" value="MySql"/>
                         <entry key="DatabaseName" value="ezscrum"/>
 					</map>
