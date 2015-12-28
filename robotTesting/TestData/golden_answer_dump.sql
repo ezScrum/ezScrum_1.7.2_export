@@ -1,8 +1,8 @@
-﻿-- --------------------------------------------------------
+-- --------------------------------------------------------
 -- 主機:                           127.0.0.1
--- 服務器版本:                        5.6.26-log - MySQL Community Server (GPL)
+-- 服務器版本:                        10.0.21-MariaDB - mariadb.org binary distribution
 -- 服務器操作系統:                      Win64
--- HeidiSQL 版本:                  9.3.0.4984
+-- HeidiSQL 版本:                  9.3.0.4989
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -10,13 +10,13 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- 導出 ezscrum 的資料庫結構
+-- 導出 ezscrum_172 的資料庫結構
 DROP DATABASE IF EXISTS `ezscrum_172`;
 CREATE DATABASE IF NOT EXISTS `ezscrum_172` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `ezscrum`;
+USE `ezscrum_172`;
 
 
--- 導出  表 ezscrum.account 結構
+-- 導出  表 ezscrum_172.account 結構
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE IF NOT EXISTS `account` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   UNIQUE KEY `account_UNIQUE` (`account`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.account 的資料：~1 rows (大約)
+-- 正在導出表  ezscrum_172.account 的資料：~0 rows (大約)
 DELETE FROM `account`;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
 INSERT INTO `account` (`ID`, `account`, `nick_name`, `email`, `password`, `enable`, `create_time`, `update_time`) VALUES
@@ -39,7 +39,7 @@ INSERT INTO `account` (`ID`, `account`, `nick_name`, `email`, `password`, `enabl
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.attach_file 結構
+-- 導出  表 ezscrum_172.attach_file 結構
 DROP TABLE IF EXISTS `attach_file`;
 CREATE TABLE IF NOT EXISTS `attach_file` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -50,13 +50,13 @@ CREATE TABLE IF NOT EXISTS `attach_file` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.attach_file 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.attach_file 的資料：~0 rows (大約)
 DELETE FROM `attach_file`;
 /*!40000 ALTER TABLE `attach_file` DISABLE KEYS */;
 /*!40000 ALTER TABLE `attach_file` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.buildresult 結構
+-- 導出  表 ezscrum_172.buildresult 結構
 DROP TABLE IF EXISTS `buildresult`;
 CREATE TABLE IF NOT EXISTS `buildresult` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -77,13 +77,13 @@ CREATE TABLE IF NOT EXISTS `buildresult` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.buildresult 的資料：0 rows
+-- 正在導出表  ezscrum_172.buildresult 的資料：0 rows
 DELETE FROM `buildresult`;
 /*!40000 ALTER TABLE `buildresult` DISABLE KEYS */;
 /*!40000 ALTER TABLE `buildresult` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.commit_log 結構
+-- 導出  表 ezscrum_172.commit_log 結構
 DROP TABLE IF EXISTS `commit_log`;
 CREATE TABLE IF NOT EXISTS `commit_log` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -96,26 +96,26 @@ CREATE TABLE IF NOT EXISTS `commit_log` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.commit_log 的資料：0 rows
+-- 正在導出表  ezscrum_172.commit_log 的資料：0 rows
 DELETE FROM `commit_log`;
 /*!40000 ALTER TABLE `commit_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `commit_log` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.commit_story_relation 結構
+-- 導出  表 ezscrum_172.commit_story_relation 結構
 DROP TABLE IF EXISTS `commit_story_relation`;
 CREATE TABLE IF NOT EXISTS `commit_story_relation` (
   `COMMITID` int(11) DEFAULT NULL,
   `ISSUEID` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.commit_story_relation 的資料：0 rows
+-- 正在導出表  ezscrum_172.commit_story_relation 的資料：0 rows
 DELETE FROM `commit_story_relation`;
 /*!40000 ALTER TABLE `commit_story_relation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `commit_story_relation` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.ezkanban_statusorder 結構
+-- 導出  表 ezscrum_172.ezkanban_statusorder 結構
 DROP TABLE IF EXISTS `ezkanban_statusorder`;
 CREATE TABLE IF NOT EXISTS `ezkanban_statusorder` (
   `issueID` int(10) NOT NULL DEFAULT '0',
@@ -126,13 +126,13 @@ CREATE TABLE IF NOT EXISTS `ezkanban_statusorder` (
   KEY `order_3` (`order`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.ezkanban_statusorder 的資料：0 rows
+-- 正在導出表  ezscrum_172.ezkanban_statusorder 的資料：0 rows
 DELETE FROM `ezkanban_statusorder`;
 /*!40000 ALTER TABLE `ezkanban_statusorder` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ezkanban_statusorder` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.ezscrum_story_relation 結構
+-- 導出  表 ezscrum_172.ezscrum_story_relation 結構
 DROP TABLE IF EXISTS `ezscrum_story_relation`;
 CREATE TABLE IF NOT EXISTS `ezscrum_story_relation` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `ezscrum_story_relation` (
   KEY `updateDate` (`sprintID`,`projectID`,`storyID`,`updateDate`)
 ) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.ezscrum_story_relation 的資料：21 rows
+-- 正在導出表  ezscrum_172.ezscrum_story_relation 的資料：21 rows
 DELETE FROM `ezscrum_story_relation`;
 /*!40000 ALTER TABLE `ezscrum_story_relation` DISABLE KEYS */;
 INSERT INTO `ezscrum_story_relation` (`id`, `storyID`, `projectID`, `releaseID`, `sprintID`, `estimation`, `importance`, `updateDate`) VALUES
@@ -176,7 +176,7 @@ INSERT INTO `ezscrum_story_relation` (`id`, `storyID`, `projectID`, `releaseID`,
 /*!40000 ALTER TABLE `ezscrum_story_relation` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.ezscrum_tag_relation 結構
+-- 導出  表 ezscrum_172.ezscrum_tag_relation 結構
 DROP TABLE IF EXISTS `ezscrum_tag_relation`;
 CREATE TABLE IF NOT EXISTS `ezscrum_tag_relation` (
   `tag_id` int(10) NOT NULL,
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `ezscrum_tag_relation` (
   KEY `story_id` (`story_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.ezscrum_tag_relation 的資料：2 rows
+-- 正在導出表  ezscrum_172.ezscrum_tag_relation 的資料：2 rows
 DELETE FROM `ezscrum_tag_relation`;
 /*!40000 ALTER TABLE `ezscrum_tag_relation` DISABLE KEYS */;
 INSERT INTO `ezscrum_tag_relation` (`tag_id`, `story_id`) VALUES
@@ -194,7 +194,7 @@ INSERT INTO `ezscrum_tag_relation` (`tag_id`, `story_id`) VALUES
 /*!40000 ALTER TABLE `ezscrum_tag_relation` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.ezscrum_tag_table 結構
+-- 導出  表 ezscrum_172.ezscrum_tag_table 結構
 DROP TABLE IF EXISTS `ezscrum_tag_table`;
 CREATE TABLE IF NOT EXISTS `ezscrum_tag_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `ezscrum_tag_table` (
   PRIMARY KEY (`id`,`project_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.ezscrum_tag_table 的資料：3 rows
+-- 正在導出表  ezscrum_172.ezscrum_tag_table 的資料：3 rows
 DELETE FROM `ezscrum_tag_table`;
 /*!40000 ALTER TABLE `ezscrum_tag_table` DISABLE KEYS */;
 INSERT INTO `ezscrum_tag_table` (`id`, `project_id`, `name`) VALUES
@@ -213,7 +213,7 @@ INSERT INTO `ezscrum_tag_table` (`id`, `project_id`, `name`) VALUES
 /*!40000 ALTER TABLE `ezscrum_tag_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.eztrack_combofield 結構
+-- 導出  表 ezscrum_172.eztrack_combofield 結構
 DROP TABLE IF EXISTS `eztrack_combofield`;
 CREATE TABLE IF NOT EXISTS `eztrack_combofield` (
   `TypeFieldID` int(10) unsigned NOT NULL,
@@ -221,13 +221,13 @@ CREATE TABLE IF NOT EXISTS `eztrack_combofield` (
   KEY `TypeFieldID` (`TypeFieldID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.eztrack_combofield 的資料：0 rows
+-- 正在導出表  ezscrum_172.eztrack_combofield 的資料：0 rows
 DELETE FROM `eztrack_combofield`;
 /*!40000 ALTER TABLE `eztrack_combofield` DISABLE KEYS */;
 /*!40000 ALTER TABLE `eztrack_combofield` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.eztrack_issuerelation 結構
+-- 導出  表 ezscrum_172.eztrack_issuerelation 結構
 DROP TABLE IF EXISTS `eztrack_issuerelation`;
 CREATE TABLE IF NOT EXISTS `eztrack_issuerelation` (
   `IssueID_src` int(10) unsigned NOT NULL,
@@ -235,13 +235,13 @@ CREATE TABLE IF NOT EXISTS `eztrack_issuerelation` (
   `Type` int(2) NOT NULL DEFAULT '1' COMMENT 'Relation的關係'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.eztrack_issuerelation 的資料：0 rows
+-- 正在導出表  ezscrum_172.eztrack_issuerelation 的資料：0 rows
 DELETE FROM `eztrack_issuerelation`;
 /*!40000 ALTER TABLE `eztrack_issuerelation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `eztrack_issuerelation` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.eztrack_issuetype 結構
+-- 導出  表 ezscrum_172.eztrack_issuetype 結構
 DROP TABLE IF EXISTS `eztrack_issuetype`;
 CREATE TABLE IF NOT EXISTS `eztrack_issuetype` (
   `IssueTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -253,13 +253,13 @@ CREATE TABLE IF NOT EXISTS `eztrack_issuetype` (
   KEY `ProjectID` (`ProjectID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.eztrack_issuetype 的資料：0 rows
+-- 正在導出表  ezscrum_172.eztrack_issuetype 的資料：0 rows
 DELETE FROM `eztrack_issuetype`;
 /*!40000 ALTER TABLE `eztrack_issuetype` DISABLE KEYS */;
 /*!40000 ALTER TABLE `eztrack_issuetype` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.eztrack_report 結構
+-- 導出  表 ezscrum_172.eztrack_report 結構
 DROP TABLE IF EXISTS `eztrack_report`;
 CREATE TABLE IF NOT EXISTS `eztrack_report` (
   `ReportID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -271,13 +271,13 @@ CREATE TABLE IF NOT EXISTS `eztrack_report` (
   PRIMARY KEY (`ReportID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.eztrack_report 的資料：0 rows
+-- 正在導出表  ezscrum_172.eztrack_report 的資料：0 rows
 DELETE FROM `eztrack_report`;
 /*!40000 ALTER TABLE `eztrack_report` DISABLE KEYS */;
 /*!40000 ALTER TABLE `eztrack_report` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.eztrack_typefield 結構
+-- 導出  表 ezscrum_172.eztrack_typefield 結構
 DROP TABLE IF EXISTS `eztrack_typefield`;
 CREATE TABLE IF NOT EXISTS `eztrack_typefield` (
   `TypeFieldID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -288,13 +288,13 @@ CREATE TABLE IF NOT EXISTS `eztrack_typefield` (
   KEY `IssueTypeID` (`IssueTypeID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=193 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.eztrack_typefield 的資料：0 rows
+-- 正在導出表  ezscrum_172.eztrack_typefield 的資料：0 rows
 DELETE FROM `eztrack_typefield`;
 /*!40000 ALTER TABLE `eztrack_typefield` DISABLE KEYS */;
 /*!40000 ALTER TABLE `eztrack_typefield` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.eztrack_typefieldvalue 結構
+-- 導出  表 ezscrum_172.eztrack_typefieldvalue 結構
 DROP TABLE IF EXISTS `eztrack_typefieldvalue`;
 CREATE TABLE IF NOT EXISTS `eztrack_typefieldvalue` (
   `IssueID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -304,13 +304,13 @@ CREATE TABLE IF NOT EXISTS `eztrack_typefieldvalue` (
   KEY `TypeFieldID` (`TypeFieldID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.eztrack_typefieldvalue 的資料：0 rows
+-- 正在導出表  ezscrum_172.eztrack_typefieldvalue 的資料：0 rows
 DELETE FROM `eztrack_typefieldvalue`;
 /*!40000 ALTER TABLE `eztrack_typefieldvalue` DISABLE KEYS */;
 /*!40000 ALTER TABLE `eztrack_typefieldvalue` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.history 結構
+-- 導出  表 ezscrum_172.history 結構
 DROP TABLE IF EXISTS `history`;
 CREATE TABLE IF NOT EXISTS `history` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -322,13 +322,13 @@ CREATE TABLE IF NOT EXISTS `history` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.history 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.history 的資料：~0 rows (大約)
 DELETE FROM `history`;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.issue_partner_relation 結構
+-- 導出  表 ezscrum_172.issue_partner_relation 結構
 DROP TABLE IF EXISTS `issue_partner_relation`;
 CREATE TABLE IF NOT EXISTS `issue_partner_relation` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -338,13 +338,13 @@ CREATE TABLE IF NOT EXISTS `issue_partner_relation` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.issue_partner_relation 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.issue_partner_relation 的資料：~0 rows (大約)
 DELETE FROM `issue_partner_relation`;
 /*!40000 ALTER TABLE `issue_partner_relation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `issue_partner_relation` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bugnote_table 結構
+-- 導出  表 ezscrum_172.mantis_bugnote_table 結構
 DROP TABLE IF EXISTS `mantis_bugnote_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bugnote_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -362,7 +362,7 @@ CREATE TABLE IF NOT EXISTS `mantis_bugnote_table` (
   KEY `idx_last_mod` (`last_modified`)
 ) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bugnote_table 的資料：15 rows
+-- 正在導出表  ezscrum_172.mantis_bugnote_table 的資料：15 rows
 DELETE FROM `mantis_bugnote_table`;
 /*!40000 ALTER TABLE `mantis_bugnote_table` DISABLE KEYS */;
 INSERT INTO `mantis_bugnote_table` (`id`, `bug_id`, `reporter_id`, `bugnote_text_id`, `view_state`, `date_submitted`, `last_modified`, `note_type`, `note_attr`, `time_tracking`) VALUES
@@ -384,7 +384,7 @@ INSERT INTO `mantis_bugnote_table` (`id`, `bug_id`, `reporter_id`, `bugnote_text
 /*!40000 ALTER TABLE `mantis_bugnote_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bugnote_text_table 結構
+-- 導出  表 ezscrum_172.mantis_bugnote_text_table 結構
 DROP TABLE IF EXISTS `mantis_bugnote_text_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bugnote_text_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -392,7 +392,7 @@ CREATE TABLE IF NOT EXISTS `mantis_bugnote_text_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bugnote_text_table 的資料：15 rows
+-- 正在導出表  ezscrum_172.mantis_bugnote_text_table 的資料：15 rows
 DELETE FROM `mantis_bugnote_text_table`;
 /*!40000 ALTER TABLE `mantis_bugnote_text_table` DISABLE KEYS */;
 INSERT INTO `mantis_bugnote_text_table` (`id`, `note`) VALUES
@@ -414,7 +414,7 @@ INSERT INTO `mantis_bugnote_text_table` (`id`, `note`) VALUES
 /*!40000 ALTER TABLE `mantis_bugnote_text_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bug_file_table 結構
+-- 導出  表 ezscrum_172.mantis_bug_file_table 結構
 DROP TABLE IF EXISTS `mantis_bug_file_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bug_file_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -433,7 +433,7 @@ CREATE TABLE IF NOT EXISTS `mantis_bug_file_table` (
   KEY `idx_diskfile` (`diskfile`)
 ) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bug_file_table 的資料：14 rows
+-- 正在導出表  ezscrum_172.mantis_bug_file_table 的資料：14 rows
 DELETE FROM `mantis_bug_file_table`;
 /*!40000 ALTER TABLE `mantis_bug_file_table` DISABLE KEYS */;
 INSERT INTO `mantis_bug_file_table` (`id`, `bug_id`, `title`, `description`, `diskfile`, `filename`, `folder`, `filesize`, `file_type`, `date_added`, `content`) VALUES
@@ -454,7 +454,7 @@ INSERT INTO `mantis_bug_file_table` (`id`, `bug_id`, `title`, `description`, `di
 /*!40000 ALTER TABLE `mantis_bug_file_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bug_history_table 結構
+-- 導出  表 ezscrum_172.mantis_bug_history_table 結構
 DROP TABLE IF EXISTS `mantis_bug_history_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bug_history_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -470,7 +470,7 @@ CREATE TABLE IF NOT EXISTS `mantis_bug_history_table` (
   KEY `idx_history_user_id` (`user_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bug_history_table 的資料：40 rows
+-- 正在導出表  ezscrum_172.mantis_bug_history_table 的資料：40 rows
 DELETE FROM `mantis_bug_history_table`;
 /*!40000 ALTER TABLE `mantis_bug_history_table` DISABLE KEYS */;
 INSERT INTO `mantis_bug_history_table` (`id`, `user_id`, `bug_id`, `date_modified`, `field_name`, `old_value`, `new_value`, `type`) VALUES
@@ -517,7 +517,7 @@ INSERT INTO `mantis_bug_history_table` (`id`, `user_id`, `bug_id`, `date_modifie
 /*!40000 ALTER TABLE `mantis_bug_history_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bug_monitor_table 結構
+-- 導出  表 ezscrum_172.mantis_bug_monitor_table 結構
 DROP TABLE IF EXISTS `mantis_bug_monitor_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bug_monitor_table` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -525,13 +525,13 @@ CREATE TABLE IF NOT EXISTS `mantis_bug_monitor_table` (
   PRIMARY KEY (`user_id`,`bug_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bug_monitor_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_bug_monitor_table 的資料：0 rows
 DELETE FROM `mantis_bug_monitor_table`;
 /*!40000 ALTER TABLE `mantis_bug_monitor_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_bug_monitor_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bug_relationship_table 結構
+-- 導出  表 ezscrum_172.mantis_bug_relationship_table 結構
 DROP TABLE IF EXISTS `mantis_bug_relationship_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bug_relationship_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -543,7 +543,7 @@ CREATE TABLE IF NOT EXISTS `mantis_bug_relationship_table` (
   KEY `idx_relationship_destination` (`destination_bug_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bug_relationship_table 的資料：3 rows
+-- 正在導出表  ezscrum_172.mantis_bug_relationship_table 的資料：3 rows
 DELETE FROM `mantis_bug_relationship_table`;
 /*!40000 ALTER TABLE `mantis_bug_relationship_table` DISABLE KEYS */;
 INSERT INTO `mantis_bug_relationship_table` (`id`, `source_bug_id`, `destination_bug_id`, `relationship_type`) VALUES
@@ -553,7 +553,7 @@ INSERT INTO `mantis_bug_relationship_table` (`id`, `source_bug_id`, `destination
 /*!40000 ALTER TABLE `mantis_bug_relationship_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bug_table 結構
+-- 導出  表 ezscrum_172.mantis_bug_table 結構
 DROP TABLE IF EXISTS `mantis_bug_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bug_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -591,7 +591,7 @@ CREATE TABLE IF NOT EXISTS `mantis_bug_table` (
   KEY `idx_project` (`project_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bug_table 的資料：13 rows
+-- 正在導出表  ezscrum_172.mantis_bug_table 的資料：13 rows
 DELETE FROM `mantis_bug_table`;
 /*!40000 ALTER TABLE `mantis_bug_table` DISABLE KEYS */;
 INSERT INTO `mantis_bug_table` (`id`, `project_id`, `reporter_id`, `handler_id`, `duplicate_id`, `priority`, `severity`, `reproducibility`, `status`, `resolution`, `projection`, `category`, `date_submitted`, `last_updated`, `eta`, `bug_text_id`, `os`, `os_build`, `platform`, `version`, `fixed_in_version`, `build`, `profile_id`, `view_state`, `summary`, `sponsorship_total`, `sticky`, `target_version`) VALUES
@@ -611,7 +611,7 @@ INSERT INTO `mantis_bug_table` (`id`, `project_id`, `reporter_id`, `handler_id`,
 /*!40000 ALTER TABLE `mantis_bug_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bug_tag_table 結構
+-- 導出  表 ezscrum_172.mantis_bug_tag_table 結構
 DROP TABLE IF EXISTS `mantis_bug_tag_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bug_tag_table` (
   `bug_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -621,13 +621,13 @@ CREATE TABLE IF NOT EXISTS `mantis_bug_tag_table` (
   PRIMARY KEY (`bug_id`,`tag_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bug_tag_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_bug_tag_table 的資料：0 rows
 DELETE FROM `mantis_bug_tag_table`;
 /*!40000 ALTER TABLE `mantis_bug_tag_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_bug_tag_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_bug_text_table 結構
+-- 導出  表 ezscrum_172.mantis_bug_text_table 結構
 DROP TABLE IF EXISTS `mantis_bug_text_table`;
 CREATE TABLE IF NOT EXISTS `mantis_bug_text_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -637,7 +637,7 @@ CREATE TABLE IF NOT EXISTS `mantis_bug_text_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_bug_text_table 的資料：13 rows
+-- 正在導出表  ezscrum_172.mantis_bug_text_table 的資料：13 rows
 DELETE FROM `mantis_bug_text_table`;
 /*!40000 ALTER TABLE `mantis_bug_text_table` DISABLE KEYS */;
 INSERT INTO `mantis_bug_text_table` (`id`, `description`, `steps_to_reproduce`, `additional_information`) VALUES
@@ -657,7 +657,7 @@ INSERT INTO `mantis_bug_text_table` (`id`, `description`, `steps_to_reproduce`, 
 /*!40000 ALTER TABLE `mantis_bug_text_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_config_table 結構
+-- 導出  表 ezscrum_172.mantis_config_table 結構
 DROP TABLE IF EXISTS `mantis_config_table`;
 CREATE TABLE IF NOT EXISTS `mantis_config_table` (
   `config_id` varchar(64) NOT NULL,
@@ -670,7 +670,7 @@ CREATE TABLE IF NOT EXISTS `mantis_config_table` (
   KEY `idx_config` (`config_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_config_table 的資料：1 rows
+-- 正在導出表  ezscrum_172.mantis_config_table 的資料：1 rows
 DELETE FROM `mantis_config_table`;
 /*!40000 ALTER TABLE `mantis_config_table` DISABLE KEYS */;
 INSERT INTO `mantis_config_table` (`config_id`, `project_id`, `user_id`, `access_reqd`, `type`, `value`) VALUES
@@ -678,7 +678,7 @@ INSERT INTO `mantis_config_table` (`config_id`, `project_id`, `user_id`, `access
 /*!40000 ALTER TABLE `mantis_config_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_custom_field_project_table 結構
+-- 導出  表 ezscrum_172.mantis_custom_field_project_table 結構
 DROP TABLE IF EXISTS `mantis_custom_field_project_table`;
 CREATE TABLE IF NOT EXISTS `mantis_custom_field_project_table` (
   `field_id` int(11) NOT NULL DEFAULT '0',
@@ -687,13 +687,13 @@ CREATE TABLE IF NOT EXISTS `mantis_custom_field_project_table` (
   PRIMARY KEY (`field_id`,`project_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_custom_field_project_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_custom_field_project_table 的資料：0 rows
 DELETE FROM `mantis_custom_field_project_table`;
 /*!40000 ALTER TABLE `mantis_custom_field_project_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_custom_field_project_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_custom_field_string_table 結構
+-- 導出  表 ezscrum_172.mantis_custom_field_string_table 結構
 DROP TABLE IF EXISTS `mantis_custom_field_string_table`;
 CREATE TABLE IF NOT EXISTS `mantis_custom_field_string_table` (
   `field_id` int(11) NOT NULL DEFAULT '0',
@@ -703,13 +703,13 @@ CREATE TABLE IF NOT EXISTS `mantis_custom_field_string_table` (
   KEY `idx_custom_field_bug` (`bug_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_custom_field_string_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_custom_field_string_table 的資料：0 rows
 DELETE FROM `mantis_custom_field_string_table`;
 /*!40000 ALTER TABLE `mantis_custom_field_string_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_custom_field_string_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_custom_field_table 結構
+-- 導出  表 ezscrum_172.mantis_custom_field_table 結構
 DROP TABLE IF EXISTS `mantis_custom_field_table`;
 CREATE TABLE IF NOT EXISTS `mantis_custom_field_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -735,13 +735,13 @@ CREATE TABLE IF NOT EXISTS `mantis_custom_field_table` (
   KEY `idx_custom_field_name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_custom_field_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_custom_field_table 的資料：0 rows
 DELETE FROM `mantis_custom_field_table`;
 /*!40000 ALTER TABLE `mantis_custom_field_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_custom_field_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_email_table 結構
+-- 導出  表 ezscrum_172.mantis_email_table 結構
 DROP TABLE IF EXISTS `mantis_email_table`;
 CREATE TABLE IF NOT EXISTS `mantis_email_table` (
   `email_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -754,13 +754,13 @@ CREATE TABLE IF NOT EXISTS `mantis_email_table` (
   KEY `idx_email_id` (`email_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_email_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_email_table 的資料：0 rows
 DELETE FROM `mantis_email_table`;
 /*!40000 ALTER TABLE `mantis_email_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_email_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_filters_table 結構
+-- 導出  表 ezscrum_172.mantis_filters_table 結構
 DROP TABLE IF EXISTS `mantis_filters_table`;
 CREATE TABLE IF NOT EXISTS `mantis_filters_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -772,13 +772,13 @@ CREATE TABLE IF NOT EXISTS `mantis_filters_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_filters_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_filters_table 的資料：0 rows
 DELETE FROM `mantis_filters_table`;
 /*!40000 ALTER TABLE `mantis_filters_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_filters_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_news_table 結構
+-- 導出  表 ezscrum_172.mantis_news_table 結構
 DROP TABLE IF EXISTS `mantis_news_table`;
 CREATE TABLE IF NOT EXISTS `mantis_news_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -793,13 +793,13 @@ CREATE TABLE IF NOT EXISTS `mantis_news_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_news_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_news_table 的資料：0 rows
 DELETE FROM `mantis_news_table`;
 /*!40000 ALTER TABLE `mantis_news_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_news_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_project_category_table 結構
+-- 導出  表 ezscrum_172.mantis_project_category_table 結構
 DROP TABLE IF EXISTS `mantis_project_category_table`;
 CREATE TABLE IF NOT EXISTS `mantis_project_category_table` (
   `project_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -808,13 +808,13 @@ CREATE TABLE IF NOT EXISTS `mantis_project_category_table` (
   PRIMARY KEY (`project_id`,`category`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_project_category_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_project_category_table 的資料：0 rows
 DELETE FROM `mantis_project_category_table`;
 /*!40000 ALTER TABLE `mantis_project_category_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_project_category_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_project_file_table 結構
+-- 導出  表 ezscrum_172.mantis_project_file_table 結構
 DROP TABLE IF EXISTS `mantis_project_file_table`;
 CREATE TABLE IF NOT EXISTS `mantis_project_file_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -831,26 +831,26 @@ CREATE TABLE IF NOT EXISTS `mantis_project_file_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_project_file_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_project_file_table 的資料：0 rows
 DELETE FROM `mantis_project_file_table`;
 /*!40000 ALTER TABLE `mantis_project_file_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_project_file_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_project_hierarchy_table 結構
+-- 導出  表 ezscrum_172.mantis_project_hierarchy_table 結構
 DROP TABLE IF EXISTS `mantis_project_hierarchy_table`;
 CREATE TABLE IF NOT EXISTS `mantis_project_hierarchy_table` (
   `child_id` int(10) unsigned NOT NULL,
   `parent_id` int(10) unsigned NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_project_hierarchy_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_project_hierarchy_table 的資料：0 rows
 DELETE FROM `mantis_project_hierarchy_table`;
 /*!40000 ALTER TABLE `mantis_project_hierarchy_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_project_hierarchy_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_project_table 結構
+-- 導出  表 ezscrum_172.mantis_project_table 結構
 DROP TABLE IF EXISTS `mantis_project_table`;
 CREATE TABLE IF NOT EXISTS `mantis_project_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -869,7 +869,7 @@ CREATE TABLE IF NOT EXISTS `mantis_project_table` (
   KEY `idx_project_view` (`view_state`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_project_table 的資料：2 rows
+-- 正在導出表  ezscrum_172.mantis_project_table 的資料：2 rows
 DELETE FROM `mantis_project_table`;
 /*!40000 ALTER TABLE `mantis_project_table` DISABLE KEYS */;
 INSERT INTO `mantis_project_table` (`id`, `name`, `status`, `enabled`, `view_state`, `access_min`, `file_path`, `description`, `baseLine_velocity`, `baseLine_cost_per_storyPoint`) VALUES
@@ -878,7 +878,7 @@ INSERT INTO `mantis_project_table` (`id`, `name`, `status`, `enabled`, `view_sta
 /*!40000 ALTER TABLE `mantis_project_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_project_user_list_table 結構
+-- 導出  表 ezscrum_172.mantis_project_user_list_table 結構
 DROP TABLE IF EXISTS `mantis_project_user_list_table`;
 CREATE TABLE IF NOT EXISTS `mantis_project_user_list_table` (
   `project_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -888,7 +888,7 @@ CREATE TABLE IF NOT EXISTS `mantis_project_user_list_table` (
   KEY `idx_project_user` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_project_user_list_table 的資料：8 rows
+-- 正在導出表  ezscrum_172.mantis_project_user_list_table 的資料：8 rows
 DELETE FROM `mantis_project_user_list_table`;
 /*!40000 ALTER TABLE `mantis_project_user_list_table` DISABLE KEYS */;
 INSERT INTO `mantis_project_user_list_table` (`project_id`, `user_id`, `access_level`) VALUES
@@ -903,7 +903,7 @@ INSERT INTO `mantis_project_user_list_table` (`project_id`, `user_id`, `access_l
 /*!40000 ALTER TABLE `mantis_project_user_list_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_project_version_table 結構
+-- 導出  表 ezscrum_172.mantis_project_version_table 結構
 DROP TABLE IF EXISTS `mantis_project_version_table`;
 CREATE TABLE IF NOT EXISTS `mantis_project_version_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -916,13 +916,13 @@ CREATE TABLE IF NOT EXISTS `mantis_project_version_table` (
   UNIQUE KEY `idx_project_version` (`project_id`,`version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_project_version_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_project_version_table 的資料：0 rows
 DELETE FROM `mantis_project_version_table`;
 /*!40000 ALTER TABLE `mantis_project_version_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_project_version_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_sponsorship_table 結構
+-- 導出  表 ezscrum_172.mantis_sponsorship_table 結構
 DROP TABLE IF EXISTS `mantis_sponsorship_table`;
 CREATE TABLE IF NOT EXISTS `mantis_sponsorship_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -939,13 +939,13 @@ CREATE TABLE IF NOT EXISTS `mantis_sponsorship_table` (
   KEY `idx_sponsorship_user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_sponsorship_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_sponsorship_table 的資料：0 rows
 DELETE FROM `mantis_sponsorship_table`;
 /*!40000 ALTER TABLE `mantis_sponsorship_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_sponsorship_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_tag_table 結構
+-- 導出  表 ezscrum_172.mantis_tag_table 結構
 DROP TABLE IF EXISTS `mantis_tag_table`;
 CREATE TABLE IF NOT EXISTS `mantis_tag_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -957,13 +957,13 @@ CREATE TABLE IF NOT EXISTS `mantis_tag_table` (
   PRIMARY KEY (`id`,`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_tag_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_tag_table 的資料：0 rows
 DELETE FROM `mantis_tag_table`;
 /*!40000 ALTER TABLE `mantis_tag_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_tag_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_tokens_table 結構
+-- 導出  表 ezscrum_172.mantis_tokens_table 結構
 DROP TABLE IF EXISTS `mantis_tokens_table`;
 CREATE TABLE IF NOT EXISTS `mantis_tokens_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -976,7 +976,7 @@ CREATE TABLE IF NOT EXISTS `mantis_tokens_table` (
   KEY `idx_typeowner` (`type`,`owner`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_tokens_table 的資料：1 rows
+-- 正在導出表  ezscrum_172.mantis_tokens_table 的資料：1 rows
 DELETE FROM `mantis_tokens_table`;
 /*!40000 ALTER TABLE `mantis_tokens_table` DISABLE KEYS */;
 INSERT INTO `mantis_tokens_table` (`id`, `owner`, `type`, `timestamp`, `expiry`, `value`) VALUES
@@ -984,7 +984,7 @@ INSERT INTO `mantis_tokens_table` (`id`, `owner`, `type`, `timestamp`, `expiry`,
 /*!40000 ALTER TABLE `mantis_tokens_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_user_pref_table 結構
+-- 導出  表 ezscrum_172.mantis_user_pref_table 結構
 DROP TABLE IF EXISTS `mantis_user_pref_table`;
 CREATE TABLE IF NOT EXISTS `mantis_user_pref_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1021,13 +1021,13 @@ CREATE TABLE IF NOT EXISTS `mantis_user_pref_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_user_pref_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_user_pref_table 的資料：0 rows
 DELETE FROM `mantis_user_pref_table`;
 /*!40000 ALTER TABLE `mantis_user_pref_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_user_pref_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_user_print_pref_table 結構
+-- 導出  表 ezscrum_172.mantis_user_print_pref_table 結構
 DROP TABLE IF EXISTS `mantis_user_print_pref_table`;
 CREATE TABLE IF NOT EXISTS `mantis_user_print_pref_table` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1035,13 +1035,13 @@ CREATE TABLE IF NOT EXISTS `mantis_user_print_pref_table` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_user_print_pref_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_user_print_pref_table 的資料：0 rows
 DELETE FROM `mantis_user_print_pref_table`;
 /*!40000 ALTER TABLE `mantis_user_print_pref_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_user_print_pref_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_user_profile_table 結構
+-- 導出  表 ezscrum_172.mantis_user_profile_table 結構
 DROP TABLE IF EXISTS `mantis_user_profile_table`;
 CREATE TABLE IF NOT EXISTS `mantis_user_profile_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1053,13 +1053,13 @@ CREATE TABLE IF NOT EXISTS `mantis_user_profile_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_user_profile_table 的資料：0 rows
+-- 正在導出表  ezscrum_172.mantis_user_profile_table 的資料：0 rows
 DELETE FROM `mantis_user_profile_table`;
 /*!40000 ALTER TABLE `mantis_user_profile_table` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mantis_user_profile_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.mantis_user_table 結構
+-- 導出  表 ezscrum_172.mantis_user_table 結構
 DROP TABLE IF EXISTS `mantis_user_table`;
 CREATE TABLE IF NOT EXISTS `mantis_user_table` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1085,7 +1085,7 @@ CREATE TABLE IF NOT EXISTS `mantis_user_table` (
   KEY `idx_access` (`access_level`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.mantis_user_table 的資料：6 rows
+-- 正在導出表  ezscrum_172.mantis_user_table 的資料：6 rows
 DELETE FROM `mantis_user_table`;
 /*!40000 ALTER TABLE `mantis_user_table` DISABLE KEYS */;
 INSERT INTO `mantis_user_table` (`id`, `username`, `realname`, `email`, `password`, `date_created`, `last_visit`, `enabled`, `protected`, `access_level`, `login_count`, `lost_password_request_count`, `failed_login_count`, `cookie_string`, `Baseline_Velocity`, `Baseline_Cost_Per_StoryPoint`) VALUES
@@ -1098,7 +1098,7 @@ INSERT INTO `mantis_user_table` (`id`, `username`, `realname`, `email`, `passwor
 /*!40000 ALTER TABLE `mantis_user_table` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.project 結構
+-- 導出  表 ezscrum_172.project 結構
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE IF NOT EXISTS `project` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1110,13 +1110,13 @@ CREATE TABLE IF NOT EXISTS `project` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.project 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.project 的資料：~0 rows (大約)
 DELETE FROM `project`;
 /*!40000 ALTER TABLE `project` DISABLE KEYS */;
 /*!40000 ALTER TABLE `project` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.project_role 結構
+-- 導出  表 ezscrum_172.project_role 結構
 DROP TABLE IF EXISTS `project_role`;
 CREATE TABLE IF NOT EXISTS `project_role` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1128,13 +1128,13 @@ CREATE TABLE IF NOT EXISTS `project_role` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.project_role 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.project_role 的資料：~0 rows (大約)
 DELETE FROM `project_role`;
 /*!40000 ALTER TABLE `project_role` DISABLE KEYS */;
 /*!40000 ALTER TABLE `project_role` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.query 結構
+-- 導出  表 ezscrum_172.query 結構
 DROP TABLE IF EXISTS `query`;
 CREATE TABLE IF NOT EXISTS `query` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -1145,13 +1145,13 @@ CREATE TABLE IF NOT EXISTS `query` (
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.query 的資料：0 rows
+-- 正在導出表  ezscrum_172.query 的資料：0 rows
 DELETE FROM `query`;
 /*!40000 ALTER TABLE `query` DISABLE KEYS */;
 /*!40000 ALTER TABLE `query` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.release 結構
+-- 導出  表 ezscrum_172.release 結構
 DROP TABLE IF EXISTS `release`;
 CREATE TABLE IF NOT EXISTS `release` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1166,13 +1166,13 @@ CREATE TABLE IF NOT EXISTS `release` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.release 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.release 的資料：~0 rows (大約)
 DELETE FROM `release`;
 /*!40000 ALTER TABLE `release` DISABLE KEYS */;
 /*!40000 ALTER TABLE `release` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.retrospective 結構
+-- 導出  表 ezscrum_172.retrospective 結構
 DROP TABLE IF EXISTS `retrospective`;
 CREATE TABLE IF NOT EXISTS `retrospective` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1188,13 +1188,13 @@ CREATE TABLE IF NOT EXISTS `retrospective` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.retrospective 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.retrospective 的資料：~0 rows (大約)
 DELETE FROM `retrospective`;
 /*!40000 ALTER TABLE `retrospective` DISABLE KEYS */;
 /*!40000 ALTER TABLE `retrospective` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.scrum_role 結構
+-- 導出  表 ezscrum_172.scrum_role 結構
 DROP TABLE IF EXISTS `scrum_role`;
 CREATE TABLE IF NOT EXISTS `scrum_role` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1214,13 +1214,13 @@ CREATE TABLE IF NOT EXISTS `scrum_role` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.scrum_role 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.scrum_role 的資料：~0 rows (大約)
 DELETE FROM `scrum_role`;
 /*!40000 ALTER TABLE `scrum_role` DISABLE KEYS */;
 /*!40000 ALTER TABLE `scrum_role` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.serial_number 結構
+-- 導出  表 ezscrum_172.serial_number 結構
 DROP TABLE IF EXISTS `serial_number`;
 CREATE TABLE IF NOT EXISTS `serial_number` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1234,7 +1234,7 @@ CREATE TABLE IF NOT EXISTS `serial_number` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.serial_number 的資料：1 rows
+-- 正在導出表  ezscrum_172.serial_number 的資料：1 rows
 DELETE FROM `serial_number`;
 /*!40000 ALTER TABLE `serial_number` DISABLE KEYS */;
 INSERT INTO `serial_number` (`id`, `project_id`, `release`, `sprint`, `story`, `task`, `unplanned`, `retrospective`) VALUES
@@ -1242,7 +1242,7 @@ INSERT INTO `serial_number` (`id`, `project_id`, `release`, `sprint`, `story`, `
 /*!40000 ALTER TABLE `serial_number` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.sprint 結構
+-- 導出  表 ezscrum_172.sprint 結構
 DROP TABLE IF EXISTS `sprint`;
 CREATE TABLE IF NOT EXISTS `sprint` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1262,13 +1262,13 @@ CREATE TABLE IF NOT EXISTS `sprint` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.sprint 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.sprint 的資料：~0 rows (大約)
 DELETE FROM `sprint`;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.story 結構
+-- 導出  表 ezscrum_172.story 結構
 DROP TABLE IF EXISTS `story`;
 CREATE TABLE IF NOT EXISTS `story` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1286,13 +1286,13 @@ CREATE TABLE IF NOT EXISTS `story` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.story 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.story 的資料：~0 rows (大約)
 DELETE FROM `story`;
 /*!40000 ALTER TABLE `story` DISABLE KEYS */;
 /*!40000 ALTER TABLE `story` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.story_tag_relation 結構
+-- 導出  表 ezscrum_172.story_tag_relation 結構
 DROP TABLE IF EXISTS `story_tag_relation`;
 CREATE TABLE IF NOT EXISTS `story_tag_relation` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1301,13 +1301,13 @@ CREATE TABLE IF NOT EXISTS `story_tag_relation` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.story_tag_relation 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.story_tag_relation 的資料：~0 rows (大約)
 DELETE FROM `story_tag_relation`;
 /*!40000 ALTER TABLE `story_tag_relation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `story_tag_relation` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.system 結構
+-- 導出  表 ezscrum_172.system 結構
 DROP TABLE IF EXISTS `system`;
 CREATE TABLE IF NOT EXISTS `system` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1316,7 +1316,7 @@ CREATE TABLE IF NOT EXISTS `system` (
   UNIQUE KEY `account_id_UNIQUE` (`account_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.system 的資料：1 rows
+-- 正在導出表  ezscrum_172.system 的資料：1 rows
 DELETE FROM `system`;
 /*!40000 ALTER TABLE `system` DISABLE KEYS */;
 INSERT INTO `system` (`id`, `account_id`) VALUES
@@ -1324,7 +1324,7 @@ INSERT INTO `system` (`id`, `account_id`) VALUES
 /*!40000 ALTER TABLE `system` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.tag 結構
+-- 導出  表 ezscrum_172.tag 結構
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE IF NOT EXISTS `tag` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1335,13 +1335,13 @@ CREATE TABLE IF NOT EXISTS `tag` (
   UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.tag 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.tag 的資料：~0 rows (大約)
 DELETE FROM `tag`;
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.task 結構
+-- 導出  表 ezscrum_172.task 結構
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE IF NOT EXISTS `task` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1360,13 +1360,13 @@ CREATE TABLE IF NOT EXISTS `task` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.task 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.task 的資料：~0 rows (大約)
 DELETE FROM `task`;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.token 結構
+-- 導出  表 ezscrum_172.token 結構
 DROP TABLE IF EXISTS `token`;
 CREATE TABLE IF NOT EXISTS `token` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1379,13 +1379,13 @@ CREATE TABLE IF NOT EXISTS `token` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.token 的資料：0 rows
+-- 正在導出表  ezscrum_172.token 的資料：0 rows
 DELETE FROM `token`;
 /*!40000 ALTER TABLE `token` DISABLE KEYS */;
 /*!40000 ALTER TABLE `token` ENABLE KEYS */;
 
 
--- 導出  表 ezscrum.unplanned 結構
+-- 導出  表 ezscrum_172.unplanned 結構
 DROP TABLE IF EXISTS `unplanned`;
 CREATE TABLE IF NOT EXISTS `unplanned` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1403,7 +1403,7 @@ CREATE TABLE IF NOT EXISTS `unplanned` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在導出表  ezscrum.unplanned 的資料：~0 rows (大約)
+-- 正在導出表  ezscrum_172.unplanned 的資料：~0 rows (大約)
 DELETE FROM `unplanned`;
 /*!40000 ALTER TABLE `unplanned` DISABLE KEYS */;
 /*!40000 ALTER TABLE `unplanned` ENABLE KEYS */;
