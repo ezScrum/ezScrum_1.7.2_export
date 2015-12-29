@@ -1,10 +1,15 @@
 package ntut.csie.ezScrum.restful.export.support;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +19,8 @@ import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.core.IIssueHistory;
@@ -57,8 +64,10 @@ import ntut.csie.ezScrum.web.dataObject.UserInformation;
 import ntut.csie.ezScrum.web.helper.AccountHelper;
 import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
 import ntut.csie.ezScrum.web.helper.SprintPlanHelper;
+import ntut.csie.ezScrum.web.logic.SprintBacklogLogic;
 import ntut.csie.ezScrum.web.mapper.SprintBacklogMapper;
 import ntut.csie.jcis.account.core.IAccount;
+import ntut.csie.jcis.core.util.StringUtil;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class JSONEncoderTest {
@@ -224,6 +233,49 @@ public class JSONEncoderTest {
 		assertEquals(fileName, attachFileJSON.getString(AttachFileJSONEnum.NAME));
 		assertEquals(fileType, attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE));
 		assertEquals(expectedFileBase64Binary, attachFileJSON.getString(AttachFileJSONEnum.BINARY));
+	}
+	
+	//TODO
+	@Test
+	public void testToAttachFileJSON_MD5() throws JSONException, NoSuchAlgorithmException, IOException {
+		// Test Data
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		IIssue story = mASTS.getIssueList().get(0);
+		
+		String fileName = "txt測試.txt";
+		String fileType = "application/octet-stream";
+		File sourceFile = new File("./TestData/attachFiles/txt測試.txt");
+		
+		// Add AttachFile
+		SprintBacklogMapper sprintBacklogMapper = (new SprintBacklogLogic(project, null, sprintId)).getSprintBacklogMapper();
+		sprintBacklogMapper.addAttachFile(story.getIssueID(), sourceFile.getAbsolutePath());
+		story = sprintBacklogMapper.getIssue(story.getIssueID());
+
+		// Create IssueAttachFile
+		IssueAttachFile attachFile = story.getAttachFile().get(0);
+		// ToJSON
+		JSONObject attachFileJSON = JSONEncoder.toAttachFileJSON(attachFile, sourceFile);
+		String expectedFileBase64Binary = FileEncoder.toBase64BinaryString(sourceFile);
+		
+		MessageDigest md = MessageDigest.getInstance("MD5");
+
+		// Get MD5
+		md.update(Files.readAllBytes(sourceFile.toPath()));
+		String originMD5 = StringUtil.toHexString(md.digest());
+		
+		byte[] binary = Base64.decode(attachFileJSON.getString(AttachFileJSONEnum.BINARY));
+		md.update(binary);
+		String newMD5 = StringUtil.toHexString(md.digest());
+		
+		byte[] answerByte = Files.readAllBytes(sourceFile.toPath());
+
+		// Assert
+		assertEquals(fileName, attachFileJSON.getString(AttachFileJSONEnum.NAME));
+		assertEquals(fileType, attachFileJSON.getString(AttachFileJSONEnum.CONTENT_TYPE));
+		assertEquals(expectedFileBase64Binary, attachFileJSON.getString(AttachFileJSONEnum.BINARY));
+		assertArrayEquals(answerByte, binary);
+		assertEquals(originMD5, newMD5);
 	}
 	
 	@Test
