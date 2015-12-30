@@ -41,6 +41,7 @@ public class ProjectRESTfulApi {
 		IProject project = resourceFinder.findProject(projectName);
 		
 		if (project == null) {
+			System.err.println("404 project null");
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 		

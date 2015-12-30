@@ -1,3 +1,8 @@
+var script = document.createElement('script');
+script.src = './integratedRESTfulAPI.js';
+script.type = 'text/javascript';
+document.getElementsByTagName('head')[0].appendChild(script);
+
 var projectArray = [];
 
 var checkGroup = {
@@ -49,6 +54,75 @@ var ProjectStore = new Ext.data.Store({
 	],
 	reader : ProjectReader
 });
+
+var myHeaders = new Headers();
+var myInit = { method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'default' };
+var baseURL = "http://localhost:8080/ezScrum/resource/";
+var exportProj = function(){
+	fetch(baseURL+"accounts",myInit).then(function(res){
+		return res.json();
+	}).then(function(data){
+		console.log(data);
+		getProj();
+	});
+}
+var getProj = function(){
+	console.log("getProj");
+	fetch(baseURL+"projects",myInit).then(function(res){
+		return res.json();
+	}).then(function(data){
+		console.log(data);
+		for(proj of data){
+			getScrumroles(proj.name);
+			getProjectroles(proj.name);
+			getTags(proj.name);
+			getReleases(proj.name);
+			getSprints(proj.name);
+		}
+	});
+}
+var getScrumroles = function(name){
+	console.log("getScrumroles");
+	fetch(baseURL+"projects/"+name+"/scrumroles",myInit).then(function(res){
+		return res.json();
+	}).then(function(data){
+		console.log(data);
+	});
+}
+var getProjectroles = function(name){
+	console.log("getProjectroles");
+	fetch(baseURL+"projects/"+name+"/projectroles",myInit).then(function(res){
+		return res.json();
+	}).then(function(data){
+		console.log(data);
+	});
+}
+var getTags = name =>{
+	console.log("getTags");
+	fetch(baseURL+"projects/"+name+"/tags",myInit).then(function(res){
+		return res.json();
+	}).then(function(data){
+		console.log(data);
+	});
+}
+var getReleases = name =>{
+	console.log("getReleases");
+	fetch(baseURL+"projects/"+name+"/releases",myInit).then(function(res){
+		return res.json();
+	}).then(function(data){
+		console.log(data);
+	});
+}
+var getSprints = name =>{
+	fetch(baseURL+"projects/"+name+"/sprints",myInit).then(function(res){
+		return res.json();
+	}).then(function(data){
+		console.log(data);
+	});
+}
 
 ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 	id 				: 'Export_Form',
@@ -129,46 +203,47 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 		}
 	},
     doExport: function() {
+    	exportProj();
     	// Progress Bar Dialog
-		Ext.MessageBox.show({
-			title : 'Please wait',
-			msg : 'Exporting projects...',
-			progressText : 'Initializing...',
-			width : 300,
-			progress : true,
-			closable : false,
-			wait:true,
-			waitConfig: {interval:200}
-		});
-    	var obj = this;
-		// Get Entity
-		var jsonArray = [];
-		for (var i = 0; i < projectArray.length; i++) {
-			if (projectArray[i].checked) {
-				var jsonObject = {
-					name : projectArray[i].id
-				};
-				jsonArray.push(jsonObject);
-			}
-		}
-    	Ext.Ajax.request({
-    		  url : '/ezScrum/resource/export/projects',
-    		  method: 'POST',
-    		  headers: { 'Content-Type': 'application/json'},
-    		  params : {},
-    		  jsonData: jsonArray,
-    		  timeout: 2 * 60 * 60 * 1000,
-    		  success: function (response) {
-    		     obj.downloadFileFromResponse(response);
-    		     Ext.MessageBox.hide();
-    		     Ext.example.msg('Done', 'Your data is downloaded!');
-    		  },
-    		  failure: function (response) {
-    			  Ext.MessageBox.hide();
-    		      Ext.Msg.alert("Error", response);
-    		  }
-    	});
-	}, 
+//		Ext.MessageBox.show({
+//			title : 'Please wait',
+//			msg : 'Exporting projects...',
+//			progressText : 'Initializing...',
+//			width : 300,
+//			progress : true,
+//			closable : false,
+//			wait:true,
+//			waitConfig: {interval:200}
+//		});
+//    	var obj = this;
+//		// Get Entity
+//		var jsonArray = [];
+//		for (var i = 0; i < projectArray.length; i++) {
+//			if (projectArray[i].checked) {
+//				var jsonObject = {
+//					name : projectArray[i].id
+//				};
+//				jsonArray.push(jsonObject);
+//			}
+//		}
+//    	Ext.Ajax.request({
+//    		  url : '/ezScrum/resource/export/projects',
+//    		  method: 'POST',
+//    		  headers: { 'Content-Type': 'application/json'},
+//    		  params : {},
+//    		  jsonData: jsonArray,
+//    		  timeout: 2 * 60 * 60 * 1000,
+//    		  success: function (response) {
+//    		     obj.downloadFileFromResponse(response);
+//    		     Ext.MessageBox.hide();
+//    		     Ext.example.msg('Done', 'Your data is downloaded!');
+//    		  },
+//    		  failure: function (response) {
+//    			  Ext.MessageBox.hide();
+//    		      Ext.Msg.alert("Error", response);
+//    		  }
+//    	});
+	} 
 	
 });
 
