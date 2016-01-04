@@ -18,7 +18,8 @@ Test Export - Export and Compare With Golden Answer - Project1
     # 等待成功訊息視窗顯示
     Wait Until Page Contains    Your data is downloaded!
     # 等待檔案下載成功
-    Sleep    3s
+    ${wait_for_download_delay}=    Set Variable    3s
+    Sleep    ${wait_for_download_delay}
     # 驗證檔案格式及內容
     ${exported_file_path} =    Get Latest Ezscrum JSON File Path In Directory    ${USER_DOWNLOAD_DIRECTORY}
     ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project01.json
@@ -35,7 +36,8 @@ Test Export - Export and Compare With Golden Answer - Project2
     # 等待成功訊息視窗顯示
     Wait Until Page Contains    Your data is downloaded!
     # 等待檔案下載成功
-    Sleep    3s
+    ${wait_for_download_delay}=    Set Variable    3s
+    Sleep    ${wait_for_download_delay}
     # 驗證檔案格式及內容
     ${exported_file_path} =    Get Latest Ezscrum JSON File Path In Directory    ${USER_DOWNLOAD_DIRECTORY}
     ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project02.json
@@ -53,7 +55,8 @@ Test Export - Export and Compare With Golden Answer - Two Projects
     # 等待成功訊息視窗顯示
     Wait Until Page Contains    Your data is downloaded!
     # 等待檔案下載成功
-    Sleep    3s
+    ${wait_for_download_delay}=    Set Variable    3s
+    Sleep    ${wait_for_download_delay}
     # 驗證檔案格式及內容
     ${exported_file_path} =    Get Latest Ezscrum JSON File Path In Directory    ${USER_DOWNLOAD_DIRECTORY}
     ${golden_answer_path} =    Catenate    SEPARATOR=\\    ${EZSCRUM_DIRECTORY}    robotTesting    TestData    golden_answer_project01_project02.json

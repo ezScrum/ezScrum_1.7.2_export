@@ -59,7 +59,7 @@ class ExportLibrary:
 
         # all SQL commands (split on ';')
         sqlCommands = sqlFile.split(';')
-        db = MySQLdb.connect(host=host_url, user=account, passwd=password, db=databaseName)
+        db = MySQLdb.connect(host=host_url, user=account, passwd=password, db=databaseName, charset='utf8')
         cursor = db.cursor()
 
         # ignore useless warnings
