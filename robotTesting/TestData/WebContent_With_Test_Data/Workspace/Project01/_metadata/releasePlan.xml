@@ -2,9 +2,14 @@
 <Releases>
   <Release id="1">
     <Name>Release01</Name>
-    <StartDate>2015/12/25</StartDate>
-    <EndDate>2016/01/21</EndDate>
-    <Description>Description</Description>
+    <StartDate>2016/01/07</StartDate>
+    <EndDate>2016/02/03</EndDate>
+    <Description>\n\t\r\b\f
+\n
+\t
+\r
+\b
+\f</Description>
   </Release>
 </Releases>
 
