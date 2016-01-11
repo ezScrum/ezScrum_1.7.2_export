@@ -28,8 +28,8 @@
     </Role>
     <Role id="admin" name="administrator">
       <Permissions>
-        <Permission name="system_createProject" />
         <Permission name="system_admin" />
+        <Permission name="system_createProject" />
       </Permissions>
     </Role>
     <Role id="Project01_Guest" name="Project01_Guest">
@@ -101,15 +101,15 @@
     <Assign actor="account1" role="Project01_ProductOwner" />
     <Assign actor="account1" role="user" />
     <Assign actor="account4" role="Project01_ScrumTeam" />
-    <Assign actor="account4" role="user" />
     <Assign actor="account4" role="Project02_ScrumTeam" />
-    <Assign actor="admin" role="user" />
+    <Assign actor="account4" role="user" />
     <Assign actor="admin" role="admin" />
-    <Assign actor="account3" role="Project01_ScrumTeam" />
+    <Assign actor="admin" role="user" />
     <Assign actor="account3" role="Project02_ScrumMaster" />
+    <Assign actor="account3" role="Project01_ScrumTeam" />
     <Assign actor="account3" role="user" />
-    <Assign actor="account5" role="user" />
     <Assign actor="account5" role="Project02_ScrumTeam" />
+    <Assign actor="account5" role="user" />
   </Assigns>
 </RoleBase>
 
