@@ -29,6 +29,7 @@ import ntut.csie.ezScrum.test.CreateData.CreateRetrospective;
 import ntut.csie.ezScrum.test.CreateData.CreateSprint;
 import ntut.csie.ezScrum.test.CreateData.InitialSQL;
 import ntut.csie.ezScrum.test.CreateData.ezScrumInfoConfig;
+import ntut.csie.ezScrum.web.helper.RetrospectiveHelper;
 import ntut.csie.jcis.resource.core.IProject;
 
 public class RetrospectiveRESTfulApiTest extends JerseyTest {
@@ -134,5 +135,64 @@ public class RetrospectiveRESTfulApiTest extends JerseyTest {
 		assertEquals(improvements.get(1).getDescription(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.DESCRIPTION));
 		assertEquals(improvements.get(1).getCategory(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.TYPE));
 		assertEquals(improvements.get(1).getStatus(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.STATUS));
+	}
+	
+	@Test
+	public void testGetRetrospectivesInSprint_SprintIdAll() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = "ALL";
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/retrospectives}' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/retrospectives/")
+		        .request()
+		        .get();
+		
+		// Assert
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void testGetRetrospectivesInSprint_WithRetrospectiveWhichSprintIdIsAll() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = mCS.getSprintIDList().get(0);
+		List<IScrumIssue> goods = mCR.getGoodRetrospectiveList();
+		List<IScrumIssue> improvements = mCR.getImproveRetrospectiveList();
+		
+		// Set a retrospective sprint equal ALL
+		IScrumIssue improvement = improvements.get(1);
+		String name = improvement.getName();
+		String sprintID = "ALL";
+		String type = improvement.getCategoryName();
+		String description = improvement.getDescription();
+		String status = improvement.getStatus();
+		RetrospectiveHelper retrospectiveHelper = new RetrospectiveHelper(project, null);
+		retrospectiveHelper.edit(improvement.getIssueID(), name, description, sprintID, type, status);
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/retrospectives}' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/retrospectives/")
+		        .request()
+		        .get();
+		
+		JSONArray jsonResponse = new JSONArray(response.readEntity(String.class));
+		
+		// Assert
+		assertEquals(3, jsonResponse.length());
+		
+		assertEquals(goods.get(0).getName(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.NAME));
+		assertEquals(goods.get(0).getDescription(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.DESCRIPTION));
+		assertEquals(goods.get(0).getCategory(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.TYPE));
+		assertEquals(goods.get(0).getStatus(), jsonResponse.getJSONObject(0).getString(RetrospectiveJSONEnum.STATUS));
+		
+		assertEquals(goods.get(1).getName(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.NAME));
+		assertEquals(goods.get(1).getDescription(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.DESCRIPTION));
+		assertEquals(goods.get(1).getCategory(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.TYPE));
+		assertEquals(goods.get(1).getStatus(), jsonResponse.getJSONObject(1).getString(RetrospectiveJSONEnum.STATUS));
+		
+		assertEquals(improvements.get(0).getName(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.NAME));
+		assertEquals(improvements.get(0).getDescription(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.DESCRIPTION));
+		assertEquals(improvements.get(0).getCategory(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.TYPE));
+		assertEquals(improvements.get(0).getStatus(), jsonResponse.getJSONObject(2).getString(RetrospectiveJSONEnum.STATUS));
 	}
 }

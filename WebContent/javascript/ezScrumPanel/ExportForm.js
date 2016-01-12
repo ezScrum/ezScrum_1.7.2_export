@@ -81,7 +81,7 @@ ExportFormLayout = Ext.extend(Ext.form.FormPanel, {
 				ProjectStore.loadData(response.responseXML);
 				ProjectStore.each(function(record){
 					var checkbox = new Ext.form.Checkbox({
-						boxLabel : '`Name`: ' + record.get("ID") + ', ' + '`Comment`: ' + record.get("Comment"),
+						boxLabel : '`Name`: ' + record.get("Name") + ', ' + '`Comment`: ' + record.get("Comment"),
 						id : record.get("ID"),
 						name : record.get("Name")
 					});
