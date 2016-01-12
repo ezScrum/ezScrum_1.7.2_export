@@ -42,14 +42,26 @@ public class RetrospectiveRESTfulApi {
 		List<IScrumIssue> retrospectives = new ArrayList<IScrumIssue>();
 		List<IScrumIssue> goods = retrospectiveMapper.getList(ScrumEnum.GOOD_ISSUE_TYPE);
 		for (IScrumIssue good : goods) {
-			if (Long.parseLong(good.getSprintID()) == sprintId) {
-				retrospectives.add(good);
+			try {
+				long sprintIdInGood = Long.parseLong(good.getSprintID());
+				if (sprintIdInGood == sprintId) {
+					retrospectives.add(good);
+				}
+			} catch (Exception e) {
+				// when sprint id is invalid will be filtered
+				continue;
 			}
 		}
 		List<IScrumIssue> improvements = retrospectiveMapper.getList(ScrumEnum.IMPROVEMENTS_ISSUE_TYPE);
 		for (IScrumIssue improvement : improvements) {
-			if (Long.parseLong(improvement.getSprintID()) == sprintId) {
-				retrospectives.add(improvement);
+			try {
+				long sprintIdInImprovement = Long.parseLong(improvement.getSprintID());
+				if (sprintIdInImprovement == sprintId) {
+					retrospectives.add(improvement);
+				}
+			} catch (Exception e) {
+				// when sprint id is invalid will be filtered
+				continue;
 			}
 		}
 		return retrospectives;

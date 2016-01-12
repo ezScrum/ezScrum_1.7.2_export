@@ -135,4 +135,19 @@ public class RetrospectiveRESTfulApiTest extends JerseyTest {
 		assertEquals(improvements.get(1).getCategory(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.TYPE));
 		assertEquals(improvements.get(1).getStatus(), jsonResponse.getJSONObject(3).getString(RetrospectiveJSONEnum.STATUS));
 	}
+	
+	@Test
+	public void testGetRetrospectivesInSprint_SprintIdAll() throws JSONException {
+		IProject project = mCP.getProjectList().get(0);
+		String sprintId = "ALL";
+		
+		// Call '/projects/{projectName}/sprints/{sprintId}/retrospectives}' API
+		Response response = mClient.target(mBaseUri)
+		        .path("projects/" + project.getName() + "/sprints/" + sprintId + "/retrospectives/")
+		        .request()
+		        .get();
+		
+		// Assert
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+	}
 }
