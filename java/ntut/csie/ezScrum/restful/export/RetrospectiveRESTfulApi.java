@@ -47,7 +47,7 @@ public class RetrospectiveRESTfulApi {
 				if (sprintIdInGood == sprintId) {
 					retrospectives.add(good);
 				}
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				// when sprint id is invalid will be filtered
 				continue;
 			}
@@ -59,7 +59,7 @@ public class RetrospectiveRESTfulApi {
 				if (sprintIdInImprovement == sprintId) {
 					retrospectives.add(improvement);
 				}
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				// when sprint id is invalid will be filtered
 				continue;
 			}
