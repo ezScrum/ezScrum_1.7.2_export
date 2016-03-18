@@ -115,13 +115,13 @@ public class ReleaseRESTfulApiTest extends JerseyTest {
 		assertEquals(release1.getName(), releaseJson1.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release1.getDescription(), releaseJson1.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release1.getStartDate(), releaseJson1.getString(ReleaseJSONEnum.START_DATE));
-		assertEquals(release1.getEndDate(), releaseJson1.getString(ReleaseJSONEnum.DUE_DATE));
+		assertEquals(release1.getEndDate(), releaseJson1.getString(ReleaseJSONEnum.END_DATE));
 		
 		JSONObject releaseJson2 = jsonResponse.getJSONObject(1);
 		assertEquals(release2.getName(), releaseJson2.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release2.getDescription(), releaseJson2.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release2.getStartDate(), releaseJson2.getString(ReleaseJSONEnum.START_DATE));
-		assertEquals(release2.getEndDate(), releaseJson2.getString(ReleaseJSONEnum.DUE_DATE));
+		assertEquals(release2.getEndDate(), releaseJson2.getString(ReleaseJSONEnum.END_DATE));
 	}
 	
 	@Test

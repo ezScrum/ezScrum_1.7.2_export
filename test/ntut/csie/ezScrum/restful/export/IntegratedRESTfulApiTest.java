@@ -642,13 +642,13 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(release1.getName(), releaseJson1.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release1.getDescription(), releaseJson1.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release1.getStartDate(), releaseJson1.getString(ReleaseJSONEnum.START_DATE));
-		assertEquals(release1.getEndDate(), releaseJson1.getString(ReleaseJSONEnum.DUE_DATE));
+		assertEquals(release1.getEndDate(), releaseJson1.getString(ReleaseJSONEnum.END_DATE));
 
 		JSONObject releaseJson2 = releaseJSONArrayInProject.getJSONObject(1);
 		assertEquals(release2.getName(), releaseJson2.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release2.getDescription(), releaseJson2.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release2.getStartDate(), releaseJson2.getString(ReleaseJSONEnum.START_DATE));
-		assertEquals(release2.getEndDate(), releaseJson2.getString(ReleaseJSONEnum.DUE_DATE));
+		assertEquals(release2.getEndDate(), releaseJson2.getString(ReleaseJSONEnum.END_DATE));
 		// end
 
 		// Assert sprint data in project
@@ -660,7 +660,7 @@ public class IntegratedRESTfulApiTest extends JerseyTest {
 		assertEquals(Integer.parseInt(sprint.getAvailableDays()), sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS));
 		assertEquals(Integer.parseInt(sprint.getFocusFactor()), sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR));
 		assertEquals(sprint.getStartDate(), sprintJSON.getString(SprintJSONEnum.START_DATE));
-		assertEquals(sprint.getEndDate(), sprintJSON.getString(SprintJSONEnum.DUE_DATE));
+		assertEquals(sprint.getEndDate(), sprintJSON.getString(SprintJSONEnum.END_DATE));
 		assertEquals(sprint.getDemoDate(), sprintJSON.getString(SprintJSONEnum.DEMO_DATE));
 		assertEquals(sprint.getDemoPlace(), sprintJSON.getString(SprintJSONEnum.DEMO_PLACE));
 		assertEquals(sprint.getNotes(), sprintJSON.getString(SprintJSONEnum.DAILY_INFO));

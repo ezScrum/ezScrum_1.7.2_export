@@ -408,7 +408,7 @@ public class JSONEncoderTest {
 		assertEquals(Integer.parseInt(sprint1.getAvailableDays()), sprint1JSON.getInt(SprintJSONEnum.AVAILABLE_HOURS));
 		assertEquals(Integer.parseInt(sprint1.getFocusFactor()), sprint1JSON.getInt(SprintJSONEnum.FOCUS_FACTOR));
 		assertEquals(sprint1.getStartDate(), sprint1JSON.getString(SprintJSONEnum.START_DATE));
-		assertEquals(sprint1.getEndDate(), sprint1JSON.getString(SprintJSONEnum.DUE_DATE));
+		assertEquals(sprint1.getEndDate(), sprint1JSON.getString(SprintJSONEnum.END_DATE));
 		assertEquals(sprint1.getDemoDate(), sprint1JSON.getString(SprintJSONEnum.DEMO_DATE));
 		assertEquals(sprint1.getDemoPlace(), sprint1JSON.getString(SprintJSONEnum.DEMO_PLACE));
 		assertEquals(sprint1.getNotes(), sprint1JSON.getString(SprintJSONEnum.DAILY_INFO));
@@ -423,7 +423,7 @@ public class JSONEncoderTest {
 		assertEquals(Integer.parseInt(sprint2.getAvailableDays()), sprint2JSON.getInt(SprintJSONEnum.AVAILABLE_HOURS));
 		assertEquals(Integer.parseInt(sprint2.getFocusFactor()), sprint2JSON.getInt(SprintJSONEnum.FOCUS_FACTOR));
 		assertEquals(sprint2.getStartDate(), sprint2JSON.getString(SprintJSONEnum.START_DATE));
-		assertEquals(sprint2.getEndDate(), sprint2JSON.getString(SprintJSONEnum.DUE_DATE));
+		assertEquals(sprint2.getEndDate(), sprint2JSON.getString(SprintJSONEnum.END_DATE));
 		assertEquals(sprint2.getDemoDate(), sprint2JSON.getString(SprintJSONEnum.DEMO_DATE));
 		assertEquals(sprint2.getDemoPlace(), sprint2JSON.getString(SprintJSONEnum.DEMO_PLACE));
 		assertEquals(sprint2.getNotes(), sprint2JSON.getString(SprintJSONEnum.DAILY_INFO));
@@ -445,7 +445,7 @@ public class JSONEncoderTest {
 		assertEquals(Integer.parseInt(sprint.getAvailableDays()), sprintJSON.getInt(SprintJSONEnum.AVAILABLE_HOURS));
 		assertEquals(Integer.parseInt(sprint.getFocusFactor()), sprintJSON.getInt(SprintJSONEnum.FOCUS_FACTOR));
 		assertEquals(sprint.getStartDate(), sprintJSON.getString(SprintJSONEnum.START_DATE));
-		assertEquals(sprint.getEndDate(), sprintJSON.getString(SprintJSONEnum.DUE_DATE));
+		assertEquals(sprint.getEndDate(), sprintJSON.getString(SprintJSONEnum.END_DATE));
 		assertEquals(sprint.getDemoDate(), sprintJSON.getString(SprintJSONEnum.DEMO_DATE));
 		assertEquals(sprint.getDemoPlace(), sprintJSON.getString(SprintJSONEnum.DEMO_PLACE));
 		assertEquals(sprint.getNotes(), sprintJSON.getString(SprintJSONEnum.DAILY_INFO));
@@ -611,14 +611,14 @@ public class JSONEncoderTest {
 		assertEquals(release1.getName(), releaseJSON1.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release1.getDescription(), releaseJSON1.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release1.getStartDate(), releaseJSON1.getString(ReleaseJSONEnum.START_DATE));
-		assertEquals(release1.getEndDate(), releaseJSON1.getString(ReleaseJSONEnum.DUE_DATE));
+		assertEquals(release1.getEndDate(), releaseJSON1.getString(ReleaseJSONEnum.END_DATE));
 
 		JSONObject releaseJSON2 = releaseJSONArray.getJSONObject(1);
 		IReleasePlanDesc release2 = releases.get(1);
 		assertEquals(release2.getName(), releaseJSON2.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release2.getDescription(), releaseJSON2.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release2.getStartDate(), releaseJSON2.getString(ReleaseJSONEnum.START_DATE));
-		assertEquals(release2.getEndDate(), releaseJSON2.getString(ReleaseJSONEnum.DUE_DATE));
+		assertEquals(release2.getEndDate(), releaseJSON2.getString(ReleaseJSONEnum.END_DATE));
 	}
 
 	@Test
@@ -631,7 +631,7 @@ public class JSONEncoderTest {
 		assertEquals(release.getName(), releaseJSON.getString(ReleaseJSONEnum.NAME));
 		assertEquals(release.getDescription(), releaseJSON.getString(ReleaseJSONEnum.DESCRIPTION));
 		assertEquals(release.getStartDate(), releaseJSON.getString(ReleaseJSONEnum.START_DATE));
-		assertEquals(release.getEndDate(), releaseJSON.getString(ReleaseJSONEnum.DUE_DATE));
+		assertEquals(release.getEndDate(), releaseJSON.getString(ReleaseJSONEnum.END_DATE));
 	}
 	
 	@Test
