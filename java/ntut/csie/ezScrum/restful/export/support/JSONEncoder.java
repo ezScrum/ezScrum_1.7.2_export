@@ -321,7 +321,7 @@ public class JSONEncoder {
 					.put(SprintJSONEnum.AVAILABLE_HOURS, intStringToIntValue(sprint.getAvailableDays()))
 					.put(SprintJSONEnum.FOCUS_FACTOR, intStringToIntValue(sprint.getFocusFactor()))
 					.put(SprintJSONEnum.START_DATE, sprint.getStartDate())
-					.put(SprintJSONEnum.DUE_DATE, sprint.getEndDate())
+					.put(SprintJSONEnum.END_DATE, sprint.getEndDate())
 					.put(SprintJSONEnum.DEMO_DATE, sprint.getDemoDate())
 					.put(SprintJSONEnum.DEMO_PLACE, sprint.getDemoPlace())
 					.put(SprintJSONEnum.DAILY_INFO, sprint.getNotes());
@@ -452,7 +452,7 @@ public class JSONEncoder {
 			releaseJson.put(ReleaseJSONEnum.NAME, release.getName())
 					.put(ReleaseJSONEnum.DESCRIPTION, release.getDescription())
 					.put(ReleaseJSONEnum.START_DATE, release.getStartDate())
-					.put(ReleaseJSONEnum.DUE_DATE, release.getEndDate());
+					.put(ReleaseJSONEnum.END_DATE, release.getEndDate());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
