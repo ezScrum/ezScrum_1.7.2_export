@@ -2,7 +2,6 @@ package ntut.csie.ezScrum.restful.export;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -12,13 +11,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONArray;
+
 import ntut.csie.ezScrum.issue.core.IIssue;
 import ntut.csie.ezScrum.issue.internal.IssueAttachFile;
 import ntut.csie.ezScrum.iteration.core.ISprintPlanDesc;
+import ntut.csie.ezScrum.iteration.core.ScrumEnum;
 import ntut.csie.ezScrum.restful.export.support.JSONEncoder;
 import ntut.csie.ezScrum.restful.export.support.ResourceFinder;
 import ntut.csie.ezScrum.web.control.ProductBacklogHelper;
-import ntut.csie.ezScrum.web.helper.SprintBacklogHelper;
+import ntut.csie.ezScrum.web.mapper.ProductBacklogMapper;
 import ntut.csie.jcis.resource.core.IProject;
 
 @Path("projects/{projectName}/sprints/{sprintId}/stories")
@@ -30,13 +32,23 @@ public class StoryRESTfulApi {
 		ResourceFinder resourceFinder = new ResourceFinder();
 		IProject project = resourceFinder.findProject(projectName);
 		ISprintPlanDesc sprint = resourceFinder.findSprint(sprintId);
-
 		if (project == null || sprint == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-		SprintBacklogHelper sprintBacklogHelper = new SprintBacklogHelper(project, null, sprint.getID());
-		IIssue[] storyInSprintArray = sprintBacklogHelper.getStoryInSprint(sprint.getID());
-		String entity = JSONEncoder.toStoryJSONArray(Arrays.asList(storyInSprintArray)).toString();
+		
+		// Get All Stories
+		ProductBacklogMapper productBacklogMapper = new ProductBacklogMapper(project, null);
+		IIssue[] allStoryArray = productBacklogMapper.getIssues(ScrumEnum.STORY_ISSUE_TYPE);
+		// Story List for response
+		ArrayList<IIssue> storiesInSpecificSprint = new ArrayList<IIssue>();
+		for (IIssue story : allStoryArray) {
+			long currentSprintId = Long.parseLong(story.getSprintID());
+			if (currentSprintId == sprintId) {
+				storiesInSpecificSprint.add(story);
+			}
+		}
+		JSONArray storyJSONArray = JSONEncoder.toStoryJSONArray(storiesInSpecificSprint);
+		String entity = storyJSONArray.toString();
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
