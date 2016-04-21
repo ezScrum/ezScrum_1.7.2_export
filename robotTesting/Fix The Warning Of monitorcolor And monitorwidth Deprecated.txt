@@ -1,0 +1,9 @@
+參考至 robot 2.9.2 Doc:
+--monitorwidth chars  Deprecated. Use --consolewidth instead.
+--monitorcolors colors  Deprecated. Use --consolecolors instead.
+
+解決方法：
+1. 找到 Python目錄\Lib\site-packages\robotide\contrib\testrunner\testrunner.py
+2. 搜尋 --monitorwidth 並改為 --consolewidth
+3. 搜尋 --monitorcolors 並改為 --consolecolors
+4. 刪除 Python目錄\Lib\site-packages\robotide\contrib\testrunner\testrunner.pyc

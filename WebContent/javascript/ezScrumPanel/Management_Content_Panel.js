@@ -10,8 +10,8 @@ ezScrum.Management_ContentPanel = new Ext.Panel({
 	frame		: false,
 	items : [
 	    // RBAC Management index
-		// 0,                  1,                       2
-	    AccountManagementPage, ScrumRoleManagementPage, PluginManagementPage
+		// 0,                  1,                       2				      3
+	    AccountManagementPage, ScrumRoleManagementPage, PluginManagementPage, ExportPage
 	    
 	    // System Management index
 	    // 3,                      4

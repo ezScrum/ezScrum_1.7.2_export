@@ -110,7 +110,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());// 1, 2 ..
-				assertEquals("administrator", note.getHandler());// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());// default = 1 (administrator)
 				assertEquals(Integer.toString(imp + index), noteTextHelper.getImportance());// 200, 201, 202 ..
 				assertEquals(Integer.toString(est + index), noteTextHelper.getEstimation());// 21, 22 , 23 ..
 				assertEquals(Integer.toString(value + index), noteTextHelper.getValue());// 300, 301, 302 ..
@@ -167,7 +167,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
@@ -201,7 +201,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32 , 33 ..
 				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
@@ -268,7 +268,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..
@@ -317,7 +317,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 301, 302, 303 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 31, 32, 33 ..
 				assertEquals(value, noteTextHelper.getValue());				// 351, 352, 353 ..
@@ -378,7 +378,7 @@ public class MantisNoteServiceTest extends TestCase {
 				noteTextHelper.parserNoteText(note.getText());
 				assertEquals(index+1, note.getIssueID());					// 1, 2 .. 
 				assertEquals(index+1, note.getNoteID());					// 1, 2 ..
-				assertEquals("administrator", note.getHandler());			// default = 1 (administrator)
+				assertEquals("admin", note.getHandler());			// default = 1 (administrator)
 				assertEquals(importance, noteTextHelper.getImportance());	// 201, 202, 203 ..
 				assertEquals(estimation, noteTextHelper.getEstimation());	// 21, 22 , 23 ..
 				assertEquals(value, noteTextHelper.getValue());				// 251, 252, 253 ..

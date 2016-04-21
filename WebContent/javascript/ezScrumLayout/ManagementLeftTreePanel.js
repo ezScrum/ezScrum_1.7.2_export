@@ -38,7 +38,23 @@ ezScrum.Management_LeftTreePanel = Ext.extend(Ext.tree.TreePanel, {
                 	iconCls:'leaf-icon',
 					text : '<u>Scrum Role Management</u>',
 					leaf:true
-				}]
+				},{
+			    	// Export Management Side
+			    	text: 'Export Management',
+			    	id	: 'ExportMgt',
+			    	expanded: true,
+			    	iconCls: 'None',
+			    	cls: 'treepanel-parent',
+			    	children: [
+			    	    {
+			    	    	id:'ExportUrl',
+					    	cls:'treepanel-leaf',
+		                	iconCls:'leaf-icon',
+							text : '<u>Export</u>', 
+							leaf:true
+			    	    }]
+			    	// Export Management Side
+			    }]
 		    /**
 		     * RBAC Management Side
 		     *******************************/

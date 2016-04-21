@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE preferences SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+<preferences EXTERNAL_XML_VERSION="1.0">
+<root type="user">
+<map/>
+<node name="jcis">
+<map/>
+<node name="its">
+<map/>
+<node name="project">
+<map/>
+<node name="Project01">
+<map>
+<entry key="ServerUrl" value="127.0.0.1"/>
+<entry key="ServicePath" value="/mantis/mc/mantisconnect.php"/>
+<entry key="Account" value="root"/>
+<entry key="Password" value="root"/>
+<entry key="DatabaseType" value="MySQL"/>
+<entry key="DatabaseName" value="ezscrum_172"/>
+</map>
+</node>
+</node>
+</node>
+</node>
+</root>
+</preferences>

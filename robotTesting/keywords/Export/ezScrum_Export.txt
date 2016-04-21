@@ -1,0 +1,7 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Keywords ***
+Choose Project By Name
+    [Arguments]    ${ProjectName}
+    Click Element    //div[@id = 'Export_Form']//fieldset[@id = 'projectCheckBoxGroup']//input[@id = '${ProjectName}']/../label
